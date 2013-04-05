@@ -45,8 +45,6 @@ public class MtGoxExchange extends AbstractExchange<Ticker> {
         exchangeSpecification.setApiKey("150c6db9-e5ab-47ac-83d6-4440d1b9ce49");
         exchangeSpecification.setSecretKey("olHM/yl3CAuKMXFS2+xlP/MC0Hs1M9snHpaHwg0UZW52Ni0Tf4FhGFELO9cHcDNGKvFrj8CgyQUA4VsMTZ6dXg==");
         
-//        exchangeSpecification.setUserName("1841d4baad91f25a662785cd004a3e09");
-//        exchangeSpecification.setPassword("bfb5c399f3e4b07789d7ac1acea983ba");
         exchangeSpecification.setUri("https://mtgox.com");
         
         this.mtGoxRWExchange = ExchangeFactory.INSTANCE.createExchange(exchangeSpecification);
