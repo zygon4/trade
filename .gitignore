@@ -4,3 +4,4 @@
 *.jar
 *.war
 *.ear
+/src/com/zygon/exchange/trade/exchange/mtgox/
