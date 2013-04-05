@@ -4,7 +4,6 @@
 
 package com.zygon.exchange;
 
-import com.zygon.exchange.modules.trade.MtGox;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -16,7 +15,7 @@ import org.apache.commons.daemon.DaemonInitException;
 public class Service implements Daemon {
     
     private static final Module[] modules = new Module[] {
-            new MtGox(false)
+//            new MtGox(false)
     };
 
     private Module kernel;
