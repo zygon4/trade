@@ -10,7 +10,7 @@ import com.zygon.exchange.Module;
  *
  * @author zygon
  */
-public class MtGoxFeed extends Adapter {
+public class MtGoxFeed extends Module {
 
     private final Module[] modules = new Module[] {
         new MtGoxFeed()
