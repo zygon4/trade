@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Setup variables
+PROJECT_HOME=/home/zygon/opt/server
+EXEC=$PROJECT_HOME/bin/jsvc
+LIB_DIR=$PROJECT_HOME/lib
+LOG_DIR=$PROJECT_HOME/log
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PROJECT_HOME/lib
+export LD_LIBRARY_PATH
+
+JAVA_HOME=/usr/lib/jvm/latest
+CLASS_PATH="$LIB_DIR/commons-daemon-1.0.14.jar:$LIB_DIR/exchange.jar"
+CLASS=com.zygon.exchange.Service
+USER=zygon
+
+PID=$LOG_DIR/daemon.pid
+LOG_OUT=$LOG_DIR/daemon.out
+LOG_ERR=$LOG_DIR/daemon.out
+PROCNAME="kickassserver"
+
+#echo $PROJECT_HOME
+#echo $EXEC
+#echo $LIB_DIR
+#echo $CLASS_PATH
+#echo $CLASS
+#echo $OUTPUT_DIR
+
+do_exec()
+{
+    $EXEC -home $JAVA_HOME -cp $CLASS_PATH -user $USER -procname $PROCNAME -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
+}
+
+case "$1" in
+    start)
+        do_exec
+            ;;
+    stop)
+        do_exec "-stop"
+            ;;
+    restart)
+        if [ -f "$PID" ]; then
+            do_exec "-stop"
+            do_exec
+        else
+            echo "service not running, will do nothing"
+            exit 1
+        fi
+            ;;
+    *)
+            echo "usage: daemon {start|stop|restart}" >&2
+            exit 3
+            ;;
+esac
