@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  * when applicable.
  * 
  */
+@Deprecated
 public class FeedProcessor {
     
     private static final int EXEC_THREAD_POOL = 1;
