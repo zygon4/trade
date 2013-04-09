@@ -2,8 +2,9 @@
  * 
  */
 
-package com.zygon.exchange.trade.cep;
+package com.zygon.exchange.cep;
 
+import com.zygon.exchange.AbstractInformationHandler;
 import com.zygon.exchange.trade.MarketConditions;
 import com.zygon.exchange.trade.OrderProvider;
 import com.zygon.exchange.trade.TradeExecutor;
@@ -12,20 +13,21 @@ import com.zygon.exchange.trade.TradeExecutor;
  *
  * @author zygon
  */
-public abstract class AbstractEventProcessor<EVENT_TYPE> implements EventProcessor<EVENT_TYPE> {
+public abstract class AbstractEventProcessor<EVENT_TYPE> extends AbstractInformationHandler<EVENT_TYPE> {
 
     private final OrderProvider orderProvider;
     private final TradeExecutor trader;
     private final MarketConditions marketConditions;
 
-    public AbstractEventProcessor(OrderProvider orderProvider, TradeExecutor trader, MarketConditions marketConditions) {
+    public AbstractEventProcessor(String name, OrderProvider orderProvider, TradeExecutor trader, MarketConditions marketConditions) {
+        super(name);
         this.orderProvider = orderProvider;
         this.trader = trader;
         this.marketConditions = marketConditions;
     }
 
     @Override
-    public void process(EVENT_TYPE event) {
+    public void handle(EVENT_TYPE event) {
         System.out.println("Processing event " + event);
         com.xeiam.xchange.dto.Order order = this.orderProvider.get(this.marketConditions);
         if (order != null) {

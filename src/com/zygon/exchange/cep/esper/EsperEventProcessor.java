@@ -2,13 +2,13 @@
  * 
  */
 
-package com.zygon.exchange.trade.cep.esper;
+package com.zygon.exchange.cep.esper;
 
 import com.espertech.esper.client.EventBean;
 import com.zygon.exchange.trade.MarketConditions;
 import com.zygon.exchange.trade.OrderProvider;
 import com.zygon.exchange.trade.TradeExecutor;
-import com.zygon.exchange.trade.cep.AbstractEventProcessor;
+import com.zygon.exchange.cep.AbstractEventProcessor;
 
 /**
  *
@@ -18,13 +18,13 @@ import com.zygon.exchange.trade.cep.AbstractEventProcessor;
  */
 public class EsperEventProcessor extends AbstractEventProcessor<EventBean> {
 
-    public EsperEventProcessor(OrderProvider orderProvider, TradeExecutor trader, MarketConditions marketConditions) {
-        super(orderProvider, trader, marketConditions);
+    public EsperEventProcessor(String name, OrderProvider orderProvider, TradeExecutor trader, MarketConditions marketConditions) {
+        super(name, orderProvider, trader, marketConditions);
     }
 
     //
     @Override
-    public void process(EventBean event) {
+    public void handle(EventBean event) {
         System.out.println("Processing event " + event.getUnderlying());
     }
 }

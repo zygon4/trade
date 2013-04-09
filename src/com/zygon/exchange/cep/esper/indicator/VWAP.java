@@ -2,14 +2,15 @@
  * 
  */
 
-package com.zygon.exchange.trade.cep.esper.indicator;
+package com.zygon.exchange.cep.esper.indicator;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EventBean;
 import com.xeiam.xchange.Currencies;
 import com.xeiam.xchange.dto.marketdata.Ticker;
-import com.zygon.exchange.trade.cep.EventProcessor;
-import com.zygon.exchange.trade.cep.esper.EsperEventIndicator;
+import com.zygon.exchange.InformationHandler;
+import com.zygon.exchange.cep.esper.EsperEventIndicator;
+import java.util.Collection;
 
 /**
  *
@@ -50,11 +51,11 @@ public class VWAP extends EsperEventIndicator {
         return cepConfig;
     }
     
-    private VWAP(EventProcessor<EventBean>[] eventProcessors, Configuration config, String statement) {
-        super(eventProcessors, config, statement);
+    private VWAP(Collection<InformationHandler<EventBean>> eventProcessors, Configuration config, String statement) {
+        super("WVAP", eventProcessors, config, statement);
     }
     
-    public VWAP(EventProcessor<EventBean>[] eventProcessors) {
+    public VWAP(Collection<InformationHandler<EventBean>> eventProcessors) {
         this(eventProcessors, create(), STMT);
     }
 }

@@ -2,9 +2,9 @@
  * 
  */
 
-package com.zygon.exchange.trade.indication.technical;
+package com.zygon.exchange.market.model.indication.technical;
 
-import com.zygon.exchange.trade.indication.Indicator;
+import com.zygon.exchange.market.model.indication.Indication;
 
 /**
  *

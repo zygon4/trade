@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.trade.cep.esper;
+package com.zygon.exchange.cep.esper;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPRuntime;
@@ -12,8 +12,9 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 import com.xeiam.xchange.dto.marketdata.Ticker;
-import com.zygon.exchange.trade.cep.AbstractEventListener;
-import com.zygon.exchange.trade.cep.EventProcessor;
+import com.zygon.exchange.InformationHandler;
+import com.zygon.exchange.cep.AbstractEventListener;
+import java.util.Collection;
 
 /**
  *
@@ -27,8 +28,9 @@ public abstract class EsperEventIndicator extends AbstractEventListener<Ticker, 
     private final String statement;
     private final EPRuntime runtime;
 
-    protected EsperEventIndicator(EventProcessor<EventBean>[] eventProcessors, Configuration config, String statement) {
-        super(eventProcessors);
+    protected EsperEventIndicator(String name, Collection<InformationHandler<EventBean>> eventProcessors, 
+            Configuration config, String statement) {
+        super (name, eventProcessors);
         
         EPServiceProvider cep = EPServiceProviderManager.getProvider("esperEventListener", config);
         
@@ -55,17 +57,17 @@ public abstract class EsperEventIndicator extends AbstractEventListener<Ticker, 
 
     @Override
     public void update(EventBean[] newData, EventBean[] oldData) {
-        for (EventProcessor<EventBean> processor : this.getEventProcessors()) {
+        for (InformationHandler<EventBean> processor : this.getTargets()) {
             
             if (newData != null) {
                 for (EventBean event : newData) {
-                    processor.process(event);
+                    processor.handle(event);
                 }
             }
             
             if (oldData != null) {
                 for (EventBean event : oldData) {
-                    processor.process(event);
+                    processor.handle(event);
                 }
             }
         }

@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.trade.indication.news;
+package com.zygon.exchange.market.model.indication.technical;
 
 /**
  *

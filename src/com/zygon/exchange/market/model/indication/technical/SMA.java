@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.trade.indication.technical;
+package com.zygon.exchange.market.model.indication.technical;
 
 /**
  *
@@ -13,6 +13,7 @@ public class SMA extends TechnicalIndicator {
     private final int window;
 
     public SMA(int window) {
+        super("SMA");
         this.window = window;
     }
 }

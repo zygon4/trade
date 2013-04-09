@@ -2,14 +2,15 @@
  * 
  */
 
-package com.zygon.exchange.trade.cep.esper.indicator;
+package com.zygon.exchange.cep.esper.indicator;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EventBean;
 import com.xeiam.xchange.Currencies;
 import com.xeiam.xchange.dto.marketdata.Ticker;
-import com.zygon.exchange.trade.cep.EventProcessor;
-import com.zygon.exchange.trade.cep.esper.EsperEventIndicator;
+import com.zygon.exchange.InformationHandler;
+import com.zygon.exchange.cep.esper.EsperEventIndicator;
+import java.util.Collection;
 
 /**
  *
@@ -37,11 +38,11 @@ public class SimpleMovingAverage extends EsperEventIndicator {
         return cepConfig;
     }
     
-    private SimpleMovingAverage(EventProcessor<EventBean>[] eventProcessors, Configuration config, String statement) {
-        super(eventProcessors, config, statement);
+    private SimpleMovingAverage(Collection<InformationHandler<EventBean>> eventProcessors, Configuration config, String statement) {
+        super("SMA", eventProcessors, config, statement);
     }
     
-    public SimpleMovingAverage(EventProcessor<EventBean>[] eventProcessors, int minutes, int percentFromMid) {
+    public SimpleMovingAverage(Collection<InformationHandler<EventBean>> eventProcessors, int minutes, int percentFromMid) {
         this(eventProcessors, create(), String.format(STATEMENT_FMT, Currencies.BTC, minutes, percentFromMid, percentFromMid));
     }
 }
