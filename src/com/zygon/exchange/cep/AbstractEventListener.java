@@ -14,17 +14,18 @@ import java.util.Collection;
  * 
  * @author zygon
  */
-public abstract class AbstractEventListener<FEED_TYPE, EVENT_TYPE> extends InformationBuffer<FEED_TYPE, EVENT_TYPE> {
+public abstract class AbstractEventListener<T_IN, EVENT_TYPE> extends InformationBuffer<T_IN, EVENT_TYPE> {
     
     public AbstractEventListener(String name, Collection<InformationHandler<EVENT_TYPE>> eventProcessors) {
         super(name, eventProcessors);
-        
     }
-
-    protected abstract void handleFeed(FEED_TYPE item);
+    
+    // The effective purpose of this entire class now is to wrap this method..
+    // is it worth it?
+    protected abstract void handleFeed(T_IN item);
     
     @Override
-    public final void handle(FEED_TYPE item) {
+    public final void handle(T_IN item) {
         
         // TODO: log
         

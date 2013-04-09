@@ -12,6 +12,9 @@ import com.zygon.exchange.trade.TradeExecutor;
 /**
  *
  * @author zygon
+ * 
+ * I think this should be refactored to run on top of the indications.
+ * 
  */
 public abstract class AbstractEventProcessor<EVENT_TYPE> extends AbstractInformationHandler<EVENT_TYPE> {
 
