@@ -24,7 +24,7 @@ public abstract class AbstractInformationHandler<T_IN> implements InformationHan
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
