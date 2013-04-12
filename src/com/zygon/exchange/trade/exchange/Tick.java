@@ -16,7 +16,7 @@ import org.joda.money.BigMoney;
  * 
  */
 @Deprecated
-final class Tick {
+public final class Tick {
     private final String security;
     private final BigMoney last;
     private final BigMoney bid;
