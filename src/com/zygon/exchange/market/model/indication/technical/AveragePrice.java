@@ -2,8 +2,9 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication;
+package com.zygon.exchange.market.model.indication.technical;
 
+import com.zygon.exchange.market.model.indication.Indication;
 import java.util.concurrent.TimeUnit;
 
 /**

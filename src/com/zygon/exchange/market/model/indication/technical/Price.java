@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication;
+package com.zygon.exchange.market.model.indication.technical;
 
 import java.util.Date;
 import org.joda.money.BigMoney;

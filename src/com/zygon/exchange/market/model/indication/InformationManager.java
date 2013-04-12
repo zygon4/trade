@@ -4,6 +4,8 @@
 
 package com.zygon.exchange.market.model.indication;
 
+import com.zygon.exchange.market.model.indication.technical.Price;
+import com.zygon.exchange.market.model.indication.technical.AveragePrice;
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
