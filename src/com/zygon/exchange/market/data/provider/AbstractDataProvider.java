@@ -2,13 +2,16 @@
  * 
  */
 
-package com.zygon.exchange.market.data;
+package com.zygon.exchange.market.data.provider;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author zygon
+ * 
+ * Consider implementing an abstract information provider.
+ * 
  */
 public abstract class AbstractDataProvider<T> implements DataProvider<T> {
 

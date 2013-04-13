@@ -8,7 +8,7 @@ import com.zygon.exchange.InformationBuffer;
 import com.zygon.exchange.Module;
 import com.zygon.exchange.ScheduledInformationProcessor;
 import com.zygon.exchange.cep.AbstractEventListener;
-import com.zygon.exchange.market.data.DataProvider;
+import com.zygon.exchange.market.data.provider.DataProvider;
 import com.zygon.exchange.market.model.indication.Indication;
 import java.util.Collection;
 

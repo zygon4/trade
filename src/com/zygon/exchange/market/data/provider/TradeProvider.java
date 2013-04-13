@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.market.data;
+package com.zygon.exchange.market.data.provider;
 
 import com.xeiam.xchange.Currencies;
 import com.xeiam.xchange.dto.Order;
