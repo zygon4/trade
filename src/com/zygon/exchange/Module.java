@@ -16,8 +16,6 @@ public abstract class Module {
         this.name = name;
     }
     
-    
-    // TODO: universally implement while abstracting
     /*pkg*/ void doInit() {
         
         System.out.println("initializing module " + this.name);

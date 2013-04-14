@@ -4,6 +4,7 @@
 
 package com.zygon.exchange.market.data.provider;
 
+import com.zygon.exchange.market.data.DataProvider;
 import java.util.concurrent.TimeUnit;
 
 /**

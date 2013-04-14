@@ -14,10 +14,16 @@ import org.apache.commons.daemon.DaemonInitException;
  */
 public class Service implements Daemon {
     
-    private static final Module[] modules = new Module[] {
-//            new MtGox(false)
-    };
+    private final Module[] modules;
 
+    public Service(Module[] modules) {
+        this.modules = modules;
+    }
+
+    public Service() {
+        this(new Module[]{});
+    }
+    
     private Module kernel;
     
     @Override

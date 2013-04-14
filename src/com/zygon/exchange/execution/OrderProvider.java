@@ -2,7 +2,9 @@
  * 
  */
 
-package com.zygon.exchange.trade;
+package com.zygon.exchange.execution;
+
+import com.zygon.exchange.trade.MarketConditions;
 
 /**
  *

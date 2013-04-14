@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.market.data.provider;
+package com.zygon.exchange.market.data;
 
 import com.zygon.exchange.InformationProvider;
 import java.util.concurrent.TimeUnit;

@@ -11,6 +11,10 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  * @author zygon
+ * 
+ * This is just a stub.. TBD if it should be a template for a Ticker
+ * because we know Ticker's will generally always exist or if it should just
+ * not exist..
  */
 public class TickerProvider extends AbstractDataProvider<Ticker> {
 

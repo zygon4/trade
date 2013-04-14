@@ -58,7 +58,7 @@ public abstract class Indication extends AbstractInformationHandler<Object> impl
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
             Object obj = translate(event.getUnderlying());
-            System.out.println(obj);
+            System.out.println(this.getName() + ": "+ obj);
             super.handle(obj);
         }
         

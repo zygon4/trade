@@ -61,14 +61,18 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
 
     @Override
     public void handle(T_IN t) {
-        if (this.queue.offer(t)) {
-            this.service.execute(new DispatchTask(this));
+        if (this.getTargets() != null) {
+            if (this.queue.offer(t)) {
+                this.service.execute(new DispatchTask(this));
+            } else {
+                // TBD: mark drop?
+            }
         } else {
-            // TBD: mark drop?
+            // noone cares.. boo hoo
         }
     }
             
-     protected T_OUT translate(T_IN in) {
-        return null;
+    protected T_OUT translate(T_IN in) {
+        throw new UnsupportedOperationException("Child class must override this method");
     }
 }

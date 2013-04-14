@@ -4,8 +4,6 @@
 
 package com.zygon.exchange;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author zygon
@@ -17,14 +15,6 @@ public class Kernel extends Module {
     public Kernel(Module[] modules) {
         super("Kernel");
         this.modules = modules;
-    }
-    
-    private Module[] findModules() {
-        ArrayList<Module> modules = new ArrayList<Module>();
-        
-        // TODO: reflectively load all the Modules - or use Spring
-        
-        return modules.toArray(new Module[modules.size()]);
     }
     
     @Override

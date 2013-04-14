@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * TODO: map multiple distributors to a single provider, perform state checks
  * when applicable.
  * 
+ * Note: this is the only singleton in the system right now.. 
  */
 public class ScheduledInformationProcessor {
     
@@ -63,7 +64,7 @@ public class ScheduledInformationProcessor {
             handlers = new HashSet<>();
             handlers.add(val);
             
-            this.executor.scheduleAtFixedRate(new ExecTask(key, handlers), interval, interval, unit);
+            this.executor.scheduleAtFixedRate(new ExecTask(key, handlers), 0, interval, unit);
         } else {
             handlers.add(val);
         }
