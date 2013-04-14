@@ -5,6 +5,9 @@
 package com.zygon.exchange;
 
 /**
+ * A Module is intended to be a user facing element in the system. They hold
+ * status information and any controllers that an operator might want to use
+ * to interact with the underlying functionality.
  *
  * @author zygon
  */
