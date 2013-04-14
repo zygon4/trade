@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  *
@@ -43,9 +42,9 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
     }
     
     private final Queue<T_IN> queue = new ConcurrentLinkedQueue<>();
-    private final Executor service = Executors.newFixedThreadPool(2);
     private final Collection<InformationHandler<T_OUT>> targets;
-
+    private Executor service;
+    
     public InformationBuffer(String name, Collection<InformationHandler<T_OUT>> targets) {
         super(name);
         this.targets = targets;
@@ -63,7 +62,11 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
     public void handle(T_IN t) {
         if (this.getTargets() != null) {
             if (this.queue.offer(t)) {
-                this.service.execute(new DispatchTask(this));
+                if (this.service != null) {
+                    this.service.execute(new DispatchTask(this));
+                } else {
+                    new DispatchTask<>(this).run();
+                }
             } else {
                 // TBD: mark drop?
             }
@@ -71,7 +74,11 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
             // noone cares.. boo hoo
         }
     }
-            
+
+    public final void setService(Executor service) {
+        this.service = service;
+    }
+    
     protected T_OUT translate(T_IN in) {
         throw new UnsupportedOperationException("Child class must override this method");
     }

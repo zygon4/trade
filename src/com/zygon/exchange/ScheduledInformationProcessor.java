@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -20,17 +19,8 @@ import java.util.concurrent.TimeUnit;
  * TODO: map multiple distributors to a single provider, perform state checks
  * when applicable.
  * 
- * Note: this is the only singleton in the system right now.. 
  */
 public class ScheduledInformationProcessor {
-    
-    private static ScheduledInformationProcessor processor = new ScheduledInformationProcessor();
-    
-    public static ScheduledInformationProcessor instance() {
-        return processor;
-    }
-    
-    private static final int EXEC_THREAD_POOL = 3;
     
     private static final class ExecTask implements Runnable {
         
@@ -53,9 +43,11 @@ public class ScheduledInformationProcessor {
     }
     
     private final Map<InformationProvider, Set<InformationHandler>> distributorsByInformationProviders = Collections.synchronizedMap(new HashMap<InformationProvider, Set<InformationHandler>>());
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
+    private final ScheduledExecutorService executor;
 
-    private ScheduledInformationProcessor() { }
+    public ScheduledInformationProcessor(ScheduledExecutorService executor) {
+        this.executor = executor;
+    }
     
     public void register (InformationProvider key, InformationHandler val, long interval, TimeUnit unit) {
         
@@ -71,12 +63,4 @@ public class ScheduledInformationProcessor {
     }
     
     // TODO: unreg
-    
-    public void initialize() {
-        // TBD: better threading model
-    }
-    
-    public void uninitialize() {
-        this.executor.shutdown();
-    }
 }

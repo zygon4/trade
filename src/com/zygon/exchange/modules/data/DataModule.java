@@ -37,6 +37,6 @@ public class DataModule<T> extends Module {
 
     @Override
     public void uninitialize() {
-        // nothing to do now..
+        this.dataBridge.unintialize();
     }
 }
