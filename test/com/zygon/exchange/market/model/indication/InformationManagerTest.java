@@ -4,9 +4,11 @@
 
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.technical.AveragePrice;
+import com.zygon.exchange.market.model.indication.technical.NumericIndication;
 import com.zygon.exchange.market.Price;
 import com.xeiam.xchange.Currencies;
+import com.zygon.exchange.market.model.indication.technical.Aggregation;
+import com.zygon.exchange.market.model.indication.technical.Classification;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,7 +26,7 @@ public class InformationManagerTest {
     
 //    public static void main(String[] args) {
         List<Indication> indications = new ArrayList<>();
-        indications.add(new AveragePrice(Currencies.USD, 1, TimeUnit.SECONDS));
+        indications.add(new NumericIndication(Currencies.USD, Classification.PRICE, Aggregation.AVG, 1, TimeUnit.SECONDS));
         
         InformationManager mgmt = new InformationManager("info-mgmt", indications);
         
