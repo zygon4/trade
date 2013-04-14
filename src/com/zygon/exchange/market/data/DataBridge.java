@@ -10,6 +10,13 @@ import java.util.Collection;
 /**
  *
  * @author zygon
+ * 
+ * TODO: When using the DataBridge (also, rename this stupid thing) automatically
+ * link up the providers with DataHandlers..  The user should really only need 
+ * to supply the upstream DataProviders and the collection of downstream
+ * InformationHandlers.  At runtime this would find the correct DataHandlers
+ * for the DataBridge and register the InformationHandlers with DataHandlers.
+ * So many handlers!
  */
 public class DataBridge<T_IN> {
 
