@@ -15,6 +15,8 @@ import java.util.Collection;
 /**
  *
  * @author zygon
+ * 
+ * TODO: Provide status information and possibly pause/unpause capabilities.
  */
 public final class InformationManager extends AbstractInformationHandler<Object> {
     

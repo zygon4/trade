@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * for the DataBridge and register the InformationHandlers with DataHandlers.
  * So many handlers!
  */
-public class DataBridge<T_IN> {
+public class DataManager<T_IN> {
 
     // TODO: make configurable
     private static final int EXEC_THREAD_POOL = 3;
@@ -30,13 +30,13 @@ public class DataBridge<T_IN> {
     private final DataProvider<T_IN> provider;
     private Collection<DataHandler<T_IN, ?>> handlers;
 
-    public DataBridge(DataProvider<T_IN> provider, 
+    public DataManager(DataProvider<T_IN> provider, 
                       Collection<DataHandler<T_IN, ?>> handlers) {
         this.provider = provider;
         this.handlers = handlers;
     }
 
-    public DataBridge(DataProvider<T_IN> provider) {
+    public DataManager(DataProvider<T_IN> provider) {
         this (provider, null);
     }
     

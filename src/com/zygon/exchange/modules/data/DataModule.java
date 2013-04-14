@@ -5,7 +5,7 @@
 package com.zygon.exchange.modules.data;
 
 import com.zygon.exchange.Module;
-import com.zygon.exchange.market.data.DataBridge;
+import com.zygon.exchange.market.data.DataManager;
 
 /**
  *
@@ -13,15 +13,15 @@ import com.zygon.exchange.market.data.DataBridge;
  */
 public class DataModule<T> extends Module {
 
-    private final DataBridge<T> dataBridge;
+    private final DataManager<T> dataBridge;
     
-    public DataModule(String name, DataBridge<T> dataBridge) {
+    public DataModule(String name, DataManager<T> dataBridge) {
         super(name);
         
         this.dataBridge = dataBridge;
     }
 
-    protected final DataBridge<T> getDataBridge() {
+    protected final DataManager<T> getDataBridge() {
         return this.dataBridge;
     }
     
