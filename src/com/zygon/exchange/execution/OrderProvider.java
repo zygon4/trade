@@ -4,8 +4,6 @@
 
 package com.zygon.exchange.execution;
 
-import com.zygon.exchange.trade.MarketConditions;
-
 /**
  *
  * @author zygon
