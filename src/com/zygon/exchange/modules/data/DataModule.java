@@ -20,6 +20,10 @@ public class DataModule<T> extends Module {
         
         this.dataBridge = dataBridge;
     }
+
+    protected final DataBridge<T> getDataBridge() {
+        return this.dataBridge;
+    }
     
     @Override
     public Module[] getModules() {
