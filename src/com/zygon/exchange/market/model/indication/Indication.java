@@ -38,17 +38,6 @@ public abstract class Indication extends AbstractInformationHandler<Object> impl
     public String getStatement() {
         return this.statement;
     }
-    
-//      private INDICATION_TYPE indication;
-//    
-//    public INDICATION_TYPE get() {
-//        return this.indication;
-//    }
-
-//    @Override
-//    public void handle(Object t) {
-//        
-//    }
 
     protected Object translate(Object o) {
         return o;
