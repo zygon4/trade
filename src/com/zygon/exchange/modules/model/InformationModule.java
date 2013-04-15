@@ -10,11 +10,11 @@ import com.zygon.exchange.market.model.indication.InformationManager;
  *
  * @author zygon
  */
-public class IndicationModule extends Module {
+public class InformationModule extends Module {
 
     private final InformationManager infoMgmt;
     
-    public IndicationModule(String name, InformationManager infoMgmt) {
+    public InformationModule(String name, InformationManager infoMgmt) {
         super(name);
         
         this.infoMgmt = infoMgmt;
