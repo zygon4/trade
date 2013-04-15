@@ -33,6 +33,7 @@ public abstract class Module {
         this.uninitialize();
     }
     
+    // TODO: perhaps someone should give a damn about this?  Or delete it.
     public abstract Module[] getModules();
     
     public final String getName() {

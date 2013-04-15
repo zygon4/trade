@@ -13,16 +13,16 @@ import com.zygon.exchange.market.data.DataManager;
  */
 public class DataModule<T> extends Module {
 
-    private final DataManager<T> dataBridge;
+    private final DataManager<T> dataManager;
     
-    public DataModule(String name, DataManager<T> dataBridge) {
+    public DataModule(String name, DataManager<T> dataManager) {
         super(name);
         
-        this.dataBridge = dataBridge;
+        this.dataManager = dataManager;
     }
 
-    protected final DataManager<T> getDataBridge() {
-        return this.dataBridge;
+    public DataManager<T> getDataManager() {
+        return this.dataManager;
     }
     
     @Override
@@ -32,11 +32,11 @@ public class DataModule<T> extends Module {
 
     @Override
     public void initialize() {
-        this.dataBridge.initalize();
+        this.dataManager.initalize();
     }
 
     @Override
     public void uninitialize() {
-        this.dataBridge.unintialize();
+        this.dataManager.unintialize();
     }
 }

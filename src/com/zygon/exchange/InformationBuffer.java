@@ -42,12 +42,16 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
     }
     
     private final Queue<T_IN> queue = new ConcurrentLinkedQueue<>();
-    private final Collection<InformationHandler<T_OUT>> targets;
+    private Collection<InformationHandler<T_OUT>> targets;
     private Executor service;
     
     public InformationBuffer(String name, Collection<InformationHandler<T_OUT>> targets) {
         super(name);
         this.targets = targets;
+    }
+    
+    protected InformationBuffer(String name) {
+        this(name, null);
     }
 
     private Queue<T_IN> getQueue() {
@@ -73,6 +77,10 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
         } else {
             // noone cares.. boo hoo
         }
+    }
+
+    public void setTargets(Collection<InformationHandler<T_OUT>> targets) {
+        this.targets = targets;
     }
 
     public final void setService(Executor service) {

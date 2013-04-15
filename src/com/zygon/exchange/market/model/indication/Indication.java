@@ -4,8 +4,10 @@
 
 package com.zygon.exchange.market.model.indication;
 
+import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.UpdateListener;
+import com.espertech.esper.client.StatementAwareUpdateListener;
 import com.zygon.exchange.AbstractInformationHandler;
 
 
@@ -14,7 +16,7 @@ import com.zygon.exchange.AbstractInformationHandler;
  * @author zygon
  */
 
-public abstract class Indication extends AbstractInformationHandler<Object> implements UpdateListener {
+public abstract class Indication extends AbstractInformationHandler<Object> implements StatementAwareUpdateListener {
     
     private final String eventTypeName;
     private final String eventClassName;
@@ -39,16 +41,16 @@ public abstract class Indication extends AbstractInformationHandler<Object> impl
         return this.statement;
     }
 
-    protected Object translate(Object o) {
+    protected Object translate(String name, Object o) {
         return o;
     }
-    
+
     @Override
-    public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+    public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement eps, EPServiceProvider epsp) {
         for (EventBean event : newEvents) {
-            Object obj = translate(event.getUnderlying());
+            Object obj = translate(eps.getServiceIsolated(), event.getUnderlying());
             System.out.println(this.getName() + ": "+ obj);
-            super.handle(obj);
+            handle(obj);
         }
         
         for (EventBean event : oldEvents) {

@@ -44,6 +44,9 @@ public final class InformationManager extends AbstractInformationHandler<Object>
         }
     }
     
+    // I desprately want the the DataHandlers/InformationHandlers that mux the 
+    // underlying incoming data to be here and not underneath.  I think this
+    // manager should be able to choose its own path.
     @Override
     public void handle(Object t) {
         this.runtime.sendEvent(t);

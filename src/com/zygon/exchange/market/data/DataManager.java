@@ -4,6 +4,7 @@
 
 package com.zygon.exchange.market.data;
 
+import com.zygon.exchange.InformationHandler;
 import com.zygon.exchange.ScheduledInformationProcessor;
 import java.util.Collection;
 import java.util.concurrent.Executors;
@@ -29,14 +30,6 @@ public class DataManager<T_IN> {
     private final ScheduledInformationProcessor processor = new ScheduledInformationProcessor(executor);
     private final DataProvider<T_IN> provider;
     private Collection<DataHandler<T_IN, ?>> handlers;
-
-    // could we take in an informationmanager (or some knowledgable body) and 
-    // ask it for the handlers on a per provider basis?
-    /*
-     * public interface SomethingProvider<T_IN> {
-     *     public Collection<DataHandler<T_IN, ?>> getHandlers(DataProvider<T_IN> provider);
-     * }
-     */
     
     public DataManager(DataProvider<T_IN> provider, 
                        Collection<DataHandler<T_IN, ?>> handlers) {
@@ -53,6 +46,13 @@ public class DataManager<T_IN> {
             handler.setService(this.executor);
             
             this.processor.register(this.provider, handler, provider.getInterval(), provider.getUnits());
+        }
+    }
+    
+    // TODO: rename
+    public void setDataHandlerHandlers(Collection<InformationHandler<?>> infoHandler) {
+        for (DataHandler handler : this.handlers) {
+            handler.setTargets(infoHandler);
         }
     }
     

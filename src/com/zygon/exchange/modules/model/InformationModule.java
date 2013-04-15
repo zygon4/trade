@@ -5,6 +5,7 @@ package com.zygon.exchange.modules.model;
 
 import com.zygon.exchange.Module;
 import com.zygon.exchange.market.model.indication.InformationManager;
+import com.zygon.exchange.modules.data.DataModule;
 
 /**
  *
@@ -12,11 +13,13 @@ import com.zygon.exchange.market.model.indication.InformationManager;
  */
 public class InformationModule extends Module {
 
+    private final DataModule dataModule;
     private final InformationManager infoMgmt;
     
-    public InformationModule(String name, InformationManager infoMgmt) {
+    public InformationModule(String name, DataModule dataModule, InformationManager infoMgmt) {
         super(name);
         
+        this.dataModule = dataModule;
         this.infoMgmt = infoMgmt;
     }
 
@@ -31,11 +34,11 @@ public class InformationModule extends Module {
 
     @Override
     public void initialize() {
-        // nothing to do..
+        this.dataModule.initialize();
     }
 
     @Override
     public void uninitialize() {
-        // nothing to do..
+        this.dataModule.uninitialize();
     }
 }

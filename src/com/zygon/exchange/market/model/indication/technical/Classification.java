@@ -25,11 +25,11 @@ public enum Classification {
         this.className = className;
     }
     
-    /*pkg*/ String getClassName() {
+    public String getClassName() {
         return className;
     }
 
-    /*pkg*/ String getEsperToken() {
+    public String getEsperToken() {
         return esperToken;
     }
 }

@@ -6,9 +6,7 @@ package com.zygon.exchange.market.data.handler;
 
 import com.zygon.exchange.market.data.DataHandler;
 import com.xeiam.xchange.dto.marketdata.Trade;
-import com.zygon.exchange.InformationHandler;
 import com.zygon.exchange.market.Volume;
-import java.util.Collection;
 
 /**
  *
@@ -16,8 +14,8 @@ import java.util.Collection;
  */
 public class TradeVolumeHandler extends DataHandler<Trade, Object> {
     
-    public TradeVolumeHandler(String name, Collection<InformationHandler<Object>> targets) {
-        super(name, targets);
+    public TradeVolumeHandler(String name) {
+        super(name);
     }
     
     @Override

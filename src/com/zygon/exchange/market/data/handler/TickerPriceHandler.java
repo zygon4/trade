@@ -5,11 +5,9 @@
 package com.zygon.exchange.market.data.handler;
 
 import com.xeiam.xchange.dto.marketdata.Ticker;
-import com.zygon.exchange.InformationHandler;
 import com.zygon.exchange.market.Price;
 import com.zygon.exchange.market.data.DataHandler;
 import java.math.RoundingMode;
-import java.util.Collection;
 
 /**
  *
@@ -17,8 +15,8 @@ import java.util.Collection;
  */
 public class TickerPriceHandler extends DataHandler<Ticker, Object> {
     
-    public TickerPriceHandler(String name, Collection<InformationHandler<Object>> targets) {
-        super(name, targets);
+    public TickerPriceHandler(String name) {
+        super(name);
     }
     
     @Override
