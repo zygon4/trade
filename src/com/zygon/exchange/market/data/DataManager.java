@@ -29,10 +29,10 @@ public class DataManager<T_IN> {
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
     private final ScheduledInformationProcessor processor = new ScheduledInformationProcessor(executor);
     private final DataProvider<T_IN> provider;
-    private Collection<DataHandler<T_IN, ?>> handlers;
+    private Collection<DataHandler<T_IN>> handlers;
     
     public DataManager(DataProvider<T_IN> provider, 
-                       Collection<DataHandler<T_IN, ?>> handlers) {
+                       Collection<DataHandler<T_IN>> handlers) {
         this.provider = provider;
         this.handlers = handlers;
     }
@@ -42,7 +42,7 @@ public class DataManager<T_IN> {
     }
     
     public void initalize() {
-        for (DataHandler<T_IN, ?> handler : this.handlers) {
+        for (DataHandler<T_IN> handler : this.handlers) {
             handler.setService(this.executor);
             
             this.processor.register(this.provider, handler, provider.getInterval(), provider.getUnits());
@@ -56,7 +56,7 @@ public class DataManager<T_IN> {
         }
     }
     
-    public void setHandlers(Collection<DataHandler<T_IN, ?>> handlers) {
+    public void setHandlers(Collection<DataHandler<T_IN>> handlers) {
         this.handlers = handlers;
     }
     
