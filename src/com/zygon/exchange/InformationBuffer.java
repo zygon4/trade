@@ -41,6 +41,7 @@ public class InformationBuffer<T_IN, T_OUT> extends AbstractInformationHandler<T
         }
     }
     
+    // Consider using Guava publish/subscribe structure vs a plain queue.
     private final Queue<T_IN> queue = new ConcurrentLinkedQueue<>();
     private Collection<InformationHandler<T_OUT>> targets;
     private Executor service;
