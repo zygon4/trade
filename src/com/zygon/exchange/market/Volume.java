@@ -11,6 +11,7 @@ import java.util.Date;
  *
  * @author zygon
  */
+@Deprecated
 public class Volume {
 
     private final String tradableIdentifier;

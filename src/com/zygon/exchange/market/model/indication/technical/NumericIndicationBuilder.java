@@ -4,9 +4,9 @@
 
 package com.zygon.exchange.market.model.indication.technical;
 
+import com.zygon.exchange.market.model.indication.Classification;
+import com.zygon.exchange.market.model.indication.Aggregation;
 import com.zygon.exchange.InformationHandler;
-import com.zygon.exchange.market.model.indication.Indication;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -17,8 +17,6 @@ public class NumericIndicationBuilder {
     private final String security;
     private Aggregation aggregation;
     private Classification classification;
-    private long duration;
-    private TimeUnit units;
     private InformationHandler<Object> handler;
 
     public NumericIndicationBuilder(String security) {
@@ -29,14 +27,9 @@ public class NumericIndicationBuilder {
         this.aggregation = aggregation;
         return this;
     }
-
+    
     public NumericIndicationBuilder set(Classification classification) {
         this.classification = classification;
-        return this;
-    }
-
-    public NumericIndicationBuilder set(long duration) {
-        this.duration = duration;
         return this;
     }
 
@@ -45,13 +38,8 @@ public class NumericIndicationBuilder {
         return this;
     }
 
-    public NumericIndicationBuilder set(TimeUnit units) {
-        this.units = units;
-        return this;
-    }
-    
-    public Indication build() {
-        NumericIndication indication = new NumericIndication(this.security, this.classification, this.aggregation, this.duration, this.units);
+    public NumericIndicationListener build() {
+        NumericIndicationListener indication = new NumericIndicationListener(this.security, this.classification, this.aggregation);
         if (this.handler != null) {
             indication.setHandler(this.handler);
         }
