@@ -4,15 +4,13 @@
 
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.technical.NumericIndication;
-import com.zygon.exchange.market.Price;
+import com.zygon.exchange.market.model.indication.technical.Numeric;
+import com.zygon.exchange.market.model.indication.technical.NumericIndicationListener;
 import com.xeiam.xchange.Currencies;
-import com.zygon.exchange.market.model.indication.technical.Aggregation;
-import com.zygon.exchange.market.model.indication.technical.Classification;
+import com.zygon.exchange.market.model.indication.technical.TimeUnits;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
         
 /**
@@ -25,8 +23,8 @@ public class InformationManagerTest {
     public void test() {
     
 //    public static void main(String[] args) {
-        List<Indication> indications = new ArrayList<>();
-        indications.add(new NumericIndication(Currencies.USD, Classification.PRICE, Aggregation.AVG, 1, TimeUnit.SECONDS));
+        List<IndicationListener> indications = new ArrayList<>();
+        indications.add(new NumericIndicationListener(Currencies.USD, Classification.PRICE, new Aggregation(Aggregation.Type.AVG, 1, TimeUnits.SECONDS)));
         
         InformationManager mgmt = new InformationManager("info-mgmt", indications);
         
@@ -34,7 +32,7 @@ public class InformationManagerTest {
         
         for (int i = 0; i < 100; i++) {
             long price = rand.nextInt(50) + 50;
-            Price p = new Price(Currencies.BTC, price, System.currentTimeMillis());
+            Numeric p = new Numeric(Currencies.BTC, Classification.PRICE.getId(), price, System.currentTimeMillis());
             mgmt.handle(p);
         }
     }
