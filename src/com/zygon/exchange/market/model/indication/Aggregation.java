@@ -3,7 +3,7 @@
  */
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.technical.TimeUnits;
+import com.zygon.exchange.market.model.indication.numeric.TimeUnits;
 
 /**
  *
@@ -56,6 +56,6 @@ public class Aggregation {
 
     @Override
     public String toString() {
-        return String.format("[%s][%d %s]", this.getType().name(), this.getDuration(), this.getUnits());
+        return String.format("%s_%d_%s", this.getType().name(), this.getDuration(), this.getUnits());
     }
 }

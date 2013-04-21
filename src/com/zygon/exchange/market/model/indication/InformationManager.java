@@ -4,7 +4,7 @@
 
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.technical.Numeric;
+import com.zygon.exchange.market.model.indication.numeric.Numeric;
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
@@ -12,6 +12,7 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.zygon.exchange.AbstractInformationHandler;
 import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -24,10 +25,9 @@ public final class InformationManager extends AbstractInformationHandler<Object>
     private final Collection<IndicationListener> indications;
     private final EPRuntime runtime;
     
-    private static final Class<Numeric> NUMERIC_CLS = Numeric.class;
     private static final Class<Aggregation> AGGREGATION_CLS = Aggregation.class;
     private static final Class<Aggregation.Type> AGGREGATION_TYPE_CLS = Aggregation.Type.class;
-    private static final Class[] DEFAULT_EVENT_TYPES = {AGGREGATION_CLS, AGGREGATION_TYPE_CLS, NUMERIC_CLS};
+    private static final Class[] DEFAULT_EVENT_TYPES = {AGGREGATION_CLS, AGGREGATION_TYPE_CLS};
     
     public InformationManager(String name, Collection<IndicationListener> indications) {
         super(name);
@@ -41,10 +41,8 @@ public final class InformationManager extends AbstractInformationHandler<Object>
         }
         
         for (IndicationListener ind : this.indications) {
-            cepConfig.addEventType(ind.getReferenceIndication().getClass());
+            cepConfig.addEventType(ind.getEventClazz());
         }
-        
-        cepConfig.addPlugInSingleRowFunction("instance", NUMERIC_CLS.getName(), "instance");
         
         EPServiceProvider cep = EPServiceProviderManager.getProvider(this.getName(), cepConfig);
         

@@ -6,7 +6,7 @@ package com.zygon.exchange.market.data.interpreter;
 
 import com.zygon.exchange.market.data.DataHandler;
 import com.xeiam.xchange.dto.marketdata.Trade;
-import com.zygon.exchange.market.model.indication.technical.Numeric;
+import com.zygon.exchange.market.model.indication.numeric.Numeric;
 import com.zygon.exchange.market.model.indication.Classification;
 
 /**

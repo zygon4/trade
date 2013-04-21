@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication.technical;
+package com.zygon.exchange.market.model.indication.numeric;
 
 import java.util.concurrent.TimeUnit;
 
