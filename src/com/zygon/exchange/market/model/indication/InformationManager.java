@@ -4,7 +4,6 @@
 
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.numeric.Numeric;
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
@@ -12,7 +11,6 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.zygon.exchange.AbstractInformationHandler;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -59,7 +57,6 @@ public final class InformationManager extends AbstractInformationHandler<Object>
     // manager should be able to choose its own path.
     @Override
     public void handle(Object t) {
-        System.out.println("sending event " + t);
         this.runtime.sendEvent(t);
     }
 }
