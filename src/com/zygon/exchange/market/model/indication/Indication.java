@@ -36,21 +36,6 @@ public class Indication {
         return this.timestamp;
     }
 
-    // This type of statement compilation should probably be in a separate
-    // transformer
-    public void getStatement(StringBuilder sb, String label) {
-        sb.append(this.getClass().getSimpleName());
-        sb.append('(');
-        
-        sb.append("tradableIdentifier='").append(this.getTradableIdentifier()).append('\'');
-        sb.append(", id='").append(this.getId()).append('\'');
-        sb.append(')');
-        
-        if (label != null) {
-            sb.append(" as ").append(label);
-        }
-    }
-    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

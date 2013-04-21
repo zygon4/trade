@@ -9,6 +9,8 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.StatementAwareUpdateListener;
 import com.zygon.exchange.AbstractInformationHandler;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -16,30 +18,117 @@ import com.zygon.exchange.AbstractInformationHandler;
  * @author zygon
  */
 
-public abstract class IndicationListener<T extends Indication> extends AbstractInformationHandler<Object> implements StatementAwareUpdateListener {
+public abstract class IndicationListener<T extends Indication> 
+    extends AbstractInformationHandler<Object> implements StatementAwareUpdateListener {
     
-    // how to make a default name??
-//    private static String getName (Classification clazz, Aggregation aggregation, long duration, TimeUnit units) {
-//        return aggregation.getType().name()+"_"+clazz.name()+"_"+duration+"_"+units.toString();
-//    }
+    private final String tradeableIdentifier;
+    private final Classification classification;
+    private final Collection<IndicationListener<? extends Indication>> listeners;
+    private final Class<? extends Indication> primaryEventClazz;
+    private final boolean singleIndication;
+    private String stmt = null;
     
-    protected IndicationListener (String name) {
+    public IndicationListener(String name, String tradeableIdentifier, 
+            Classification classification, Class<? extends Indication> primaryEventClazz, 
+            Collection<IndicationListener<? extends Indication>> listeners) {
         super(name);
+        
+        this.tradeableIdentifier = tradeableIdentifier;
+        this.classification = classification;
+        this.listeners = listeners;
+        this.primaryEventClazz = primaryEventClazz;
+        this.singleIndication = listeners == null || listeners.isEmpty();
     }
     
-    public abstract String getStatement();
+    public IndicationListener (String name, String tradeableIdentifier, 
+            Classification classification, Class<? extends Indication> clazz) {
+        this(name, tradeableIdentifier, classification, clazz, null);
+    }
     
-    public abstract T getReferenceIndication();
+    protected void appendFrom (StringBuilder sb, String clsName, String tradeableIdentifier, String classicationId) {
+        sb.append(clsName);
+        sb.append('(');
+        
+        sb.append("tradableIdentifier='").append(this.tradeableIdentifier).append('\'');
+        sb.append(", id='").append(this.classification.getId()).append('\'');
+        sb.append(')');
+    }
     
-    protected Object translate(String name, Object o) {
-        return o;
+    protected void appendFromStmt (StringBuilder sb, String label) {
+        sb.append("from ");
+        
+        if (this.singleIndication) {
+            appendFrom(sb, this.primaryEventClazz.getSimpleName(), this.getTradeableIdentifier(), this.getClassification().getId());
+            if (label != null) {
+                sb.append(" as ").append(label);
+            }
+        } else {
+            Iterator<IndicationListener<? extends Indication>> iterator = this.listeners.iterator();
+            
+            while (iterator.hasNext()) {
+                IndicationListener<? extends Indication> listener = iterator.next();
+                listener.appendFrom(sb, listener.getEventClazz().getSimpleName(), listener.getTradeableIdentifier(), listener.getClassification().getId());
+                sb.append(" as ").append(listener.getName());
+                
+                if (iterator.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+        }
+    }
+    
+    protected void appendSelectStmt(StringBuilder sb) {
+        if (this.singleIndication) {
+            sb.append("select tradableIdentifier, timestamp");
+        } else {
+            IndicationListener<? extends Indication> primaryListener = this.listeners.iterator().next();
+            sb.append(String.format("select %s.tradableIdentifier, %s.timestamp", 
+                    primaryListener.getName(), primaryListener.getName()));
+        }
+    }
+    
+    protected void createStatement(StringBuilder sb) {
+        this.appendSelectStmt(sb);
+        sb.append(' ');
+        this.appendFromStmt(sb, this.getName());
     }
 
-    protected void newEvent(Object obj) {
-        System.out.println(this.getName() + "[new]: "+ obj);
+    public Classification getClassification() {
+        return classification;
     }
     
-    protected void oldEvent(Object obj) {
+    public String getStatement() {
+        if (stmt == null) {
+            StringBuilder sb = new StringBuilder();
+            createStatement(sb);
+            this.stmt = sb.toString();
+        }
+        
+        return this.stmt;
+    }
+
+    public String getTradeableIdentifier() {
+        return this.tradeableIdentifier;
+    }
+
+    // TBD: will probably need to expose a "getallclasses" method
+    public Class<? extends Indication> getEventClazz() {
+        return this.primaryEventClazz;
+    }
+    
+    /**
+     * Returns a new event to be injected into the Esper runtime, null if no
+     * event is to be injected.
+     * @param obj the latest event.
+     * @return a new event to be injected into the Esper runtime, null if no
+     * event is to be injected.
+     */
+    protected Object processNewEvent(Object obj) {
+        System.out.println(this.getName() + "[new]: "+ obj);
+        return null;
+    }
+    
+    protected void processOldEvent(Object obj) {
         System.out.println(this.getName() + "[old]: "+ obj);
     }
     
@@ -47,9 +136,12 @@ public abstract class IndicationListener<T extends Indication> extends AbstractI
     public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement eps, EPServiceProvider epsp) {
         
 //        for (EventBean event : newEvents) {
-            Object obj = translate(eps.getServiceIsolated(), newEvents[0].getUnderlying());
-//            epsp.getEPRuntime().sendEvent(eps);
-            newEvent(obj);
+            Object obj = newEvents[0].getUnderlying();
+
+            Object newEvent = processNewEvent(obj);
+            if (newEvent != null) {
+                epsp.getEPRuntime().sendEvent(eps);
+            }
 //        }
         
 //        for (EventBean event : oldEvents) {
