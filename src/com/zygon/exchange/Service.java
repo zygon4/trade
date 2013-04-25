@@ -4,6 +4,7 @@
 
 package com.zygon.exchange;
 
+import java.util.Date;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -28,7 +29,7 @@ public class Service implements Daemon {
     
     @Override
     public void init(DaemonContext dc) throws DaemonInitException, Exception {
-        System.out.println("Initializing");
+        System.out.println(new Date(System.currentTimeMillis())+": Initializing");
         
         // TODO: init modules from config
         
@@ -41,20 +42,20 @@ public class Service implements Daemon {
 
     @Override
     public void start() throws Exception {
-       System.out.println("Starting");
+       System.out.println(new Date(System.currentTimeMillis())+": Starting");
        this.kernel.initialize();
        
     }
 
     @Override
     public void stop() throws Exception {
-        System.out.println("Stopping");
+        System.out.println(new Date(System.currentTimeMillis())+": Stopping");
         this.kernel.uninitialize();
     }
 
     @Override
     public void destroy() {
-        System.out.println("Destroying");
+        System.out.println(new Date(System.currentTimeMillis())+": Destroying");
         this.kernel = null;
     }
 }
