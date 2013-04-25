@@ -5,6 +5,7 @@
 package com.zygon.exchange;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
@@ -70,6 +71,7 @@ public class InformationBuffer<T_IN> extends AbstractInformationHandler<T_IN> {
                     new DispatchTask<>(this).run();
                 }
             } else {
+                System.out.println(new Date(System.currentTimeMillis()) + ":" + this.getName()+ " dropped event.");
                 // TBD: mark drop?
             }
         } else {
