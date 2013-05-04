@@ -8,7 +8,10 @@ import com.zygon.exchange.market.model.indication.Classification;
 import com.zygon.exchange.market.model.indication.Aggregation;
 import com.zygon.exchange.market.model.indication.Indication;
 import com.zygon.exchange.market.model.indication.IndicationListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -20,12 +23,53 @@ public class NumericIndicationListener extends IndicationListener<Numeric> {
         public void get(StringBuilder sb);
     }
     
-    /*pkg*/ static final class DefaultValueStatementProvider implements ValueStatementProvider {
+    // This might actually be a horribly inefficient way of aggregrating information
+    private static final class DefaultValueStatementProvider implements ValueStatementProvider {
+    
+        private final NumericIndicationListener[] movingAverages;
+        private final String valueString;
         
+        public DefaultValueStatementProvider(NumericIndicationListener[] movingAverages) {
+            this.movingAverages = movingAverages;
+            
+            if (movingAverages != null) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < this.movingAverages.length; i++) {
+                    sb.append(getListenerValueKey(this.movingAverages[i]));
+                    if (i < this.movingAverages.length - 1) {
+                        sb.append(", ");
+                    }
+                }
+                
+                this.valueString = sb.toString();
+            } else {
+                this.valueString = "value";
+            }
+        }
+        
+        public DefaultValueStatementProvider() {
+            this (null);
+        }
+
         @Override
         public void get(StringBuilder sb) {
-            sb.append("value");
+            sb.append(this.valueString);
         }
+    }
+    
+    private static Collection<IndicationListener<? extends Indication>> get(NumericIndicationListener[] listeners) {
+        List<IndicationListener<? extends Indication>> foo = new ArrayList<>();
+        Collections.addAll(foo, listeners);
+        return foo;
+    }
+    
+    protected static String getListenerValueKey(NumericIndicationListener listener) {
+        return String.format("%s(%s.value)", 
+                listener.getAggregation().getType().getVal(), listener.getName());
+    }
+    
+    protected static String getListenerTimestampKey(NumericIndicationListener listener) {
+        return String.format("%s.timestamp", listener.getName());
     }
     
     private static String getName(Classification clazz, Aggregation aggregation) {
@@ -45,11 +89,11 @@ public class NumericIndicationListener extends IndicationListener<Numeric> {
 
     public NumericIndicationListener(String security, Classification classification, 
             ValueStatementProvider valueStmtProvider, Aggregation aggregation,
-            Collection<IndicationListener<? extends Indication>> listeners) {
+            NumericIndicationListener[] listeners) {
         super (getName(classification, aggregation), 
-                security, classification, Numeric.class, listeners);
+                security, classification, Numeric.class, get(listeners));
         
-        this.valueStmtProvider = valueStmtProvider != null ? valueStmtProvider : new DefaultValueStatementProvider();
+        this.valueStmtProvider = valueStmtProvider != null ? valueStmtProvider : new DefaultValueStatementProvider(listeners);
         this.aggregation = aggregation;
     }
 
