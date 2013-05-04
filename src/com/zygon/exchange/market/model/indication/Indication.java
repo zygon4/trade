@@ -18,6 +18,10 @@ public class Indication {
     private final String id; // price, volume, etc
     private final long timestamp;
 
+    // TBD: timestamp is provided to work with historic data.. we may want to
+    // provide an alternative constructor which doesn't bother or provide a 
+    // setter method.
+    
     public Indication(String tradableIdentifier, String id, long timestamp) {
         this.tradableIdentifier = tradableIdentifier;
         this.id = id;
