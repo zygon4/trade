@@ -40,7 +40,7 @@ public class MACD extends MarketIndication {
     public static enum IndicationType {
         CROSSOVER,
         DIVERGENCE,
-        ZERO_LINE;
+        ZERO_CROSS;
     }
 
     private final IndicationType type;
