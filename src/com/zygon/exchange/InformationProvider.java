@@ -4,6 +4,8 @@
 
 package com.zygon.exchange;
 
+import java.util.Collection;
+
 /**
  *
  * @author zygon
@@ -11,4 +13,6 @@ package com.zygon.exchange;
  */
 public interface InformationProvider<T> {
     public T get();
+    public Collection<T> getHistoric();
+    public boolean hasHistoricInformation();
 }

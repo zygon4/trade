@@ -4,7 +4,9 @@
 
 package com.zygon.exchange;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,14 +32,29 @@ public class ScheduledInformationProcessor {
         public ExecTask(InformationProvider provider, Set<InformationHandler> handlers) {
             this.provider = provider;
             this.handlers = handlers;
-            System.out.println("generating a NEW ExecTask");
         }
 
         @Override
         public void run() {
-            Object val = this.provider.get();
-            for (InformationHandler handler : this.handlers) {
-                handler.handle(val);
+            if (this.provider.hasHistoricInformation()) {
+                Collection historic = this.provider.getHistoric();
+                if (!historic.isEmpty()) {
+                    
+                    System.out.println(new Date(System.currentTimeMillis()) + ": Loading historical data - " + historic.size() + " entries");
+                    
+                    for (Object historicData : historic) {
+                       for (InformationHandler handler : this.handlers) {
+                            handler.handle(historicData);
+                        }
+                    }
+                    
+                    System.out.println(new Date(System.currentTimeMillis()) + ": Done loading historical data");
+                }
+            } else {
+                Object val = this.provider.get();
+                for (InformationHandler handler : this.handlers) {
+                    handler.handle(val);
+                }
             }
         }
     }
