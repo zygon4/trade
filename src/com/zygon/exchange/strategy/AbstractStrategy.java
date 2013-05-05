@@ -22,16 +22,21 @@ public abstract class AbstractStrategy<T_IN extends Indication> implements Strat
         this.log = LoggerFactory.getLogger(this.name);
     }
     
-    protected abstract Response doHandle(T_IN in);
+    protected abstract Advice getAdvice(T_IN in);
+    
+    protected abstract Evidence getEvidence(T_IN in);
+    
+    protected Logger getLog() {
+        return this.log;
+    }
     
     @Override
     public Response handle(T_IN in) {
         this.log.trace("Handling: " + in);
         
-        return this.doHandle(in);
-    }
-
-    protected Logger getLog() {
-        return this.log;
+        Advice advice = this.getAdvice(in);
+        Evidence evidence = this.getEvidence(in);
+        
+        return new Response(advice, evidence);
     }
 }
