@@ -42,6 +42,4 @@ public class MarketIndication extends Indication {
     public final Type getType() {
         return this.type;
     }
-    
-    
 }
