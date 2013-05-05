@@ -13,6 +13,7 @@ import com.zygon.exchange.market.model.indication.Indication;
 public class MarketIndication extends Indication {
 
     public static enum Type {
+        BOLLINGER_BAND("bollinger"),
         MACD ("macd"),
         SUPPORT ("support"),
         RESISTANCE ("resistance"),
