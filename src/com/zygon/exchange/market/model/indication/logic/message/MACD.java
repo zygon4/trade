@@ -54,5 +54,4 @@ public class MACD extends MarketIndication {
     public IndicationType getIndicationType() {
         return this.type;
     }
-    
 }
