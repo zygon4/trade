@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author zygon
  */
-public class NumericIndicationListener extends IndicationListener<Numeric> {
+public class NumericIndicationListener extends IndicationListener<NumericIndication> {
     
     public static interface ValueStatementProvider {
         public void get(StringBuilder sb);
@@ -81,7 +81,7 @@ public class NumericIndicationListener extends IndicationListener<Numeric> {
     
     public NumericIndicationListener (String security, Classification classification, 
             ValueStatementProvider valueStmtProvider, Aggregation aggregation) {
-        super(getName(classification, aggregation), security, classification, Numeric.class);
+        super(getName(classification, aggregation), security, classification, NumericIndication.class);
         
         this.valueStmtProvider = valueStmtProvider != null ? valueStmtProvider : new DefaultValueStatementProvider();
         this.aggregation = aggregation;
@@ -91,7 +91,7 @@ public class NumericIndicationListener extends IndicationListener<Numeric> {
             ValueStatementProvider valueStmtProvider, Aggregation aggregation,
             NumericIndicationListener[] listeners) {
         super (getName(classification, aggregation), 
-                security, classification, Numeric.class, get(listeners));
+                security, classification, NumericIndication.class, get(listeners));
         
         this.valueStmtProvider = valueStmtProvider != null ? valueStmtProvider : new DefaultValueStatementProvider(listeners);
         this.aggregation = aggregation;

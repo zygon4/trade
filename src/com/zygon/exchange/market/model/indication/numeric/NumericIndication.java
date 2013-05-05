@@ -12,19 +12,19 @@ import java.util.Date;
  *
  * @author zygon
  */
-public class Numeric extends Indication {
+public class NumericIndication extends Indication {
     
     // TBD: How to handle other things such as: TransactionCurrency??  Use a map? subclass?
     private final double value;
     private final Aggregation aggregation;
     
-    public Numeric(String tradableIdentifier, String id, long timestamp, double value, Aggregation aggregation) {
+    public NumericIndication(String tradableIdentifier, String id, long timestamp, double value, Aggregation aggregation) {
         super(tradableIdentifier, id, timestamp);
         this.value = value;
         this.aggregation = aggregation;
     }
     
-    public Numeric(String tradableIdentifier, String id, long timestamp, double value) {
+    public NumericIndication(String tradableIdentifier, String id, long timestamp, double value) {
         this (tradableIdentifier, id, timestamp, value, null);
     }
     
