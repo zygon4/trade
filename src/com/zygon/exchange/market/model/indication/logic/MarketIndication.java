@@ -17,6 +17,7 @@ public class MarketIndication extends Indication {
         MACD ("macd"),
         SUPPORT ("support"),
         RESISTANCE ("resistance"),
+        RSI ("rsi"),
         WVAP ("vwap");
     
         private final String id;
