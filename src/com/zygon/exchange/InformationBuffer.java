@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,11 +43,13 @@ public class InformationBuffer<T_IN> extends AbstractInformationHandler<T_IN> {
     
     // Consider using Guava publish/subscribe structure vs a plain queue.
     private final Queue<Object> queue = new ConcurrentLinkedQueue<>();
+    private final Logger log;
     private Collection<InformationHandler<Object>> targets;
     private Executor service;
     
     public InformationBuffer(String name, Collection<InformationHandler<Object>> targets) {
         super(name);
+        this.log = LoggerFactory.getLogger(name);
         this.targets = targets;
     }
     
@@ -71,11 +75,11 @@ public class InformationBuffer<T_IN> extends AbstractInformationHandler<T_IN> {
                     new DispatchTask<>(this).run();
                 }
             } else {
-                System.out.println(new Date(System.currentTimeMillis()) + ":" + this.getName()+ " dropped event.");
+                this.log.warn(new Date(System.currentTimeMillis()) + ":" + this.getName()+ " dropped event");
                 // TBD: mark drop?
             }
         } else {
-            // noone cares.. boo hoo
+            this.log.trace(new Date(System.currentTimeMillis()) + ":" + this.getName()+ " dropped event - no targets");
         }
     }
 
