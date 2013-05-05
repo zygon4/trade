@@ -23,4 +23,9 @@ public class SimpleMarketIndication extends MarketIndication {
     public double getValue() {
         return this.value;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [%s] %d", this.getType().name(), this.getValue());
+    }
 }
