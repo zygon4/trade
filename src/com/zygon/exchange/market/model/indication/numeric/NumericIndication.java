@@ -24,7 +24,6 @@ public class NumericIndication extends Indication {
         super(tradableIdentifier, classification, timestamp);
         this.value = value;
         this.aggregation = aggregation;
-        
     }
     
     public NumericIndication(String tradableIdentifier, Classification classification, long timestamp, double value) {

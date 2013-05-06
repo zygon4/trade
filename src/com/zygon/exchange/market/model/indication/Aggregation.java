@@ -3,7 +3,7 @@
  */
 package com.zygon.exchange.market.model.indication;
 
-import com.zygon.exchange.market.model.indication.numeric.TimeUnits;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -38,8 +38,8 @@ public class Aggregation {
         this.units = units;
     }
     
-    public Aggregation(Type type, long duration, TimeUnits units) {
-        this(type, duration, units.getDesc());
+    public Aggregation(Type type, long duration, TimeUnit units) {
+        this(type, duration, units.name());
     }
     
     public long getDuration() {
