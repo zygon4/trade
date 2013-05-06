@@ -2,8 +2,9 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication.logic;
+package com.zygon.exchange.market.model.indication.market;
 
+import com.zygon.exchange.market.model.indication.Classification;
 import com.zygon.exchange.market.model.indication.Indication;
 
 /**
@@ -13,7 +14,7 @@ import com.zygon.exchange.market.model.indication.Indication;
 public class MarketIndication extends Indication {
 
     public static enum Type {
-        BOLLINGER_BAND("bollinger"),
+        BOLLINGER_BAND ("bollinger"),
         MACD ("macd"),
         SUPPORT ("support"),
         RESISTANCE ("resistance"),
@@ -33,9 +34,9 @@ public class MarketIndication extends Indication {
     
     private final Type type;
     
-    public MarketIndication(String tradableIdentifier, String id, long timestamp, 
+    public MarketIndication(String tradableIdentifier, Classification classification, long timestamp, 
             Type type) {
-        super(tradableIdentifier, id, timestamp);
+        super(tradableIdentifier, classification, timestamp);
         
         this.type = type;
     }

@@ -2,9 +2,10 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication.logic.message;
+package com.zygon.exchange.market.model.indication.market.message;
 
-import com.zygon.exchange.market.model.indication.logic.MarketIndication;
+import com.zygon.exchange.market.model.indication.Classification;
+import com.zygon.exchange.market.model.indication.market.MarketIndication;
 
 /**
  *
@@ -17,8 +18,8 @@ public class BollingerBand extends MarketIndication {
     private final boolean isAboveMovingAverage;
     private final boolean isBelowMovingAverage;
     
-    public BollingerBand(String tradableIdentifier, String id, long timestamp, double movingAverage, double std, int kstd, double price) {
-        super(tradableIdentifier, id, timestamp, Type.BOLLINGER_BAND);
+    public BollingerBand(String tradableIdentifier, long timestamp, double movingAverage, double std, int kstd, double price) {
+        super(tradableIdentifier, Classification.PRICE, timestamp, Type.BOLLINGER_BAND);
         
         double upper = movingAverage + (kstd * std);
         double lower = movingAverage - (kstd * std);

@@ -15,21 +15,22 @@ public class Indication {
     // TBD: How to handle other things such as: TransactionCurrency??  Use a map?
     
     private final String tradableIdentifier; // USD, BTC, etc
-    private final String id; // price, volume, etc
+    private final Classification classification;
     private final long timestamp;
 
     // TBD: timestamp is provided to work with historic data.. we may want to
     // provide an alternative constructor which doesn't bother or provide a 
     // setter method.
     
-    public Indication(String tradableIdentifier, String id, long timestamp) {
+    public Indication(String tradableIdentifier, Classification classification, long timestamp) {
         this.tradableIdentifier = tradableIdentifier;
-        this.id = id;
+        this.classification = classification;
         this.timestamp = timestamp;
     }
     
+    // need to expose the classification?
     public String getId() {
-        return this.id;
+        return this.classification.getId();
     }
     
     public String getTradableIdentifier() {

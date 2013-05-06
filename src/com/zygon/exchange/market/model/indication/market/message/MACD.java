@@ -2,9 +2,10 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication.logic.message;
+package com.zygon.exchange.market.model.indication.market.message;
 
-import com.zygon.exchange.market.model.indication.logic.MarketIndication;
+import com.zygon.exchange.market.model.indication.Classification;
+import com.zygon.exchange.market.model.indication.market.MarketIndication;
 
 /**
  *
@@ -45,8 +46,8 @@ public class MACD extends MarketIndication {
 
     private final IndicationType type;
     
-    public MACD(String tradableIdentifier, String id, long timestamp, IndicationType type) {
-        super(tradableIdentifier, id, timestamp, Type.MACD);
+    public MACD(String tradableIdentifier, long timestamp, IndicationType type) {
+        super(tradableIdentifier, Classification.PRICE, timestamp, Type.MACD);
         
         this.type = type;
     }

@@ -7,7 +7,6 @@ package com.zygon.exchange.market.model.indication.numeric;
 import com.zygon.exchange.market.model.indication.Classification;
 import com.zygon.exchange.market.model.indication.Aggregation;
 import com.zygon.exchange.InformationHandler;
-import com.zygon.exchange.market.model.indication.numeric.NumericIndicationListener.ValueStatementProvider;
 
 /**
  *
@@ -18,7 +17,6 @@ public class NumericIndicationBuilder {
     private final String security;
     private Aggregation aggregation;
     private Classification classification;
-    private ValueStatementProvider valueStmtProvider;
     private InformationHandler<Object> handler;
 
     public NumericIndicationBuilder(String security) {
@@ -40,13 +38,8 @@ public class NumericIndicationBuilder {
         return this;
     }
 
-    public NumericIndicationBuilder set(ValueStatementProvider valueStmtProvider) {
-        this.valueStmtProvider = valueStmtProvider;
-        return this;
-    }
-
     public NumericIndicationListener build() {
-        NumericIndicationListener indication = new NumericIndicationListener(this.security, this.classification, this.valueStmtProvider, this.aggregation);
+        NumericIndicationListener indication = new NumericIndicationListener(this.security, this.classification, this.aggregation);
         if (this.handler != null) {
             indication.setHandler(this.handler);
         }

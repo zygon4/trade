@@ -49,6 +49,5 @@ public interface Strategy<T_IN extends Indication> {
         }
     }
     
-    // keep it simple for now - make a StrategyResponse
-    public Response handle(T_IN in);
+    public Response process(T_IN in);
 }

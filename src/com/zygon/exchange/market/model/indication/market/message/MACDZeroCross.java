@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.exchange.market.model.indication.logic.message;
+package com.zygon.exchange.market.model.indication.market.message;
 
 /**
  *
@@ -12,8 +12,8 @@ public class MACDZeroCross extends MACD {
 
     private final boolean crossAboveZero;
     
-    public MACDZeroCross(String tradableIdentifier, String id, long timestamp, boolean crossAboveZero) {
-        super(tradableIdentifier, id, timestamp, IndicationType.ZERO_CROSS);
+    public MACDZeroCross(String tradableIdentifier, long timestamp, boolean crossAboveZero) {
+        super(tradableIdentifier, timestamp, IndicationType.ZERO_CROSS);
         
         this.crossAboveZero = crossAboveZero;
     }
