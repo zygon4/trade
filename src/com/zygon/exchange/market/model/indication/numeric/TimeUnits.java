@@ -10,7 +10,9 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zygon
  * 
- * pkg for now
+ * 
+ * Is this class used anymore?
+ * 
  */
 public enum TimeUnits {
 
