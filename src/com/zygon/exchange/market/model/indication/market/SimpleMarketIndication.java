@@ -5,7 +5,6 @@
 package com.zygon.exchange.market.model.indication.market;
 
 import com.zygon.exchange.market.model.indication.Classification;
-import com.zygon.exchange.market.model.indication.market.MarketIndication;
 
 /**
  *
