@@ -33,16 +33,16 @@ public class NumericIndicationBuilder {
         return this;
     }
 
-    public NumericIndicationBuilder set(InformationHandler<Object> handler) {
-        this.handler = handler;
-        return this;
-    }
+//    public NumericIndicationBuilder set(InformationHandler<Object> handler) {
+//        this.handler = handler;
+//        return this;
+//    }
 
     public NumericIndicationListener build() {
         NumericIndicationListener indication = new NumericIndicationListener(this.security, this.classification, this.aggregation);
-        if (this.handler != null) {
-            indication.setHandler(this.handler);
-        }
+//        if (this.handler != null) {
+//            indication.setHandler(this.handler);
+//        }
         return indication;
     }
 }
