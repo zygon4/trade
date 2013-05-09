@@ -31,20 +31,20 @@ public final class ExecutionController {
      * OrderBook, handling accounting, etc.
      */
     public static interface Binding {
-        public AccountController getAccountController();
-        public OrderBookProvider getOrderBookProvider();
-        public TradeExecutor getTradeExecutor();
-        public OrderProvider getOrderProvider();
+        public AccountController getAccountController(String id);
+        public OrderBookProvider getOrderBookProvider(String id);
+        public TradeExecutor getTradeExecutor(String id);
+        public OrderProvider getOrderProvider(String id);
     }
     
     private final Map<String, Binding> bindingsByName = new HashMap<>();
     
-    public void cancelOrder (String bindingName, String orderId) {
+    public void cancelOrder (String bindingName, String id, String orderId) {
         Binding binding = getBinding(bindingName);
         
         log.info("Cancel order request for order id " + orderId + " from " + bindingName);
         
-        binding.getTradeExecutor().cancel(orderId);
+        binding.getTradeExecutor(id).cancel(orderId);
     }
     
     private Binding getBinding (String bindingName) {
@@ -61,17 +61,17 @@ public final class ExecutionController {
         return binding;
     }
     
-    public void getOpenOrders(String bindingName, List<Order> orders) {
+    public void getOpenOrders(String bindingName, String id, List<Order> orders) {
         Binding binding = getBinding(bindingName);
-        binding.getOrderBookProvider().getOpenOrders(orders);
+        binding.getOrderBookProvider(id).getOpenOrders(orders);
     }
     
-    public void placeOrder (String bindingName, Order order) {
+    public void placeOrder (String bindingName, String id, Order order) {
         Binding binding = getBinding(bindingName);
         
         log.info("Place order request " + order + " from " + bindingName);
         
-        binding.getTradeExecutor().execute(order);
+        binding.getTradeExecutor(id).execute(order);
     }
     
     public void register (String bindingName, Binding binding) {
