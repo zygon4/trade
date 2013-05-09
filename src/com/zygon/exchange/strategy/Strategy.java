@@ -4,6 +4,7 @@
 
 package com.zygon.exchange.strategy;
 
+import com.google.common.eventbus.Subscribe;
 import com.zygon.exchange.market.model.indication.Indication;
 
 /**
@@ -49,5 +50,6 @@ public interface Strategy<T_IN extends Indication> {
         }
     }
     
+    @Subscribe
     public Response process(T_IN in);
 }
