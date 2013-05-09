@@ -14,6 +14,7 @@ import java.util.concurrent.Executor;
  *
  * @author zygon
  */
+@Deprecated
 public class InformationBuffer<T_IN> extends AbstractInformationHandler<T_IN> {
 
     private static final class DispatchTask<T_IN> implements Runnable {
