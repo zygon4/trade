@@ -49,6 +49,7 @@ public class NumericIndication extends Indication {
         sb.append(this.getId());
         sb.append('[').append(this.getTradableIdentifier()).append(']').append(", ");
         sb.append(this.getValue());
+        sb.append(' ');
         sb.append(new Date(this.getTimestamp()));
         
         return sb.toString();
