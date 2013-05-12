@@ -12,6 +12,10 @@ import com.zygon.exchange.AbstractInformationHandler;
  * The purpose of an IndicationListener is to accept raw data from the lower 
  * layer and transform it into meaningful information.
  * 
+ * This is in shambles right now.. The data layer does transform the data into
+ * indications but they really just hit a wall here.. should "listener" really
+ * be a "processor"?  Does it need to exist at all?
+ * 
  * @author zygon
  */
 public abstract class IndicationListener<T extends Indication> extends AbstractInformationHandler<T> {
