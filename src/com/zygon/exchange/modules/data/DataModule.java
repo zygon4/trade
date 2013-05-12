@@ -11,17 +11,17 @@ import com.zygon.exchange.market.data.DataManager;
  *
  * @author zygon
  */
-public class DataModule<T> extends Module {
+public class DataModule extends Module {
 
-    private final DataManager<T> dataManager;
+    private final DataManager dataManager;
     
-    public DataModule(String name, DataManager<T> dataManager) {
+    public DataModule(String name, DataManager dataManager) {
         super(name);
         
         this.dataManager = dataManager;
     }
 
-    public DataManager<T> getDataManager() {
+    public DataManager getDataManager() {
         return this.dataManager;
     }
     

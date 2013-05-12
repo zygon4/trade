@@ -4,6 +4,7 @@
 
 package com.zygon.exchange.market.model.indication;
 
+import com.google.common.eventbus.Subscribe;
 import com.zygon.exchange.AbstractInformationHandler;
 
 
@@ -25,5 +26,12 @@ public abstract class IndicationListener<T extends Indication> extends AbstractI
     
     public String getTradeableIdentifier() {
         return this.tradeableIdentifier;
+    }
+
+    @Subscribe
+    @Override
+    public void handle(T t) {
+        this.getLog().info("Handling " + t);
+        super.handle(t);
     }
 }

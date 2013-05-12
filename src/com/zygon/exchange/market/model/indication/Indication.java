@@ -4,13 +4,14 @@
 
 package com.zygon.exchange.market.model.indication;
 
+import com.zygon.exchange.market.Message;
 import java.util.Date;
 
 /**
  *
  * @author zygon
  */
-public class Indication {
+public class Indication extends Message {
     
     // TBD: How to handle other things such as: TransactionCurrency??  Use a map?
     

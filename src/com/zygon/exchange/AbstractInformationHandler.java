@@ -27,6 +27,7 @@ public abstract class AbstractInformationHandler<T_IN> implements InformationHan
     
     @Override
     public void handle(T_IN t) {
+        this.log.trace("handling " + t);
         if (this.handler != null) {
             this.handler.handle(t);
         }
