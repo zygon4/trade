@@ -5,7 +5,7 @@
 package com.zygon.exchange.modules.data;
 
 import com.zygon.exchange.Module;
-import com.zygon.exchange.market.data.DataManager;
+import com.zygon.exchange.market.data.DataListener;
 
 /**
  *
@@ -13,16 +13,16 @@ import com.zygon.exchange.market.data.DataManager;
  */
 public class DataModule extends Module {
 
-    private final DataManager dataManager;
+    private final DataListener listener;
     
-    public DataModule(String name, DataManager dataManager) {
+    public DataModule(String name, DataListener dataManager) {
         super(name);
         
-        this.dataManager = dataManager;
+        this.listener = dataManager;
     }
 
-    public DataManager getDataManager() {
-        return this.dataManager;
+    public DataListener getDataManager() {
+        return this.listener;
     }
     
     @Override
@@ -32,11 +32,11 @@ public class DataModule extends Module {
 
     @Override
     public void initialize() {
-        this.dataManager.initalize();
+        this.listener.initalize();
     }
 
     @Override
     public void uninitialize() {
-        this.dataManager.unintialize();
+        this.listener.unintialize();
     }
 }

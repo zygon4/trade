@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author zygon
  * 
  */
-public class DataManager<T_IN> implements InformationHandler<T_IN> {
+public class DataListener<T_IN> implements InformationHandler<T_IN> {
 
     // TODO: make configurable
     private static final int EXEC_THREAD_POOL = 3;
@@ -34,7 +34,7 @@ public class DataManager<T_IN> implements InformationHandler<T_IN> {
     
     private Collection<DataProcessor<T_IN>> dataProcessors;
     
-    public DataManager(String name,
+    public DataListener(String name,
                        DataProvider<T_IN> provider, 
                        Collection<DataProcessor<T_IN>> dataProcessors,
                        InformationHandler<Message> handler) {
@@ -44,7 +44,7 @@ public class DataManager<T_IN> implements InformationHandler<T_IN> {
         this.handler = handler;
     }
     
-    public DataManager(String name,
+    public DataListener(String name,
                        DataProvider<T_IN> provider, 
                        Collection<DataProcessor<T_IN>> dataProcessors) {
         this(name, provider, dataProcessors, null);
