@@ -20,17 +20,12 @@ public class NumericIndicationListener extends IndicationListener<NumericIndicat
     
     private final Aggregation aggregation;
 
-    public NumericIndicationListener(Aggregation aggregation, String tradeableIdentifier, 
-            Classification classification) {
-        super(getName(classification, aggregation), tradeableIdentifier);
+    public NumericIndicationListener(Aggregation aggregation, Classification classification) {
+        super(getName(classification, aggregation));
         
         this.aggregation = aggregation;
     }
     
-    public NumericIndicationListener (String security, Classification classification, Aggregation aggregation) {
-        this(aggregation, security, classification);
-    }
-
     public Aggregation getAggregation() {
         return aggregation;
     }

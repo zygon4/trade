@@ -5,37 +5,32 @@
 package com.zygon.trade.market.model.indication;
 
 import com.google.common.eventbus.Subscribe;
-import com.zygon.trade.AbstractInformationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
- * The purpose of an IndicationListener is to accept raw data from the lower 
- * layer and transform it into meaningful information.
- * 
- * This is in shambles right now.. The data layer does transform the data into
- * indications but they really just hit a wall here.. should "listener" really
- * be a "processor"?  Does it need to exist at all?
+ * The purpose of an IndicationListener is to accept data from the lower 
+ * layer and hand it to the interested parties.
  * 
  * @author zygon
  */
-public abstract class IndicationListener<T extends Indication> extends AbstractInformationHandler<T> {
+public abstract class IndicationListener<T_IN> {
     
-    private final String tradeableIdentifier;
+    private final String name;
+    private final Logger log;
     
-    public IndicationListener(String name, String tradeableIdentifier) {
-        super(name);
-        
-        this.tradeableIdentifier = tradeableIdentifier;
-    }
-    
-    public String getTradeableIdentifier() {
-        return this.tradeableIdentifier;
+    public IndicationListener(String name) {
+        this.name = name;
+        this.log = LoggerFactory.getLogger(this.name);
     }
 
+    public String getName() {
+        return this.name;
+    }
+    
     @Subscribe
-    @Override
-    public void handle(T t) {
-        this.getLog().info("Handling " + t);
-        super.handle(t);
+    public void handle (T_IN in) {
+        this.log.trace("Handling " + in);
     }
 }

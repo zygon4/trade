@@ -14,14 +14,9 @@ import com.zygon.trade.InformationHandler;
  */
 public class NumericIndicationBuilder {
 
-    private final String security;
     private Aggregation aggregation;
     private Classification classification;
     private InformationHandler<Object> handler;
-
-    public NumericIndicationBuilder(String security) {
-        this.security = security;
-    }
 
     public NumericIndicationBuilder set(Aggregation aggregation) {
         this.aggregation = aggregation;
@@ -32,17 +27,9 @@ public class NumericIndicationBuilder {
         this.classification = classification;
         return this;
     }
-
-//    public NumericIndicationBuilder set(InformationHandler<Object> handler) {
-//        this.handler = handler;
-//        return this;
-//    }
-
+    
     public NumericIndicationListener build() {
-        NumericIndicationListener indication = new NumericIndicationListener(this.security, this.classification, this.aggregation);
-//        if (this.handler != null) {
-//            indication.setHandler(this.handler);
-//        }
+        NumericIndicationListener indication = new NumericIndicationListener(this.aggregation, this.classification);
         return indication;
     }
 }
