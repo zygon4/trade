@@ -14,7 +14,8 @@ import java.util.concurrent.TimeUnit;
  * Is this class used anymore?
  * 
  */
-public enum TimeUnits {
+@Deprecated
+enum TimeUnits {
 
     /*
      * year-part : (number|variable_name) ("years" | "year")
