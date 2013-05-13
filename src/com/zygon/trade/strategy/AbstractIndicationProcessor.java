@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public abstract class AbstractStrategy<T_IN extends Indication> implements Strategy<T_IN> {
+public abstract class AbstractIndicationProcessor<T_IN extends Indication> implements IndicationProcessor<T_IN> {
 
     private final String name;
     private final Logger log;
     
-    public AbstractStrategy (String name) {
+    public AbstractIndicationProcessor (String name) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
     }

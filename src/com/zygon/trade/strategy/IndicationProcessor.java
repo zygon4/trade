@@ -11,7 +11,7 @@ import com.zygon.trade.market.model.indication.Indication;
  *
  * @author zygon
  */
-public interface Strategy<T_IN extends Indication> {
+public interface IndicationProcessor<T_IN extends Indication> {
     
     public static enum Advice {
         DO_NOTHING,
