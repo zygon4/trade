@@ -30,6 +30,7 @@ public final class InformationManager extends AbstractInformationHandler<Object>
     
     @Override
     public void handle(Object t) {
+        this.getLog().trace("Handling " + t);
         this.eventBus.post(t);
     }
     
