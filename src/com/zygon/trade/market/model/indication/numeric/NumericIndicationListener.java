@@ -19,14 +19,31 @@ public class NumericIndicationListener extends IndicationListener<NumericIndicat
     }
     
     private final Aggregation aggregation;
-
+    
     public NumericIndicationListener(Aggregation aggregation, Classification classification) {
-        super(getName(classification, aggregation));
+        super(getName(classification, aggregation), classification);
         
         this.aggregation = aggregation;
     }
     
     public Aggregation getAggregation() {
-        return aggregation;
+        return this.aggregation;
+    }
+
+    @Override
+    protected boolean matches(NumericIndication in) {
+        if (super.matches(in)) {
+            if ((this.aggregation == null && in.getAggregation() == null) ||
+                 (this.aggregation != null && this.aggregation.isEqual(in.getAggregation()))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    protected void doHandle(NumericIndication in) {
+        // TODO:
     }
 }

@@ -53,6 +53,18 @@ public class Aggregation {
     public String getUnits() {
         return this.units;
     }
+    
+    public boolean isEqual(Aggregation aggregation) {
+        if (aggregation != null) {
+            if (aggregation.getDuration() == this.getDuration() && 
+                aggregation.getType() == this.getType() && 
+                aggregation.getUnits().equals(this.getUnits())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     @Override
     public String toString() {

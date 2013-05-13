@@ -28,6 +28,10 @@ public class Indication extends Message {
         this.classification = classification;
         this.timestamp = timestamp;
     }
+
+    public Classification getClassification() {
+        return this.classification;
+    }
     
     // need to expose the classification?
     public String getId() {

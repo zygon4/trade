@@ -24,4 +24,12 @@ public enum Classification {
     public String getId() {
         return id;
     }
+
+    public boolean isEqual(Classification clazz) {
+        if (clazz != null) {
+            return this.getId().equals(clazz.getId());
+        }
+        
+        return false;
+    }
 }
