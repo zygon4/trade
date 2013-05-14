@@ -21,12 +21,14 @@ public class IndicationListener<T_IN extends Indication> {
     private final String name;
     private final Logger log;
     private final Classification classification;
+    private final Selector<T_IN> selector;
     private final IndicationProcessor<T_IN> processor;
     
-    public IndicationListener(String name, Classification classification, IndicationProcessor<T_IN> processor) {
+    public IndicationListener(String name, Classification classification, Selector<T_IN> selector, IndicationProcessor<T_IN> processor) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
         this.classification = classification;
+        this.selector = selector;
         this.processor = processor;
     }
 
@@ -38,26 +40,18 @@ public class IndicationListener<T_IN extends Indication> {
         return this.name;
     }
     
-    protected boolean matches(T_IN in) {
-        if ((this.classification == null && in.getClassification() == null) ||
-            (this.classification != null && this.classification.isEqual(in.getClassification()))) {
-            return true;
-        }
-        
-        return false;
-    }
-    
     @Subscribe
     public void handle (T_IN in) {
         this.log.trace("Handling " + in);
         
-        if (this.matches(in)) {
-            this.log.debug("matched");
+        if (this.selector.select(in)) {
             
             if (this.processor != null) {
                 IndicationProcessor.Response response = this.processor.process(in);
                 
                 this.log.debug("Indication Processor response: %s", response);
+            } else {
+                this.log.debug("No processor available to service indication");
             }
         }
     }

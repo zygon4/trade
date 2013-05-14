@@ -5,6 +5,7 @@
 package com.zygon.trade.market.model.indication.market;
 
 import com.zygon.trade.market.model.indication.Classification;
+import com.zygon.trade.market.model.indication.Identifier;
 
 /**
  *
@@ -14,9 +15,8 @@ public class SimpleMarketIndication extends MarketIndication {
 
     private final double value;
 
-    public SimpleMarketIndication(String tradableIdentifier, Classification classification, 
-            long timestamp, Type type, double value) {
-        super(tradableIdentifier, classification, timestamp, type);
+    public SimpleMarketIndication(Identifier id, String tradableIdentifier, Classification classification, long timestamp, double value) {
+        super(id, tradableIdentifier, classification, timestamp);
         
         this.value = value;
     }
@@ -27,6 +27,6 @@ public class SimpleMarketIndication extends MarketIndication {
 
     @Override
     public String toString() {
-        return super.toString() + String.format(" [%s] %d", this.getType().name(), this.getValue());
+        return super.toString() + String.format(" [%s] %d", this.getIdentifier().getID(), this.getValue());
     }
 }

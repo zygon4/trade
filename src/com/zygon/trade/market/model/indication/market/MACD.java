@@ -46,7 +46,7 @@ public class MACD extends MarketIndication {
     private final IndicationType type;
     
     public MACD(String tradableIdentifier, long timestamp, IndicationType type) {
-        super(tradableIdentifier, Classification.PRICE, timestamp, Type.MACD);
+        super(MarketIndication.IDS.MACD, tradableIdentifier, Classification.PRICE, timestamp);
         
         this.type = type;
     }

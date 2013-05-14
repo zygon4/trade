@@ -18,7 +18,7 @@ public class BollingerBand extends MarketIndication {
     private final boolean isBelowMovingAverage;
     
     public BollingerBand(String tradableIdentifier, long timestamp, double movingAverage, double std, int kstd, double price) {
-        super(tradableIdentifier, Classification.PRICE, timestamp, Type.BOLLINGER_BAND);
+        super(MarketIndication.IDS.BOLLINGER_BAND, tradableIdentifier, Classification.PRICE, timestamp);
         
         double upper = movingAverage + (kstd * std);
         double lower = movingAverage - (kstd * std);

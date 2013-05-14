@@ -15,6 +15,7 @@ public class Indication extends Message {
     
     // TBD: How to handle other things such as: TransactionCurrency??  Use a map?
     
+    private final Identifier id;
     private final String tradableIdentifier; // USD, BTC, etc
     private final Classification classification;
     private final long timestamp;
@@ -23,7 +24,8 @@ public class Indication extends Message {
     // provide an alternative constructor which doesn't bother or provide a 
     // setter method.
     
-    public Indication(String tradableIdentifier, Classification classification, long timestamp) {
+    public Indication(Identifier id, String tradableIdentifier, Classification classification, long timestamp) {
+        this.id = id;
         this.tradableIdentifier = tradableIdentifier;
         this.classification = classification;
         this.timestamp = timestamp;
@@ -32,10 +34,9 @@ public class Indication extends Message {
     public Classification getClassification() {
         return this.classification;
     }
-    
-    // need to expose the classification?
-    public String getId() {
-        return this.classification.getId();
+
+    public final Identifier getId() {
+        return this.id;
     }
     
     public String getTradableIdentifier() {

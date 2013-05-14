@@ -32,6 +32,7 @@ public class NumericIndications {
         this.SMA_15_SEC = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -39,6 +40,7 @@ public class NumericIndications {
         this.SMA_5_MIN = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -46,6 +48,7 @@ public class NumericIndications {
         this.SMA_15_MIN = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -53,6 +56,7 @@ public class NumericIndications {
         this.SMA_30_MIN = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -60,6 +64,7 @@ public class NumericIndications {
         this.SMA_60_MIN = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -67,6 +72,7 @@ public class NumericIndications {
         this.SMA_240_MIN = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
         
@@ -74,6 +80,7 @@ public class NumericIndications {
         this.SMA_1_DAY = new NumericIndicationBuilder()
                 .set(aggregation)
                 .set(Classification.PRICE)
+                .setSelector(new NumericIndicationSelector(NumericIndication.IDS.PRICE, aggregation, Classification.PRICE))
                 .set(processor)
                 .build();
     }

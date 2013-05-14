@@ -13,6 +13,6 @@ import com.zygon.trade.market.model.indication.Classification;
 public class Support extends SimpleMarketIndication {
 
     public Support(String tradableIdentifier, long timestamp, double value) {
-        super(tradableIdentifier, Classification.PRICE, timestamp, Type.SUPPORT, value);
+        super(MarketIndication.IDS.SUPPORT, tradableIdentifier, Classification.PRICE, timestamp, value);
     }
 }
