@@ -6,7 +6,7 @@ package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.Aggregation;
-import com.zygon.trade.InformationHandler;
+import com.zygon.trade.strategy.IndicationProcessor;
 
 /**
  *
@@ -16,7 +16,7 @@ public class NumericIndicationBuilder {
 
     private Aggregation aggregation;
     private Classification classification;
-    private InformationHandler<Object> handler;
+    private IndicationProcessor<NumericIndication> handler;
 
     public NumericIndicationBuilder set(Aggregation aggregation) {
         this.aggregation = aggregation;
@@ -28,8 +28,13 @@ public class NumericIndicationBuilder {
         return this;
     }
     
+    public NumericIndicationBuilder set(IndicationProcessor<NumericIndication> handler) {
+        this.handler = handler;
+        return this;
+    }
+    
     public NumericIndicationListener build() {
-        NumericIndicationListener indication = new NumericIndicationListener(this.aggregation, this.classification);
+        NumericIndicationListener indication = new NumericIndicationListener(this.aggregation, this.classification, this.handler);
         return indication;
     }
 }

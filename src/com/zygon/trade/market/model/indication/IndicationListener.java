@@ -5,6 +5,7 @@
 package com.zygon.trade.market.model.indication;
 
 import com.google.common.eventbus.Subscribe;
+import com.zygon.trade.strategy.IndicationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +21,13 @@ public abstract class IndicationListener<T_IN extends Indication> {
     private final String name;
     private final Logger log;
     private final Classification classification;
+    private final IndicationProcessor<T_IN> processor;
     
-    public IndicationListener(String name, Classification classification) {
+    public IndicationListener(String name, Classification classification, IndicationProcessor<T_IN> processor) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
         this.classification = classification;
+        this.processor = processor;
     }
 
     public Classification getClassification() {
@@ -44,15 +47,18 @@ public abstract class IndicationListener<T_IN extends Indication> {
         return false;
     }
     
-    protected abstract void doHandle(T_IN in);
-    
     @Subscribe
     public void handle (T_IN in) {
         this.log.trace("Handling " + in);
         
         if (this.matches(in)) {
             this.log.debug("matched");
-            this.doHandle(in);
+            
+            if (this.processor != null) {
+                IndicationProcessor.Response response = this.processor.process(in);
+                
+                this.log.debug("Indication Processor response: %s", response);
+            }
         }
     }
 }

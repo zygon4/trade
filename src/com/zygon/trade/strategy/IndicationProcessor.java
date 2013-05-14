@@ -48,6 +48,11 @@ public interface IndicationProcessor<T_IN extends Indication> {
         public boolean hasEvidence() {
             return this.evidence != null;
         }
+
+        @Override
+        public String toString() {
+            return String.format("Advice [%s], Evidence [%s]", this.advice.name(), this.evidence.name());
+        }
     }
     
     @Subscribe
