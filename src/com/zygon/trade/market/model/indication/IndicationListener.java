@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author zygon
  */
-public abstract class IndicationListener<T_IN extends Indication> {
+public class IndicationListener<T_IN extends Indication> {
     
     private final String name;
     private final Logger log;
