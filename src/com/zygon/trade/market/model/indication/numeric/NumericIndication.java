@@ -37,9 +37,16 @@ public class NumericIndication extends Indication {
         return this.value;
     }
     
+//    @Override
+//    public String toString() {
+//        return super.toString() + String.format(" [%s] %d", this.getIdentifier().getID(), this.getValue());
+//    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        
+        
         
         if (this.getAggregation() != null) {
             sb.append(this.getAggregation()).append(' ');

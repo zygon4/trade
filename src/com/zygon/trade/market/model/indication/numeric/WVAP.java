@@ -2,17 +2,18 @@
  * 
  */
 
-package com.zygon.trade.market.model.indication.market;
+package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.ID;
 import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.numeric.NumericIndication;
 
 /**
  *
  * @author zygon
  */
-public class WVAP extends SimpleMarketIndication {
+public class WVAP extends NumericIndication {
 
     public static Identifier WVAP = new ID("vwap", Classification.PRICE);
     

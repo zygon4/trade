@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.market.model.indication.market;
+package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.ID;
