@@ -5,7 +5,6 @@
 package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Aggregation;
-import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import java.util.Date;
@@ -19,15 +18,15 @@ public class NumericIndication extends Indication {
     private final double value;
     private final Aggregation aggregation;
     
-    public NumericIndication(Identifier id, String tradableIdentifier, Classification classification, long timestamp, 
+    public NumericIndication(Identifier id, String tradableIdentifier, long timestamp, 
             double value, Aggregation aggregation) {
-        super(id, tradableIdentifier, classification, timestamp);
+        super(id, tradableIdentifier, timestamp);
         this.value = value;
         this.aggregation = aggregation;
     }
     
-    public NumericIndication(Identifier id, String tradableIdentifier, Classification classification, long timestamp, double value) {
-        this (id, tradableIdentifier, classification, timestamp, value, null);
+    public NumericIndication(Identifier id, String tradableIdentifier, long timestamp, double value) {
+        this (id, tradableIdentifier, timestamp, value, null);
     }
     
     public Aggregation getAggregation() {

@@ -4,7 +4,8 @@
 
 package com.zygon.trade.market.model.indication.market;
 
-import com.zygon.trade.market.model.indication.Classification;
+import com.zygon.trade.market.model.indication.ID;
+import com.zygon.trade.market.model.indication.Identifier;
 
 /**
  *
@@ -12,13 +13,15 @@ import com.zygon.trade.market.model.indication.Classification;
  */
 public class BollingerBand extends MarketIndication {
 
+    public static Identifier ID = new ID("bollinger");
+    
     private final boolean isAboveUpperBand;
     private final boolean isBelowLowerBand;
     private final boolean isAboveMovingAverage;
     private final boolean isBelowMovingAverage;
     
     public BollingerBand(String tradableIdentifier, long timestamp, double movingAverage, double std, int kstd, double price) {
-        super(MarketIndication.IDS.BOLLINGER_BAND, tradableIdentifier, Classification.PRICE, timestamp);
+        super(ID, tradableIdentifier, timestamp);
         
         double upper = movingAverage + (kstd * std);
         double lower = movingAverage - (kstd * std);

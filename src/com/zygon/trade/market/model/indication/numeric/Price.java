@@ -18,11 +18,11 @@ public class Price extends NumericIndication {
 
     public static Identifier PRICE = new ID("price", Classification.PRICE, null);
     
-    public Price(String tradableIdentifier, Classification classification, long timestamp, double value, Aggregation aggregation) {
-        super(PRICE, tradableIdentifier, classification, timestamp, value, aggregation);
+    public Price(String tradableIdentifier, long timestamp, double value, Aggregation aggregation) {
+        super(PRICE, tradableIdentifier, timestamp, value, aggregation);
     }
 
     public Price(String tradableIdentifier, long timestamp, double value) {
-        this(tradableIdentifier, Classification.PRICE, timestamp, value, null);
+        this(tradableIdentifier, timestamp, value, null);
     }
 }

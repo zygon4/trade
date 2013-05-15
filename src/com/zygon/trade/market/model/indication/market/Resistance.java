@@ -4,15 +4,19 @@
 
 package com.zygon.trade.market.model.indication.market;
 
-import com.zygon.trade.market.model.indication.Classification;
+import com.zygon.trade.market.model.indication.ID;
+import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.numeric.NumericIndication;
 
 /**
  *
  * @author zygon
  */
-public class Resistance extends SimpleMarketIndication {
+public class Resistance extends NumericIndication {
 
+    public static Identifier RESISTANCE = new ID("resistance");
+    
     public Resistance(String tradableIdentifier, long timestamp, double level) {
-        super(MarketIndication.IDS.RESISTANCE, tradableIdentifier, Classification.PRICE, timestamp, level);
+        super(RESISTANCE, tradableIdentifier, timestamp, level);
     }
 }

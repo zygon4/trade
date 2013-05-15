@@ -19,7 +19,7 @@ public class Volume extends NumericIndication {
     private final String transactionCurrency;
     
     public Volume(String tradableIdentifier, String transactionCurrency, long timestamp, double value) {
-        super(VOLUME, tradableIdentifier, Classification.VOLUME, timestamp, value);
+        super(VOLUME, tradableIdentifier, timestamp, value);
         
         this.transactionCurrency = transactionCurrency;
     }
