@@ -20,23 +20,25 @@ import org.slf4j.LoggerFactory;
 public class Selector<T_IN extends Indication> {
 
     private final Logger log;
-    private final Identifier id;
+    private final Identifier[] ids;
     
-    public Selector(Identifier id) {
+    public Selector(Identifier ...ids) {
         this.log = LoggerFactory.getLogger(Selector.class);
         
-        if (id == null) {
+        if (ids == null) {
             throw new IllegalArgumentException("Arguments cannot be null");
         }
         
-        this.id = id;
+        this.ids = ids;
     }
     
     public boolean select (T_IN input) {
         
-        if (this.id.equals(input.getId())) {
-            this.log.debug(String.format("Input [%s] matched", input));
-            return true;
+        for (Identifier id : this.ids) {
+            if (id.equals(input.getId())) {
+                this.log.debug(String.format("Input [%s] matched ID[%s]", input, id));
+                return true;
+            }
         }
         
         this.log.debug(String.format("Input [%s] did not match", input));
