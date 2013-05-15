@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author zygon
  * 
  * This is a super simple, basic "selector" for filtering out the indications
- * we care about. Currently
+ * we care about.
  * 
  * TODO: statistics..
  * 
