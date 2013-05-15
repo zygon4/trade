@@ -6,7 +6,6 @@ package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Classification;
-import com.zygon.trade.market.model.indication.ID;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import java.util.Date;
@@ -17,13 +16,6 @@ import java.util.Date;
  */
 public class NumericIndication extends Indication {
     
-    public static class IDS {
-        public static Identifier PRICE = new ID("price");
-        public static Identifier SMA = new ID("simple moving average");
-        public static Identifier VOLUME = new ID("volume");
-    }
-    
-    // TBD: How to handle other things such as: TransactionCurrency??  Use a map? subclass?
     private final double value;
     private final Aggregation aggregation;
     
