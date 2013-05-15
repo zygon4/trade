@@ -28,21 +28,37 @@ public class Aggregation {
         private final String val;
     }
     
-    private final Type type;
-    private final long duration;
-    private final String units;
+    public static enum Duration {
+        _1 (1),
+        _4 (4),
+        _5 (5),
+        _15 (15),
+        _30 (30),
+        _60 (60),
+        _24 (24);
+        
+        private int val;
 
-    public Aggregation(Type type, long duration, String units) {
+        private Duration(int val) {
+            this.val = val;
+        }
+
+        public int getVal() {
+            return this.val;
+        }
+    }
+    
+    private final Type type;
+    private final Duration duration;
+    private final TimeUnit units;
+
+    public Aggregation(Type type, Duration duration, TimeUnit units) {
         this.type = type;
         this.duration = duration;
         this.units = units;
     }
     
-    public Aggregation(Type type, long duration, TimeUnit units) {
-        this(type, duration, units.name());
-    }
-    
-    public long getDuration() {
+    public Duration getDuration() {
         return this.duration;
     }
 
@@ -50,7 +66,7 @@ public class Aggregation {
         return type;
     }
 
-    public String getUnits() {
+    public TimeUnit getUnits() {
         return this.units;
     }
     
@@ -58,7 +74,7 @@ public class Aggregation {
         if (aggregation != null) {
             if (aggregation.getDuration() == this.getDuration() && 
                 aggregation.getType() == this.getType() && 
-                aggregation.getUnits().equals(this.getUnits())) {
+                aggregation.getUnits() == this.getUnits()) {
                 return true;
             }
         }
@@ -68,6 +84,6 @@ public class Aggregation {
 
     @Override
     public String toString() {
-        return String.format("%s_%d_%s", this.getType().name(), this.getDuration(), this.getUnits());
+        return String.format("%s_%d_%s", this.getType().name(), this.getDuration(), this.getUnits().name());
     }
 }

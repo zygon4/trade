@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class DataListener<T_IN> implements InformationHandler<T_IN> {
 
     // TODO: make configurable
-    private static final int EXEC_THREAD_POOL = 3;
+    private static final int EXEC_THREAD_POOL = Runtime.getRuntime().availableProcessors() - 1;
     
     private final Logger log;
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
@@ -68,11 +68,6 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
         }
     }
 
-    @Override
-    public void setHandler(InformationHandler<T_IN> handler) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
     public void setInfoHandler(InformationHandler<Message> handler) {
         this.handler = handler;
     }

@@ -13,8 +13,4 @@ package com.zygon.trade;
  */
 public interface InformationHandler<T> {
     public void handle (T t);
-    
-    // this should stay package scoped and a builder should be used to call this ONLY
-    @Deprecated
-    /*pkg*/ void setHandler(InformationHandler<T> handler);
 }

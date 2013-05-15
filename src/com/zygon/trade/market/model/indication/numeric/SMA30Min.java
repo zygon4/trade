@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class SMA30Min extends SimpleMovingAverage {
 
-    public static Identifier SMA_30_MIN = new ID("simple moving average", Classification.PRICE, new Aggregation(Aggregation.Type.AVG, 30, TimeUnit.MINUTES));
+    public static Identifier ID = new ID("SMA30Min", Classification.PRICE, new Aggregation(Aggregation.Type.AVG, Aggregation.Duration._30, TimeUnit.MINUTES));
     
     public SMA30Min(String tradableIdentifier, long timestamp, double value) {
-        super(SMA_30_MIN, tradableIdentifier, timestamp, value);
+        super(ID, tradableIdentifier, timestamp, value);
     }
 
     

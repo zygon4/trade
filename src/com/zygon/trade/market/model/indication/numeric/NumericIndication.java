@@ -4,10 +4,8 @@
 
 package com.zygon.trade.market.model.indication.numeric;
 
-import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
-import java.util.Date;
 
 /**
  *
@@ -16,47 +14,23 @@ import java.util.Date;
 public class NumericIndication extends Indication {
     
     private final double value;
-    private final Aggregation aggregation;
-    
-    public NumericIndication(Identifier id, String tradableIdentifier, long timestamp, 
-            double value, Aggregation aggregation) {
-        super(id, tradableIdentifier, timestamp);
-        this.value = value;
-        this.aggregation = aggregation;
-    }
     
     public NumericIndication(Identifier id, String tradableIdentifier, long timestamp, double value) {
-        this (id, tradableIdentifier, timestamp, value, null);
-    }
-    
-    public Aggregation getAggregation() {
-        return this.aggregation;
+        super(id, tradableIdentifier, timestamp);
+        this.value = value;
     }
     
     public double getValue() {
         return this.value;
     }
     
-//    @Override
-//    public String toString() {
-//        return super.toString() + String.format(" [%s] %d", this.getIdentifier().getID(), this.getValue());
-//    }
-    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         
-        
-        
-        if (this.getAggregation() != null) {
-            sb.append(this.getAggregation()).append(' ');
-        }
-        
-        sb.append(this.getId());
-        sb.append('[').append(this.getTradableIdentifier()).append(']').append(", ");
-        sb.append(this.getValue());
+        sb.append(super.toString());
         sb.append(' ');
-        sb.append(new Date(this.getTimestamp()));
+        sb.append(this.getValue());
         
         return sb.toString();
     }

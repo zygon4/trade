@@ -6,6 +6,7 @@ package com.zygon.trade.market.data;
 
 import com.zygon.trade.market.Message;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class DataProcessor<T_IN> {
      * form.  This could be time based aggregation, filtering, etc.
      */
     public static interface Interpreter<T_IN> {
-        public Message interpret(T_IN data);
+        public Message[] interpret(T_IN data);
     }
     
     private final Logger log;
@@ -37,16 +38,16 @@ public class DataProcessor<T_IN> {
     
     public Collection<Message> process(T_IN t) {
         
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<>();
         
         if (this.translators != null) {
             
             // TODO: use CompletionService for async processing
             
             for (Interpreter<T_IN> trans : this.translators) {
-                Message translated = trans.interpret(t);
+                Message[] translated = trans.interpret(t);
                 if (translated != null) {
-                    messages.add(translated);
+                    messages.addAll(Arrays.asList(translated));
                 }
             }
         } else {
