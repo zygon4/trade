@@ -4,6 +4,7 @@
 
 package com.zygon.trade.market.model.indication.market;
 
+import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.ID;
 import com.zygon.trade.market.model.indication.Identifier;
 
@@ -38,7 +39,7 @@ import com.zygon.trade.market.model.indication.Identifier;
  */
 public class MACD extends MarketIndication {
 
-    public static Identifier ID = new ID("macd");
+    public static Identifier ID = new ID("macd", Classification.PRICE);
     
     public static enum IndicationType {
         CROSSOVER,

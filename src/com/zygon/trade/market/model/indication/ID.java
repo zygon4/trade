@@ -29,10 +29,10 @@ public class ID implements Identifier {
         this.aggregation = aggregation;
     }
 
-    public ID(String id) {
-        this(id, null, null);
+    public ID(String id, Classification classification) {
+        this(id, classification, null);
     }
-
+    
     @Override
     public boolean equals(Identifier id) {
         if (id != null) {

@@ -4,6 +4,7 @@
 
 package com.zygon.trade.market.model.indication.market;
 
+import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.ID;
 import com.zygon.trade.market.model.indication.Identifier;
 
@@ -13,7 +14,7 @@ import com.zygon.trade.market.model.indication.Identifier;
  */
 public class BollingerBand extends MarketIndication {
 
-    public static Identifier ID = new ID("bollinger");
+    public static Identifier ID = new ID("bollinger", Classification.PRICE);
     
     private final boolean isAboveUpperBand;
     private final boolean isBelowLowerBand;
