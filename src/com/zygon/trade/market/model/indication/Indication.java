@@ -22,6 +22,9 @@ public class Indication extends Message {
     // setter method.
     
     public Indication(Identifier id, String tradableIdentifier, long timestamp) {
+        if (id == null || tradableIdentifier == null) {
+            throw new IllegalArgumentException("No null arguments permitted");
+        }
         this.id = id;
         this.tradableIdentifier = tradableIdentifier;
         this.timestamp = timestamp;
