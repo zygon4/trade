@@ -33,15 +33,17 @@ public class ID implements Identifier {
         this(id, classification, null);
     }
     
+    // TODO: there's probably bugs in here..
     @Override
     public boolean equals(Identifier id) {
         if (id != null) {
             if (this.getID().equals(id.getID()) && this.classification == id.getClassification()) {
                 
-                // TODO: finish
-//                if (this.aggregation != null) {
-//                    if (id )
-//                }
+                if ((this.aggregation == null && id.getAggregation() == null) ||
+                    (this.aggregation != null && this.aggregation.isEqual(id.getAggregation()))) {
+                    return true;
+                }
+                
                 return true;
             }
         }

@@ -20,20 +20,14 @@ public class IndicationListener<T_IN extends Indication> {
     
     private final String name;
     private final Logger log;
-    private final Classification classification;
     private final Selector<T_IN> selector;
     private final IndicationProcessor<T_IN> processor;
     
-    public IndicationListener(String name, Classification classification, Selector<T_IN> selector, IndicationProcessor<T_IN> processor) {
+    public IndicationListener(String name, Selector<T_IN> selector, IndicationProcessor<T_IN> processor) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
-        this.classification = classification;
         this.selector = selector;
         this.processor = processor;
-    }
-
-    public Classification getClassification() {
-        return this.classification;
     }
 
     public String getName() {
