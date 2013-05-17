@@ -53,7 +53,7 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
     @Override
     public void handle(T_IN t) {
         
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<>();
         
         for (DataProcessor<T_IN> proc : this.dataProcessors) {
             messages.addAll(proc.process(t));
