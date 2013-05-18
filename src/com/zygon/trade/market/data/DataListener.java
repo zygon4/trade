@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class DataListener<T_IN> implements InformationHandler<T_IN> {
 
     // TODO: make configurable
-    private static final int EXEC_THREAD_POOL = Runtime.getRuntime().availableProcessors() - 1;
+    private static final int EXEC_THREAD_POOL = 1; //Runtime.getRuntime().availableProcessors() - 1;
     
     private final Logger log;
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
