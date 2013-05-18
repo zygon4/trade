@@ -11,5 +11,6 @@ package com.zygon.trade.execution;
  * @author zygon
  */
 public class MarketConditions {
-
+    // current price?
+    // evidence? (bull, bear, etc)
 }

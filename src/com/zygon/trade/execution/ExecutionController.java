@@ -5,7 +5,7 @@
 package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.Order;
-import com.zygon.trade.management.AccountController;
+import com.zygon.trade.execution.management.AccountController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,9 @@ public final class ExecutionController {
         public OrderProvider getOrderProvider(String id);
     }
     
+    // TODO: Seriously consider killing this registration BS in favor
+    // of just letting someone come in with a Binding and trust the 
+    // controller (this) to drive it for the caller.
     private final Map<String, Binding> bindingsByName = new HashMap<>();
     
     public void cancelOrder (String bindingName, String id, String orderId) {
