@@ -49,11 +49,11 @@ public class IndicationListener<T_IN extends Indication> {
                 if (this.response != null) {
                     if (!this.response.isEquals(response)) {
                         this.response = response;
-                        this.log.info("Indication Processor response: " + this.response);
+                        this.log.debug("Indication Processor response: " + this.response);
                     }
                 } else {
                     this.response = response;
-                    this.log.info("Indication Processor response: " + this.response);
+                    this.log.debug("Indication Processor response: " + this.response);
                 }
                 
             } else {
