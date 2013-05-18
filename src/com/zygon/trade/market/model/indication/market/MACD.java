@@ -42,7 +42,7 @@ public class MACD extends MarketIndication {
     public static Identifier ID = new ID("macd", Classification.PRICE);
     
     public static enum IndicationType {
-        CROSSOVER,
+        SIGNAL_CROSS,
         DIVERGENCE,
         ZERO_CROSS;
     }
