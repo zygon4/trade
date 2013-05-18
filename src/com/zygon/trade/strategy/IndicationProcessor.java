@@ -10,6 +10,8 @@ import com.zygon.trade.market.model.indication.Indication;
 /**
  *
  * @author zygon
+ * 
+ * TBD: make a class and implement InformationHandler?
  */
 public interface IndicationProcessor<T_IN extends Indication> {
     
@@ -79,5 +81,5 @@ public interface IndicationProcessor<T_IN extends Indication> {
     }
     
     @Subscribe
-    public Response process(T_IN in);
+    public void process(T_IN in);
 }

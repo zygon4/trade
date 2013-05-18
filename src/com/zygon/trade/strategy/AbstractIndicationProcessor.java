@@ -30,13 +30,26 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
         return this.log;
     }
     
+    // This may be dangerous..
+    private volatile IndicationProcessor.Response response = null;
+    
     @Override
-    public Response process(T_IN in) {
+    public void process(T_IN in) {
         this.log.trace("Handling: " + in);
         
         Advice advice = this.getAdvice(in);
         Evidence evidence = this.getEvidence(in);
         
-        return new Response(advice, evidence);
+        Response response = new Response(advice, evidence);
+        
+        if (this.response != null) {
+            if (!this.response.isEquals(response)) {
+                this.response = response;
+                this.log.info("Indication Processor response: " + this.response);
+            }
+        } else {
+            this.response = response;
+            this.log.info("Indication Processor response: " + this.response);
+        }
     }
 }

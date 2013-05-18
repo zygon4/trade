@@ -34,9 +34,6 @@ public class IndicationListener<T_IN extends Indication> {
         return this.name;
     }
     
-    // This may be dangerous..
-    private volatile IndicationProcessor.Response response = null;
-    
     @Subscribe
     public void handle (T_IN in) {
         this.log.trace("Handling " + in);
@@ -44,18 +41,7 @@ public class IndicationListener<T_IN extends Indication> {
         if (this.selector.select(in)) {
             
             if (this.processor != null) {
-                IndicationProcessor.Response response = this.processor.process(in);
-                
-                if (this.response != null) {
-                    if (!this.response.isEquals(response)) {
-                        this.response = response;
-                        this.log.debug("Indication Processor response: " + this.response);
-                    }
-                } else {
-                    this.response = response;
-                    this.log.debug("Indication Processor response: " + this.response);
-                }
-                
+                this.processor.process(in);
             } else {
                 this.log.debug("No processor available to service indication");
             }
