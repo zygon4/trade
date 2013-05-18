@@ -21,7 +21,9 @@ public interface IndicationProcessor<T_IN extends Indication> {
     
     public static enum Evidence {
         BEAR,
-        BULL;
+        BULL,
+        STABLE,
+        VOLATILE;
     }
     
     public static class Response {
@@ -31,6 +33,25 @@ public interface IndicationProcessor<T_IN extends Indication> {
         public Response(Advice advice, Evidence evidence) {
             this.advice = advice;
             this.evidence = evidence;
+        }
+        
+        public boolean isEquals (Response resp) {
+            
+            boolean adviceEqual = false;
+            if (this.getAdvice() != null) {
+                adviceEqual = resp.getAdvice() != null && this.getAdvice() == resp.getAdvice();
+            } else {
+                adviceEqual = resp.getAdvice() == null;
+            }
+            
+            boolean evidenceEqual = false;
+            if (this.getEvidence() != null) {
+                evidenceEqual = resp.getEvidence() != null && this.getEvidence() == resp.getEvidence();
+            } else {
+                evidenceEqual = resp.getEvidence() == null;
+            }
+            
+            return adviceEqual && evidenceEqual;
         }
         
         public Advice getAdvice() {
@@ -51,7 +72,9 @@ public interface IndicationProcessor<T_IN extends Indication> {
 
         @Override
         public String toString() {
-            return String.format("Advice [%s], Evidence [%s]", this.advice.name(), this.evidence.name());
+            return String.format("Advice [%s], Evidence [%s]", 
+                    this.advice != null ? this.advice.name() : "none", 
+                    this.evidence != null ? this.evidence.name() : "none");
         }
     }
     
