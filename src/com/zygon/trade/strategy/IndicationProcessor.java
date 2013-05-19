@@ -11,7 +11,6 @@ import com.zygon.trade.market.model.indication.Indication;
  *
  * @author zygon
  * 
- * TBD: make a class and implement InformationHandler?
  */
 public interface IndicationProcessor<T_IN extends Indication> {
     
