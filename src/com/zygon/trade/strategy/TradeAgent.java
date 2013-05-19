@@ -51,7 +51,7 @@ public class TradeAgent {
         
         this.id = id;
         this.execController = execController;
-        this.executor.scheduleAtFixedRate(new TradeTask(), 1, 1, TimeUnit.MINUTES);
+        this.executor.scheduleAtFixedRate(new TradeTask(), 30, 30, TimeUnit.SECONDS);
     }
 
     protected final ExecutionController getExecController() {
