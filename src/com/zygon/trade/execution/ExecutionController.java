@@ -6,9 +6,8 @@ package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.management.AccountController;
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +20,6 @@ public final class ExecutionController {
     // make instance based?
     private static final Logger log = LoggerFactory.getLogger(ExecutionController.class);
     
-    // This wants to have a mapping of execution objects to an id of some kind.
-    // The purpose being that someone can register new bindings and then
-    // it is ready to process orders/transactions from that id.
-    
     /**
      * This represents everything the controller needs to manipulate an order
      * from placing it, monitoring it, canceling it, updating the proper
@@ -36,67 +31,39 @@ public final class ExecutionController {
         public TradeExecutor getTradeExecutor(String id);
         public OrderProvider getOrderProvider(String id);
     }
-    
-    // TODO: Seriously consider killing this registration BS in favor
-    // of just letting someone come in with a Binding and trust the 
-    // controller (this) to drive it for the caller.
-    private final Map<String, Binding> bindingsByName = new HashMap<>();
-    
-    public void cancelOrder (String bindingName, String id, String orderId) {
-        Binding binding = getBinding(bindingName);
-        
-        log.info("Cancel order request for order id " + orderId + " from " + bindingName);
-        
-        binding.getTradeExecutor(id).cancel(orderId);
-    }
-    
-    private Binding getBinding (String bindingName) {
-        Binding binding;
-        
-        synchronized (this.bindingsByName) {
-            binding = this.bindingsByName.get(bindingName);
-        }
-        
-        if (binding == null) {
-            throw new IllegalArgumentException("No binding for " + bindingName + " registered");
-        }
-        
-        return binding;
-    }
-    
-    public void getOpenOrders(String bindingName, String id, List<Order> orders) {
-        Binding binding = getBinding(bindingName);
-        binding.getOrderBookProvider(id).getOpenOrders(orders);
-    }
-    
-    public void placeOrder (String bindingName, String id, Order order) {
-        Binding binding = getBinding(bindingName);
-        
-        log.info("Place order request " + order + " from " + bindingName);
-        
-        binding.getTradeExecutor(id).execute(order);
-    }
-    
-    public void register (String bindingName, Binding binding) {
-        
-        if (binding == null) {
-            throw new IllegalArgumentException("Binding cannot be null");
-        }
-        
-        synchronized (this.bindingsByName) {
-            if (bindingsByName.containsKey(bindingName)) {
-                throw new IllegalArgumentException("Binding for " + bindingName + " is already registered");
-            }
 
-            this.bindingsByName.put(bindingName, binding);
-        }
+    private final String currency;
+    private final Binding binding;
+
+    public ExecutionController(String currency, Binding binding) {
+        this.currency = currency;
+        this.binding = binding;
     }
     
-    public void unregister (String bindingName) {
-        synchronized (this.bindingsByName) {
-            if (this.bindingsByName.remove(bindingName) == null) {
-                throw new IllegalArgumentException("No binding for " + bindingName + " registered");
-            }
-        }
+    public void cancelOrder (String id, String orderId) {
+        log.info("Cancel order request for order id " + orderId);
+        
+        this.binding.getTradeExecutor(id).cancel(orderId);
+    }
+
+    public String getCurrency() {
+        return this.currency;
+    }
+    
+    public void getOpenOrders(String id, List<Order> orders) {
+        // could trace
+        this.binding.getOrderBookProvider(id).getOpenOrders(orders);
+    }
+    
+    public Order generateOrder(String id, Order.OrderType type, 
+            BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
+        // could trace
+        return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
+    }
+    
+    public void placeOrder (String id, Order order) {
+        log.info("Place order request " + order);
+        
+        this.binding.getTradeExecutor(id).execute(order);
     }
 }

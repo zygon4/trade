@@ -16,10 +16,12 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
 
     private final String name;
     private final Logger log;
+    private final TradeAgent agent;
     
-    public AbstractIndicationProcessor (String name) {
+    public AbstractIndicationProcessor (String name, TradeAgent agent) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
+        this.agent = agent;
     }
     
     protected abstract Advice getAdvice(T_IN in);
@@ -42,14 +44,20 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
         
         Response response = new Response(advice, evidence);
         
+        boolean newIndication = false;
+        
         if (this.response != null) {
             if (!this.response.isEquals(response)) {
                 this.response = response;
-                this.log.info("Indication Processor response: " + this.response);
+                newIndication = true;
             }
         } else {
             this.response = response;
-            this.log.info("Indication Processor response: " + this.response);
+            newIndication = true;
+        }
+        
+        if (newIndication) {
+            this.agent.handle(response);
         }
     }
 }

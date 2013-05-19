@@ -12,6 +12,5 @@ import java.math.BigDecimal;
  * @author zygon
  */
 public interface OrderProvider {
-    public com.xeiam.xchange.dto.Order get(MarketConditions conditions, Order.OrderType type, 
-            BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency);
+    public com.xeiam.xchange.dto.Order get(Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency);
 }

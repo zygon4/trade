@@ -9,7 +9,6 @@ import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExecutionController;
-import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.OrderBookProvider;
 import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
@@ -57,7 +56,7 @@ public class SimulationBinding implements ExecutionController.Binding {
     private static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
-        public Order get(MarketConditions conditions, Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
+        public Order get(Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
             Order order = new MarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
             
             return order;
