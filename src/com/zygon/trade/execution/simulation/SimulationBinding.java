@@ -9,6 +9,7 @@ import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExecutionController;
+import com.zygon.trade.execution.MarketConditionsProvider;
 import com.zygon.trade.execution.OrderBookProvider;
 import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
@@ -80,13 +81,15 @@ public class SimulationBinding implements ExecutionController.Binding {
     
     private final String user;
     private final AccountController accntController;
+    private final MarketConditionsProvider marketConditionsProvider;
     private final OrderBookProvider orderBookProvider;
     private final OrderProvider orderProvider;
     private final TradeExecutor tradeExecutor;
 
-    public SimulationBinding(String user, CurrencyUnit currency, double ammount) {
+    public SimulationBinding(String user, CurrencyUnit currency, double ammount, MarketConditionsProvider marketConditionsProvider) {
         this.user = user;
         this.accntController = new SimulationAccountController(this.user, currency, ammount);
+        this.marketConditionsProvider = marketConditionsProvider;
         this.orderBookProvider = new SimulationOrderBookProvider();
         this.orderProvider = new SimulationOrderProvider();
         this.tradeExecutor = new SimulationTradeExecutor();
@@ -95,6 +98,11 @@ public class SimulationBinding implements ExecutionController.Binding {
     @Override
     public AccountController getAccountController(String id) {
         return this.accntController;
+    }
+
+    @Override
+    public MarketConditionsProvider getMarketConditionsProvider(String id) {
+        return this.marketConditionsProvider;
     }
 
     @Override

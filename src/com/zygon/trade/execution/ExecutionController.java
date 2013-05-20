@@ -27,6 +27,7 @@ public final class ExecutionController {
      */
     public static interface Binding {
         public AccountController getAccountController(String id);
+        public MarketConditionsProvider getMarketConditionsProvider(String id);
         public OrderBookProvider getOrderBookProvider(String id);
         public TradeExecutor getTradeExecutor(String id);
         public OrderProvider getOrderProvider(String id);
