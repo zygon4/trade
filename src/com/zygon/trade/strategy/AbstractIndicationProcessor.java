@@ -57,7 +57,9 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
         }
         
         if (newIndication) {
-            this.agent.handle(response);
+            if (this.agent != null) {
+                this.agent.handle(response);
+            }
         }
     }
 }

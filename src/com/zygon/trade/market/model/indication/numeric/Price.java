@@ -17,7 +17,15 @@ public class Price extends NumericIndication {
 
     public static Identifier PRICE = new ID("price", Classification.PRICE, null);
     
-    public Price(String tradableIdentifier, long timestamp, double value) {
+    private final String currency;
+    
+    public Price(String tradableIdentifier, long timestamp, double value, String currency) {
         super(PRICE, tradableIdentifier, timestamp, value);
+        
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
     }
 }
