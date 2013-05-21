@@ -27,6 +27,7 @@ public interface IndicationProcessor<T_IN extends Indication> {
         VOLATILE;
     }
     
+    // TODO: rename
     public static class Response {
         public final Advice advice;
         public final Evidence evidence;
