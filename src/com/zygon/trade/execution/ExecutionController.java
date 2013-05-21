@@ -7,6 +7,7 @@ package com.zygon.trade.execution;
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.management.AccountController;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,8 @@ public final class ExecutionController {
     }
     
     public void cancelOrder (String id, String orderId) {
-        log.info("Cancel order request for order id " + orderId);
+        // TODO: log impl with timestamps
+        log.info("{} Cancel order request for order id ", new Date(), orderId);
         
         this.binding.getTradeExecutor(id).cancel(orderId);
     }
@@ -59,11 +61,15 @@ public final class ExecutionController {
     public Order generateOrder(String id, Order.OrderType type, 
             BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
         // could trace
+        if (tradableAmount == null) {
+            tradableAmount = this.binding.getMarketConditionsProvider(id).get().getPrice();
+        }
         return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
     
     public void placeOrder (String id, Order order) {
-        log.info("Place order request " + order);
+        // TODO: log impl with timestamps
+        log.info("{} Place order request {}", new Date(), order);
         
         this.binding.getTradeExecutor(id).execute(order);
     }
