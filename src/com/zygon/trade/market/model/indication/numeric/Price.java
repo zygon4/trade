@@ -15,12 +15,12 @@ import com.zygon.trade.market.model.indication.Identifier;
  */
 public class Price extends NumericIndication {
 
-    public static Identifier PRICE = new ID("price", Classification.PRICE, null);
+    public static Identifier ID = new ID("price", Classification.PRICE, null);
     
     private final String currency;
     
     public Price(String tradableIdentifier, long timestamp, double value, String currency) {
-        super(PRICE, tradableIdentifier, timestamp, value);
+        super(ID, tradableIdentifier, timestamp, value);
         
         this.currency = currency;
     }

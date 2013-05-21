@@ -53,6 +53,10 @@ public final class ExecutionController {
         return this.currency;
     }
     
+    public BigDecimal getMarketPrice(String id) {
+        return this.binding.getMarketConditionsProvider(id).get().getPrice();
+    }
+    
     public void getOpenOrders(String id, List<Order> orders) {
         // could trace
         this.binding.getOrderBookProvider(id).getOpenOrders(orders);
@@ -62,7 +66,7 @@ public final class ExecutionController {
             BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
         // could trace
         if (tradableAmount == null) {
-            tradableAmount = this.binding.getMarketConditionsProvider(id).get().getPrice();
+            tradableAmount = this.getMarketPrice(id);
         }
         return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }

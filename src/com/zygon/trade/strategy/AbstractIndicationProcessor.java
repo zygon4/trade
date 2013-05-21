@@ -16,12 +16,12 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
 
     private final String name;
     private final Logger log;
-    private final TradeAgent agent;
+    private final TradingFloor tradeFloor;
     
-    public AbstractIndicationProcessor (String name, TradeAgent agent) {
+    public AbstractIndicationProcessor (String name, TradingFloor agent) {
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
-        this.agent = agent;
+        this.tradeFloor = agent;
     }
     
     protected abstract Advice getAdvice(T_IN in);
@@ -57,8 +57,8 @@ public abstract class AbstractIndicationProcessor<T_IN extends Indication> imple
         }
         
         if (newIndication) {
-            if (this.agent != null) {
-                this.agent.handle(response);
+            if (this.tradeFloor != null) {
+                this.tradeFloor.handle(response);
             }
         }
     }
