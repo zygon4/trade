@@ -12,5 +12,8 @@ import java.math.BigDecimal;
  * @author zygon
  */
 public interface OrderProvider {
+    // TODO: limit order
+    
+    // TODO: rename to "getMarketOrder"
     public com.xeiam.xchange.dto.Order get(Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency);
 }
