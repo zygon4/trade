@@ -12,6 +12,7 @@ import com.zygon.trade.market.model.indication.Indication;
  * @author zygon
  * 
  */
+@Deprecated
 public interface IndicationProcessor<T_IN extends Indication> {
     
     public static enum Advice {
