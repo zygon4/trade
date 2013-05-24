@@ -5,6 +5,8 @@
 package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.Order;
+import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.management.AccountController;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The heart of the trade engine. It uses an internal "binding" to execute
+ * operations.
  *
  * @author zygon
+ * @version 1.0
  */
 public final class ExecutionController {
 
@@ -34,23 +39,23 @@ public final class ExecutionController {
         public OrderProvider getOrderProvider(String id);
     }
 
-    private final String currency;
+    private final String transactionCurrency;
     private final Binding binding;
 
-    public ExecutionController(String currency, Binding binding) {
-        this.currency = currency;
+    public ExecutionController(String transactionCurrency, Binding binding) {
+        this.transactionCurrency = transactionCurrency;
         this.binding = binding;
     }
     
-    public void cancelOrder (String id, String orderId) {
+    public void cancelOrder (String id, String orderId) throws ExchangeException {
         // TODO: log impl with timestamps
-        log.info("{} Cancel order request for order id ", new Date(), orderId);
+        log.info("{} Cancel order request for order id {}", new Date(), orderId);
         
         this.binding.getTradeExecutor(id).cancel(orderId);
     }
 
-    public String getCurrency() {
-        return this.currency;
+    public String getTransactionCurrency() {
+        return this.transactionCurrency;
     }
     
     public BigDecimal getMarketPrice(String id) {
@@ -71,10 +76,36 @@ public final class ExecutionController {
         return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
     
-    public void placeOrder (String id, Order order) {
+    private Wallet getWallet(String id, String currency) {
+        AccountInfo accountInfo = this.binding.getAccountController(id).getAccountInfo();
+        
+        // user name of the account??
+        for (Wallet wallet : accountInfo.getWallets()) {
+            if (wallet.getCurrency().equals(currency)) {
+                return wallet;
+            }
+        }
+        
+        return null;
+    }
+    
+    public BigDecimal getBalance(String id, String currency) {
+        Wallet wallet = this.getWallet(id, currency);
+        
+        if (wallet != null) {
+            return wallet.getBalance().getAmount();
+        }
+        
+        return null;
+    }
+    
+    public void placeOrder (String id, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);
         
+        // For now let the order fail if there is not enough funds, etc.
         this.binding.getTradeExecutor(id).execute(order);
+        
+        // TBD: post-trade operations?
     }
 }

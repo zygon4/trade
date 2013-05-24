@@ -31,16 +31,56 @@ public class SimulationBinding implements ExecutionController.Binding {
     
     private static final class SimulationAccountController implements AccountController {
 
-        private final AccountInfo accntInfo;
+        private final String user;
+        private final CurrencyUnit currency;
+        private double ammount = 0.0;
+        
+        private double high = 0.0;
+        private double low = 0.0;
         
         public SimulationAccountController(String user, CurrencyUnit currency, double ammount) {
-            accntInfo = new AccountInfo(user, Arrays.asList(new Wallet(currency.getCurrencyCode(), BigMoney.of(currency, ammount))));
+            this.user = user;
+            this.currency = currency;
+            this.ammount = ammount;
+            this.high = this.ammount;
+            this.low = this.ammount;
         }
         
+        public synchronized void add(BigDecimal ammount, CurrencyUnit currency) {
+            if (!this.currency.equals(currency)) {
+                // the scope of the simulation has gone beyond what it is currently intended.
+                throw new IllegalArgumentException();
+            }
+            
+            this.ammount += ammount.doubleValue();
+            this.high = Math.max(this.high, this.ammount);
+        }
+        
+        public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) {
+            if (!this.currency.equals(currency)) {
+                // the scope of the simulation has gone beyond what it is currently intended.
+                throw new IllegalArgumentException();
+            }
+            
+            this.ammount -= ammount.doubleValue();
+            this.low = Math.min(this.low, this.ammount);
+        }
         
         @Override
         public AccountInfo getAccountInfo() {
-            return this.accntInfo;
+            return new AccountInfo(this.user, Arrays.asList(new Wallet(this.currency.getCurrencyCode(), BigMoney.of(this.currency, this.ammount))));
+        }
+
+        public double getBalance() {
+            return this.ammount;
+        }
+        
+        public double getMaxDrawDown() {
+            return this.low;
+        }
+        
+        public double getMaxProfit() {
+            return this.high;
         }
     }
     
@@ -68,19 +108,41 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
         
+        private final SimulationAccountController accntController;
+        private final MarketConditionsProvider marketConditionsProvider;
+
+        public SimulationTradeExecutor(SimulationAccountController accntController, MarketConditionsProvider marketConditionsProvider) {
+            this.accntController = accntController;
+            this.marketConditionsProvider = marketConditionsProvider;
+        }
+        
         @Override
         public void cancel(String orderId) {
-            this.log.info("Cancelling orderId: " + orderId);
+            this.log.info("Cancelling orderId: {}", orderId);
         }
 
         @Override
         public void execute(Order order) {
-            this.log.info("Executing order: " + order);
+            BigDecimal marketPrice = this.marketConditionsProvider.get().getPrice();
+            
+            this.log.info("Executing order: {} at price {}", order, marketPrice);
+            
+            // Because this is a market order we're just estimating what the market price might be.
+            BigDecimal ammount = order.getTradableAmount().multiply(marketPrice);
+            
+            if (order.getType() == Order.OrderType.BID) {
+                this.accntController.subtract(ammount, CurrencyUnit.of(order.getTransactionCurrency()));
+            } else {
+                this.accntController.add(ammount, CurrencyUnit.of(order.getTransactionCurrency()));
+            }
+            
+            this.log.info("Account balance {}, high {}, low {}", 
+                    this.accntController.getBalance(), this.accntController.getMaxProfit(), this.accntController.getMaxDrawDown());
         }
     }
     
     private final String user;
-    private final AccountController accntController;
+    private final SimulationAccountController accntController;
     private final MarketConditionsProvider marketConditionsProvider;
     private final OrderBookProvider orderBookProvider;
     private final OrderProvider orderProvider;
@@ -92,7 +154,7 @@ public class SimulationBinding implements ExecutionController.Binding {
         this.marketConditionsProvider = marketConditionsProvider;
         this.orderBookProvider = new SimulationOrderBookProvider();
         this.orderProvider = new SimulationOrderProvider();
-        this.tradeExecutor = new SimulationTradeExecutor();
+        this.tradeExecutor = new SimulationTradeExecutor(this.accntController, this.marketConditionsProvider);
     }
     
     @Override

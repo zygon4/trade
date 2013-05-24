@@ -41,6 +41,5 @@ public class TradingFloor {
         for (TradeAgent trader : this.traders) {
             trader.generateNewTrades();
         }
-        
     }
 }

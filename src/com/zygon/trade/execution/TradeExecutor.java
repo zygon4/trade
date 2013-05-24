@@ -11,6 +11,6 @@ package com.zygon.trade.execution;
  * @author zygon
  */
 public interface TradeExecutor {
-    public void cancel(String orderId);
-    public void execute(com.xeiam.xchange.dto.Order order);
+    public void cancel(String orderId) throws ExchangeException;
+    public void execute(com.xeiam.xchange.dto.Order order) throws ExchangeException;
 }
