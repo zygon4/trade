@@ -6,6 +6,7 @@ package com.zygon.trade.market.model.indication.numeric;
 
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
+import java.math.BigDecimal;
 
 /**
  *
@@ -33,5 +34,9 @@ public class NumericIndication extends Indication {
         sb.append(this.getValue());
         
         return sb.toString();
+    }
+    
+    public BigDecimal value() {
+        return new BigDecimal(this.getValue());
     }
 }
