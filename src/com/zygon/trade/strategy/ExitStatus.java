@@ -8,6 +8,7 @@ package com.zygon.trade.strategy;
  *
  * @author zygon
  */
+@Deprecated
 public class ExitStatus {
     
     public static enum ExitReason {
