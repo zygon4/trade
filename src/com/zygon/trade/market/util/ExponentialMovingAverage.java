@@ -11,7 +11,7 @@ package com.zygon.trade.market.util;
 public class ExponentialMovingAverage extends MovingAverage {
 
     private final double alpha;
-    private volatile Double lastValue = -1.0;
+    private volatile Double lastValue = null;
     
     public ExponentialMovingAverage(int maxValues) {
         super(maxValues);
