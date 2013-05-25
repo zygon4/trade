@@ -28,6 +28,7 @@ public final class Trade {
     
     private final Logger logger = LoggerFactory.getLogger(Trade.class);
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
+    private final TradeSummary tradeSummary = new TradeSummary();
     
     private final MarketConditions marketConditions;
     private final TradeImpl impl;
@@ -107,6 +108,12 @@ public final class Trade {
             this.exitTimestamp = System.currentTimeMillis();
             this.tradeState = TradeState.CLOSED;
             
+            if (this.closingProfit >= 0.0) {
+                this.tradeSummary.addProfitableTrade();
+            } else {
+                this.tradeSummary.addLoosingTrade();
+            }
+            
             this.logger.info("Closed at {}", new Date(this.exitTimestamp));
         } catch (ExchangeException ee) {
             this.logger.error("Caught exception while closing", ee);
@@ -133,6 +140,10 @@ public final class Trade {
         }
         
         return state;
+    }
+
+    public TradeSummary getTradeSummary() {
+        return this.tradeSummary;
     }
     
     /**
