@@ -8,7 +8,6 @@ import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.management.AccountController;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
@@ -33,7 +32,6 @@ public final class ExecutionController {
      */
     public static interface Binding {
         public AccountController getAccountController(String id);
-        public MarketConditionsProvider getMarketConditionsProvider(String id);
         public OrderBookProvider getOrderBookProvider(String id);
         public TradeExecutor getTradeExecutor(String id);
         public OrderProvider getOrderProvider(String id);
@@ -58,21 +56,13 @@ public final class ExecutionController {
         return this.transactionCurrency;
     }
     
-    public BigDecimal getMarketPrice(String id) {
-        return this.binding.getMarketConditionsProvider(id).get().getPrice();
-    }
-    
     public void getOpenOrders(String id, List<Order> orders) {
         // could trace
         this.binding.getOrderBookProvider(id).getOpenOrders(orders);
     }
     
     public Order generateOrder(String id, Order.OrderType type, 
-            BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        // could trace
-        if (tradableAmount == null) {
-            tradableAmount = this.getMarketPrice(id);
-        }
+            double tradableAmount, String tradableIdentifier, String transactionCurrency) {
         return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
     
@@ -89,14 +79,16 @@ public final class ExecutionController {
         return null;
     }
     
-    public BigDecimal getBalance(String id, String currency) {
+    public double getBalance(String id, String currency) {
         Wallet wallet = this.getWallet(id, currency);
         
-        if (wallet != null) {
-            return wallet.getBalance().getAmount();
+        if (wallet == null) {
+            // TBD: open an account on the fly with 0 monies?
+            
+            throw new IllegalStateException("No wallet of currency " + currency + " found");
         }
         
-        return null;
+        return wallet.getBalance().getAmount().doubleValue();
     }
     
     public void placeOrder (String id, Order order) throws ExchangeException {

@@ -5,7 +5,6 @@
 package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.Order;
-import java.math.BigDecimal;
 
 /**
  *
@@ -15,5 +14,5 @@ public interface OrderProvider {
     // TODO: limit order
     
     // TODO: rename to "getMarketOrder"
-    public com.xeiam.xchange.dto.Order get(Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency);
+    public com.xeiam.xchange.dto.Order get(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency);
 }

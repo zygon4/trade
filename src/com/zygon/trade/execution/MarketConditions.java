@@ -4,35 +4,46 @@
 
 package com.zygon.trade.execution;
 
-import java.math.BigDecimal;
+import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.Indication;
+import com.zygon.trade.market.model.indication.numeric.Price;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
- * Just a pojo for now with some properties.
  * 
  * @author zygon
  */
 public final class MarketConditions {
     
+    private final Map<Identifier, Indication> indicationsByIdentifier = new HashMap<>();
+    
+    // would rather not have to worry about the tradeableidentifier at this leve
+    // but rather just store/retrieve whatever the users want.
     private final String tradeableIdentifier;
-    private final BigDecimal price;
-    private final String currency;
-
-    public MarketConditions(String tradeableIdentifier, BigDecimal price, String currency) {
+    
+    public MarketConditions(String tradeableIdentifier) {
         this.tradeableIdentifier = tradeableIdentifier;
-        this.price = price;
-        this.currency = currency;
     }
 
-    public String getCurrency() {
-        return this.currency;
+    public Price getPrice() {
+        return (Price)this.getIndication(Price.ID);
     }
     
-    public BigDecimal getPrice() {
-        return this.price;
+    public synchronized Indication getIndication(Identifier id) {
+        return this.indicationsByIdentifier.get(id);
     }
 
     public String getTradeableIdentifier() {
         return this.tradeableIdentifier;
+    }
+    
+    public synchronized void putIndication(Indication indication) {
+        if (!indication.getTradableIdentifier().equals(this.tradeableIdentifier)) {
+            throw new IllegalArgumentException("Invalid");
+        }
+        
+        this.indicationsByIdentifier.put(indication.getId(), indication);
     }
 }

@@ -35,12 +35,10 @@ public class InformationModule extends Module {
     @Override
     public void initialize() {
         this.dataModule.initialize();
-        this.infoMgmt.initialize();
     }
 
     @Override
     public void uninitialize() {
-        this.infoMgmt.uninitialize();
         this.dataModule.uninitialize();
     }
 }

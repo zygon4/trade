@@ -9,7 +9,7 @@ import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExecutionController;
-import com.zygon.trade.execution.MarketConditionsProvider;
+import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.OrderBookProvider;
 import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
@@ -97,8 +97,8 @@ public class SimulationBinding implements ExecutionController.Binding {
     private static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
-        public Order get(Order.OrderType type, BigDecimal tradableAmount, String tradableIdentifier, String transactionCurrency) {
-            Order order = new MarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        public Order get(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
+            Order order = new MarketOrder(type, new BigDecimal(tradableAmount), tradableIdentifier, transactionCurrency);
             
             return order;
         }
@@ -109,11 +109,11 @@ public class SimulationBinding implements ExecutionController.Binding {
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
         
         private final SimulationAccountController accntController;
-        private final MarketConditionsProvider marketConditionsProvider;
+        private final MarketConditions marketConditions;
 
-        public SimulationTradeExecutor(SimulationAccountController accntController, MarketConditionsProvider marketConditionsProvider) {
+        public SimulationTradeExecutor(SimulationAccountController accntController, MarketConditions marketConditions) {
             this.accntController = accntController;
-            this.marketConditionsProvider = marketConditionsProvider;
+            this.marketConditions = marketConditions;
         }
         
         @Override
@@ -123,7 +123,7 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         @Override
         public void execute(Order order) {
-            BigDecimal marketPrice = this.marketConditionsProvider.get().getPrice();
+            BigDecimal marketPrice = this.marketConditions.getPrice().value();
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
             
@@ -143,28 +143,23 @@ public class SimulationBinding implements ExecutionController.Binding {
     
     private final String user;
     private final SimulationAccountController accntController;
-    private final MarketConditionsProvider marketConditionsProvider;
+    private final MarketConditions marketConditions;
     private final OrderBookProvider orderBookProvider;
     private final OrderProvider orderProvider;
     private final TradeExecutor tradeExecutor;
 
-    public SimulationBinding(String user, CurrencyUnit currency, double ammount, MarketConditionsProvider marketConditionsProvider) {
+    public SimulationBinding(String user, CurrencyUnit currency, double ammount, MarketConditions marketConditions) {
         this.user = user;
         this.accntController = new SimulationAccountController(this.user, currency, ammount);
-        this.marketConditionsProvider = marketConditionsProvider;
+        this.marketConditions = marketConditions;
         this.orderBookProvider = new SimulationOrderBookProvider();
         this.orderProvider = new SimulationOrderProvider();
-        this.tradeExecutor = new SimulationTradeExecutor(this.accntController, this.marketConditionsProvider);
+        this.tradeExecutor = new SimulationTradeExecutor(this.accntController, this.marketConditions);
     }
     
     @Override
     public AccountController getAccountController(String id) {
         return this.accntController;
-    }
-
-    @Override
-    public MarketConditionsProvider getMarketConditionsProvider(String id) {
-        return this.marketConditionsProvider;
     }
 
     @Override
