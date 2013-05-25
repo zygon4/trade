@@ -66,8 +66,11 @@ public class TradeAgent {
                         this.tradeSummary.addLoosingTrade();
                     }
                     
-                    this.logger.info("{}/{} win ratio", this.tradeSummary.getProfitableTrades(), 
-                            this.tradeSummary.getLoosingTrades() + this.tradeSummary.getProfitableTrades());
+                    float winners = this.tradeSummary.getProfitableTrades();
+                    float loosers = this.tradeSummary.getLoosingTrades();
+                    float pc = (winners/(winners + loosers)) * 100;
+                    
+                    this.logger.info("{}/{}: {}% win ratio", winners, winners + loosers, pc);
                     
                     break;
             }
