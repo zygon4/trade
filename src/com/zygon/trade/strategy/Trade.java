@@ -81,7 +81,7 @@ public final class Trade {
         return this.impl.meetsExitConditions(marketConditions);
     }
     
-    private final void checkState(TradeState desiredState) {
+    private void checkState(TradeState desiredState) {
         this.tradeStateLock.readLock().lock();
         try {
             if (this.tradeState != desiredState) {
