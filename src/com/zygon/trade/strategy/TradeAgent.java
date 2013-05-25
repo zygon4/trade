@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class TradeAgent2 {
+public class TradeAgent {
 
-    private final Logger logger = LoggerFactory.getLogger(TradeAgent2.class);
-    private final Collection<Trade2> trades;
+    private final Logger logger = LoggerFactory.getLogger(TradeAgent.class);
+    private final Collection<Trade> trades;
     private final TradeSummary tradeSummary = new TradeSummary();
 
-    public TradeAgent2(Collection<Trade2> trades) {
+    public TradeAgent(Collection<Trade> trades) {
         this.trades = trades;
     }
     
@@ -31,7 +31,7 @@ public class TradeAgent2 {
         this.logger.debug("Managing trades");
         
         
-        for (Trade2 trade : this.trades) {
+        for (Trade trade : this.trades) {
             switch (trade.getTradeState()) {
                 case ACTIVE:
                     if (trade.canClose()) {

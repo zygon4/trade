@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author zygon
  * @version 1.0
  */
-public final class Trade2 {
+public final class Trade {
 
     // This tenatively/cautiously ordinal in terms of trade progression.
     public static enum TradeState {
@@ -26,7 +26,7 @@ public final class Trade2 {
         CLOSED
     }
     
-    private final Logger logger = LoggerFactory.getLogger(Trade2.class);
+    private final Logger logger = LoggerFactory.getLogger(Trade.class);
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
     
     private final MarketConditions marketConditions;
@@ -37,7 +37,7 @@ public final class Trade2 {
     private long exitTimestamp;
     private double closingProfit;
 
-    public Trade2(MarketConditions marketConditions, TradeImpl helper) {
+    public Trade(MarketConditions marketConditions, TradeImpl helper) {
         this.marketConditions = marketConditions;
         this.impl = helper;
     }
