@@ -122,6 +122,10 @@ public final class Trade {
         }
     }
     
+    public String getDisplayIdentifier() {
+        return this.impl.getDisplayIdentifier();
+    }
+    
     public final TradeMonitor getMonitor() {
         checkState(TradeState.ACTIVE);
         return this.impl.getTradeMonitor();

@@ -20,6 +20,7 @@ public interface TradeImpl {
      * @return the profit (or loss) after the final closing.
      */
     public double close(MarketConditions marketConditions) throws ExchangeException;
+    public String getDisplayIdentifier();
     public TradeMonitor getTradeMonitor();
     public boolean meetsEntryConditions(MarketConditions marketConditions);
     public boolean meetsExitConditions(MarketConditions marketConditions);
