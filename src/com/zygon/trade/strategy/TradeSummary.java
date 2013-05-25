@@ -43,4 +43,12 @@ public class TradeSummary {
     public int getProfitableTrades() {
         return this.profitableTrades;
     }
+    
+    public String getSummaryStmt() {
+        float winners = getProfitableTrades();
+        float loosers = getLoosingTrades();
+        float pc = (winners/(winners + loosers)) * 100;
+
+        return String.format("%f/%f: %f%% win ratio", winners, winners + loosers, pc);
+    }
 }
