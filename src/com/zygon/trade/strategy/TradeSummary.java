@@ -51,4 +51,9 @@ public class TradeSummary {
 
         return String.format("%f/%f: %f%% win ratio", winners, winners + loosers, pc);
     }
+
+    @Override
+    public String toString() {
+        return this.getSummaryStmt();
+    }
 }
