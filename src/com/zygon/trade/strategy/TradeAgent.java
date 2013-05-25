@@ -30,7 +30,6 @@ public class TradeAgent {
     public void manageTrades() {
         this.logger.debug("Managing trades");
         
-        
         for (Trade trade : this.trades) {
             switch (trade.getTradeState()) {
                 case ACTIVE:
@@ -59,6 +58,7 @@ public class TradeAgent {
                             );
                     
                     this.logger.info("Trade lasted {} with a profit/loss of {}", durationDisplay, profit);
+                    this.logger.info("Trade {}: {}", trade.getDisplayIdentifier(), trade.getTradeSummary().getSummaryStmt());
                     
                     if (profit >= 0.0) {
                         this.tradeSummary.addProfitableTrade();
@@ -66,11 +66,7 @@ public class TradeAgent {
                         this.tradeSummary.addLoosingTrade();
                     }
                     
-                    float winners = this.tradeSummary.getProfitableTrades();
-                    float loosers = this.tradeSummary.getLoosingTrades();
-                    float pc = (winners/(winners + loosers)) * 100;
-                    
-                    this.logger.info("{}/{}: {}% win ratio", winners, winners + loosers, pc);
+                    this.logger.info("Overall: {}", this.tradeSummary.getSummaryStmt());
                     
                     break;
             }
