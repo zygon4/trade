@@ -16,6 +16,9 @@ public class BollingerBand extends MarketIndication {
 
     public static Identifier ID = new ID("bollinger", Classification.PRICE);
     
+    private final double upperBand;
+    private final double lowerBand;
+    
     private final boolean isAboveUpperBand;
     private final boolean isBelowLowerBand;
     private final boolean isAboveMovingAverage;
@@ -25,17 +28,25 @@ public class BollingerBand extends MarketIndication {
     public BollingerBand(String tradableIdentifier, long timestamp, double movingAverage, double std, int kstd, double price) {
         super(ID, tradableIdentifier, timestamp);
         
-        double upper = movingAverage + (kstd * std);
-        double lower = movingAverage - (kstd * std);
+        this.upperBand = movingAverage + (kstd * std);
+        this.lowerBand = movingAverage - (kstd * std);
         
-        this.isAboveUpperBand = price > upper;
-        this.isBelowLowerBand = price < lower;
+        this.isAboveUpperBand = price > this.upperBand;
+        this.isBelowLowerBand = price < this.lowerBand;
         
         this.isAboveMovingAverage = price > movingAverage;
         this.isBelowMovingAverage = price < movingAverage;
         
         this.isNearMovingAverage = (!this.isAboveUpperBand && !this.isBelowLowerBand) &&
                                    (price <= (movingAverage + std) || price >= (movingAverage - std));
+    }
+
+    public double getUpperBand() {
+        return this.upperBand;
+    }
+
+    public double getLowerBand() {
+        return this.lowerBand;
     }
 
     public boolean isIsAboveMovingAverage() {
