@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SimulationBinding implements ExecutionController.Binding {
     
+    private static final double EXCHANGE_FEE = 0.60;
+    
     private static final class SimulationAccountController implements AccountController {
 
         private final String user;
@@ -126,6 +128,8 @@ public class SimulationBinding implements ExecutionController.Binding {
             BigDecimal marketPrice = this.marketConditions.getPrice().value();
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
+            
+            // TODO: subtract exchange fee
             
             // Because this is a market order we're just estimating what the market price might be.
             BigDecimal ammount = order.getTradableAmount().multiply(marketPrice);
