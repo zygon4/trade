@@ -15,6 +15,19 @@ public class TradeSummary {
     private int profitableTrades = 0;
     private int loosingTrades = 0;
     
+    public void add(TradeSummary summary) {
+        this.addProfitableTrades(summary.getProfitableTrades());
+        this.addLoosingTrades(summary.getLoosingTrades());
+    }
+    
+    private synchronized void addProfitableTrades(int trades) {
+        this.profitableTrades += trades;
+    }
+    
+    private synchronized void addLoosingTrades(int trades) {
+        this.loosingTrades += trades;
+    }
+    
     public synchronized void addProfitableTrade() {
         this.profitableTrades++;
     }
