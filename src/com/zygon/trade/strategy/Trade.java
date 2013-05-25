@@ -154,8 +154,6 @@ public final class Trade {
             
             this.logger.debug("Reset at {}", new Date(this.exitTimestamp));
             
-            
-            
             return postMortem;
         } finally {
             writeLock.unlock();
