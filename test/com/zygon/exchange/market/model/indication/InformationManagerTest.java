@@ -6,11 +6,9 @@ package com.zygon.exchange.market.model.indication;
 
 import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Classification;
-import com.zygon.trade.market.model.indication.IndicationListener;
 import com.zygon.trade.market.model.indication.InformationManager;
 import com.zygon.trade.market.model.indication.numeric.NumericIndication;
 import com.xeiam.xchange.Currencies;
-import com.zygon.trade.market.model.indication.Selector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
