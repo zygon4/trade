@@ -8,7 +8,7 @@ import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.InformationManager;
 import com.zygon.trade.market.model.indication.numeric.NumericIndication;
-import com.xeiam.xchange.Currencies;
+import com.xeiam.xchange.currency.Currencies;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

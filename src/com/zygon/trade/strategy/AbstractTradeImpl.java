@@ -4,7 +4,7 @@
 
 package com.zygon.trade.strategy;
 
-import com.xeiam.xchange.Currencies;
+import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.ExecutionController;
