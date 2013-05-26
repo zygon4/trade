@@ -20,7 +20,7 @@ import static com.zygon.trade.strategy.TradeType.SHORT;
 public abstract class AbstractTradeImpl implements TradeImpl {
 
     // TODO: configurable
-    private static final double TRADE_RISK_PERCENTAGE   = 0.10; // 10 percent for now to keep things interesting while testing
+    private static final double TRADE_RISK_PERCENTAGE   = 0.02;
     
     protected double getTradeVolume(double accntBalance, double currentPrice) {
         return (accntBalance * TRADE_RISK_PERCENTAGE) / currentPrice;
