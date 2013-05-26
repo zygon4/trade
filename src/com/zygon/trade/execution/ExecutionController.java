@@ -7,7 +7,6 @@ package com.zygon.trade.execution;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
-import com.zygon.trade.execution.management.AccountController;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;

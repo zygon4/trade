@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.execution.management;
+package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.account.AccountInfo;
 
