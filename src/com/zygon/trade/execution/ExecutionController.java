@@ -91,6 +91,7 @@ public final class ExecutionController {
         return wallet.getBalance().getAmount().doubleValue();
     }
     
+    // TODO: return string
     public void placeOrder (String id, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);
