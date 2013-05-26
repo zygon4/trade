@@ -6,6 +6,7 @@ package com.zygon.trade.execution.simulation;
 
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExecutionController;
@@ -88,10 +89,10 @@ public class SimulationBinding implements ExecutionController.Binding {
     
     private static final class SimulationOrderBookProvider implements OrderBookProvider {
 
-        private final List<Order> orders = new ArrayList<>();
+        private final List<LimitOrder> orders = new ArrayList<>();
         
         @Override
-        public void getOpenOrders(List<Order> orders) {
+        public void getOpenOrders(List<LimitOrder> orders) {
             orders.addAll(this.orders);
         }
     }
@@ -99,10 +100,13 @@ public class SimulationBinding implements ExecutionController.Binding {
     private static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
-        public Order get(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-            Order order = new MarketOrder(type, new BigDecimal(tradableAmount), tradableIdentifier, transactionCurrency);
-            
-            return order;
+        public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
+            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, BigMoney.of(CurrencyUnit.USD, limitPrice));
+        }
+
+        @Override
+        public MarketOrder getMarketOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
+            return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency);
         }
     }
     
@@ -124,7 +128,7 @@ public class SimulationBinding implements ExecutionController.Binding {
         }
 
         @Override
-        public void execute(Order order) {
+        public String execute(Order order) {
             BigDecimal marketPrice = this.marketConditions.getPrice().value();
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
@@ -142,6 +146,8 @@ public class SimulationBinding implements ExecutionController.Binding {
             
             this.log.info("Account balance {}, high {}, low {}", 
                     this.accntController.getBalance(), this.accntController.getMaxProfit(), this.accntController.getMaxDrawDown());
+            
+            return "orderid";
         }
     }
     

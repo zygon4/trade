@@ -6,6 +6,7 @@ package com.zygon.trade.execution;
 
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import java.util.Date;
 import java.util.List;
@@ -55,14 +56,14 @@ public final class ExecutionController {
         return this.transactionCurrency;
     }
     
-    public void getOpenOrders(String id, List<Order> orders) {
+    public void getOpenOrders(String id, List<LimitOrder> orders) {
         // could trace
         this.binding.getOrderBookProvider(id).getOpenOrders(orders);
     }
     
     public Order generateOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return this.binding.getOrderProvider(id).get(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        return this.binding.getOrderProvider(id).getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
     
     private Wallet getWallet(String id, String currency) {

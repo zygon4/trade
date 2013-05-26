@@ -4,13 +4,19 @@
 
 package com.zygon.trade.execution;
 
+import com.xeiam.xchange.dto.Order;
+
 /**
- *
- * Should this be a generic order type?
  * 
  * @author zygon
  */
 public interface TradeExecutor {
     public void cancel(String orderId) throws ExchangeException;
-    public void execute(com.xeiam.xchange.dto.Order order) throws ExchangeException;
+    /**
+     * Returns a orderID.
+     * @param order the order to execute.
+     * @return a orderID.
+     * @throws ExchangeException 
+     */
+    public String execute(Order order) throws ExchangeException;
 }
