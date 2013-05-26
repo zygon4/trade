@@ -29,6 +29,11 @@ public final class InformationManager implements InformationHandler<Object> {
         this.marketConditions = marketConditions;
         this.tradeAgents = tradeAgents;
         this.log = LoggerFactory.getLogger(this.name);
+        
+        
+        for (TradeAgent trader : this.tradeAgents) {
+            trader.set(this.marketConditions);
+        }
     }
     
     @Override

@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.execution.MarketConditions;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -78,6 +79,12 @@ public class TradeAgent {
 
                 this.logger.info("Overall: {}", this.tradeSummary.getSummaryStmt());
             }
+        }
+    }
+
+    public final void set(MarketConditions marketConditions) {
+        for (Trade trade : this.trades) {
+            trade.set(marketConditions);
         }
     }
 }

@@ -4,6 +4,7 @@
 
 package com.zygon.trade.execution;
 
+import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import java.util.List;
 
@@ -13,4 +14,5 @@ import java.util.List;
  */
 public interface OrderBookProvider {
     public void getOpenOrders (List<LimitOrder> orders);
+    public void getOrderBook(OrderBook orders, String tradeableIdentifer, String currency);
 }

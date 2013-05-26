@@ -30,16 +30,15 @@ public final class Trade {
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
     private final TradeSummary tradeSummary = new TradeSummary();
     
-    private final MarketConditions marketConditions;
     private final TradeImpl impl;
     
+    private MarketConditions marketConditions;
     private TradeState tradeState = TradeState.OPEN;
     private long entryTimestamp;
     private long exitTimestamp;
     private double closingProfit;
 
-    public Trade(MarketConditions marketConditions, TradeImpl helper) {
-        this.marketConditions = marketConditions;
+    public Trade(TradeImpl helper) {
         this.impl = helper;
     }
     
@@ -203,5 +202,14 @@ public final class Trade {
         } finally {
             writeLock.unlock();
         }
+    }
+    
+    /*pkg*/ final void set(MarketConditions marketConditions) {
+        if (this.marketConditions != null) {
+            // I don't like mutable data.. this should be set at-most-once.
+            throw new IllegalStateException();
+        }
+        
+        this.marketConditions = marketConditions;
     }
 }

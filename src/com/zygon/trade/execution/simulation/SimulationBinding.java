@@ -6,6 +6,7 @@ package com.zygon.trade.execution.simulation;
 
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
@@ -94,6 +95,11 @@ public class SimulationBinding implements ExecutionController.Binding {
         @Override
         public void getOpenOrders(List<LimitOrder> orders) {
             orders.addAll(this.orders);
+        }
+
+        @Override
+        public void getOrderBook(OrderBook orders, String tradeableIdentifer, String currency) {
+            
         }
     }
     
