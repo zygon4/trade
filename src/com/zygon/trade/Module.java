@@ -30,8 +30,11 @@ public abstract class Module {
         
         this.initialize();
         
-        for (Module child : this.getModules()) {
-            child.doInit();
+        Module[] modules = this.getModules();
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.doInit();
+            }
         }
     }
     
@@ -39,8 +42,11 @@ public abstract class Module {
         
         this.logger.info("Unintializing module {}", this.name);
         
-        for (Module child : this.getModules()) {
-            child.doUninit();
+        Module[] modules = this.getModules();
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.doUninit();
+            }
         }
         
         this.uninitialize();

@@ -29,16 +29,16 @@ public class InformationModule extends Module {
     
     @Override
     public Module[] getModules() {
-        return null;
+        return new Module[]{this.dataModule};
     }
 
     @Override
     public void initialize() {
-        this.dataModule.initialize();
+        this.dataModule.getDataManager().setInfoHandler(this.infoMgmt);
     }
 
     @Override
     public void uninitialize() {
-        this.dataModule.uninitialize();
+        this.dataModule.getDataManager().setInfoHandler(null);
     }
 }

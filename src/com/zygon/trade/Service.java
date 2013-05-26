@@ -14,43 +14,48 @@ import org.apache.commons.daemon.DaemonInitException;
  * @author zygon
  */
 public class Service implements Daemon {
+
+    private static Module[] findModules() {
+        ModuleFinder moduleFinder = new ModuleFinder();
+        return moduleFinder.getModules();
+    }
     
-    private final Module[] modules;
+    private Module kernel;
+    private Module[] modules;
 
     public Service(Module[] modules) {
         this.modules = modules;
     }
 
     public Service() {
-        this(new Module[]{});
+        this(findModules());
     }
-    
-    private Module kernel;
     
     @Override
     public void init(DaemonContext dc) throws DaemonInitException, Exception {
         System.out.println(new Date(System.currentTimeMillis())+": Initializing");
         
-        // TODO: init modules from config
-        
         if (this.kernel != null) {
             throw new IllegalStateException("Kernel is already initialized");
         }
         
-        this.kernel = new Kernel(modules);
+        this.kernel = new Kernel(this.modules);
     }
 
     @Override
     public void start() throws Exception {
        System.out.println(new Date(System.currentTimeMillis())+": Starting");
-       this.kernel.initialize();
        
+       // Call privledged init method
+       this.kernel.doInit();
     }
 
     @Override
     public void stop() throws Exception {
         System.out.println(new Date(System.currentTimeMillis())+": Stopping");
-        this.kernel.uninitialize();
+        
+        // Call privledged uninit method
+        this.kernel.doUninit();
     }
 
     @Override

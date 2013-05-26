@@ -24,15 +24,11 @@ public class Kernel extends Module {
 
     @Override
     public void initialize() {
-        for (Module module : this.modules) {
-            module.doInit();
-        }
+        // Nothing to do yet
     }
 
     @Override
     public void uninitialize() {
-        for (Module module : this.modules) {
-            module.doUninit();
-        }
+        // Nothing to do yet
     }
 }
