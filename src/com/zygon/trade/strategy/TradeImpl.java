@@ -14,6 +14,7 @@ import com.zygon.trade.execution.MarketConditions;
  */
 public interface TradeImpl {
     public void activate(MarketConditions marketConditions) throws ExchangeException;
+    public void cancel() throws ExchangeException;
     /**
      * Returns the profit (or loss) after the final closing.
      * @param marketConditions

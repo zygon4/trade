@@ -51,7 +51,7 @@ public final class Trade {
             
             checkState(TradeState.OPEN);
             
-            this.logger.info("Activating trade");
+            this.logger.info("Activating trade {}", this.impl.getDisplayIdentifier());
             
             this.impl.activate(this.marketConditions);
             this.entryTimestamp = System.currentTimeMillis();
@@ -71,6 +71,32 @@ public final class Trade {
         checkState(TradeState.OPEN);
         
         return this.impl.meetsEntryConditions(marketConditions);
+    }
+    
+    /**
+     * Immediately attempts to cancel the open trade.
+     */
+    public final void cancel() {
+        Lock writeLock = this.tradeStateLock.writeLock();
+        try {
+            writeLock.lock();
+        
+            checkState(TradeState.ACTIVE);
+            
+            this.logger.info("Cancelling trade {}", this.impl.getDisplayIdentifier());
+            
+            this.impl.cancel();
+            this.exitTimestamp = System.currentTimeMillis();
+            this.tradeState = TradeState.CLOSED;
+            
+            this.logger.info("Cancelled at {}", new Date(this.exitTimestamp));
+        } catch (ExchangeException ee) {
+            this.logger.error("Caught exception while cancelling", ee);
+        } finally {
+            writeLock.unlock();
+        }
+        
+        
     }
     
     public final boolean canClose() {
@@ -102,17 +128,13 @@ public final class Trade {
         
             checkState(TradeState.ACTIVE);
             
-            this.logger.info("Closing trade");
+            this.logger.info("Closing trade {}", this.impl.getDisplayIdentifier());
             
             this.closingProfit = this.impl.close(marketConditions);
             this.exitTimestamp = System.currentTimeMillis();
             this.tradeState = TradeState.CLOSED;
             
-            if (this.closingProfit >= 0.0) {
-                this.tradeSummary.addProfitableTrade();
-            } else {
-                this.tradeSummary.addLoosingTrade();
-            }
+            this.tradeSummary.add(this.closingProfit);
             
             this.logger.info("Closed at {}", new Date(this.exitTimestamp));
         } catch (ExchangeException ee) {
