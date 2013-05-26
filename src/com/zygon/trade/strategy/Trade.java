@@ -73,6 +73,16 @@ public final class Trade {
         return this.impl.meetsEntryConditions(marketConditions);
     }
     
+    public final boolean canCancel() {
+        // Will throw an exception in your face if you didn't check for state
+        // being ACTIVE.
+        checkState(TradeState.ACTIVE);
+        
+        // TODO: cancel reasons such as the trade being open for too long.
+        
+        return false;
+    }
+    
     /**
      * Immediately attempts to cancel the open trade.
      */
@@ -95,8 +105,6 @@ public final class Trade {
         } finally {
             writeLock.unlock();
         }
-        
-        
     }
     
     public final boolean canClose() {
