@@ -14,42 +14,57 @@ public class TradeSummary {
 
     private int profitableTrades = 0;
     private int loosingTrades = 0;
+    private double profitableTradeTotal;
+    private double loosingTradeTotal;
+    private double netProfit;
     
-    public void add(TradeSummary summary) {
-        this.addProfitableTrades(summary.getProfitableTrades());
-        this.addLoosingTrades(summary.getLoosingTrades());
+    public synchronized void add(TradeSummary summary) {
+        this.profitableTrades += summary.profitableTrades;
+        this.loosingTrades += summary.loosingTrades;
+        this.profitableTradeTotal += summary.profitableTradeTotal;
+        this.loosingTradeTotal += summary.loosingTradeTotal;
+        this.netProfit += summary.netProfit;
     }
     
-    private synchronized void addProfitableTrades(int trades) {
-        this.profitableTrades += trades;
+    public synchronized void add(double netGain) {
+        if (netGain > 0.0) {
+            this.profitableTrades ++;
+            this.profitableTradeTotal += netGain;
+        } else if (netGain < 0.0) {
+            this.loosingTrades ++;
+            this.loosingTradeTotal += netGain;
+        }
+        
+        this.netProfit += netGain;
     }
     
-    private synchronized void addLoosingTrades(int trades) {
-        this.loosingTrades += trades;
-    }
-    
-    public synchronized void addProfitableTrade() {
-        this.profitableTrades++;
-    }
-    
-    public synchronized void addLoosingTrade() {
-        this.loosingTrades++;
-    }
-
     public int getLoosingTrades() {
         return this.loosingTrades;
     }
 
+    public double getLoosingTradeTotal() {
+        return this.loosingTradeTotal;
+    }
+
+    public double getNetProfit() {
+        return this.netProfit;
+    }
+    
     public int getProfitableTrades() {
         return this.profitableTrades;
+    }
+
+    public double getProfitableTradeTotal() {
+        return this.profitableTradeTotal;
     }
     
     public String getSummaryStmt() {
         float winners = getProfitableTrades();
         float loosers = getLoosingTrades();
         float pc = (winners/(winners + loosers)) * 100;
-
-        return String.format("%f/%f: %f%% win ratio", winners, winners + loosers, pc);
+        
+        return String.format("%f/%f: %f%% win ratio. %f net profit.", 
+                winners, winners + loosers, pc, this.netProfit);
     }
 
     @Override

@@ -10,6 +10,7 @@ package com.zygon.trade.strategy;
  */
 public final class TradePostMortem {
 
+    // TODO: enter/exit conditions
     private final long duration;
     private final double profit;
 
