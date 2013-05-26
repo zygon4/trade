@@ -29,11 +29,19 @@ public abstract class Module {
         this.logger.info("Initializing module {}", this.name);
         
         this.initialize();
+        
+        for (Module child : this.getModules()) {
+            child.doInit();
+        }
     }
     
     /*pkg*/ void doUninit() {
         
         this.logger.info("Unintializing module {}", this.name);
+        
+        for (Module child : this.getModules()) {
+            child.doUninit();
+        }
         
         this.uninitialize();
     }
@@ -42,7 +50,6 @@ public abstract class Module {
         return this.logger;
     }
     
-    // TODO: perhaps someone should give a damn about this?  Or delete it.
     public abstract Module[] getModules();
     
     public final String getName() {
