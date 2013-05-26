@@ -100,9 +100,21 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         // place order - assume synchronous fill for now.
     }
 
+    /**
+     * Attempts to cancel the active order.  If this throws an exception no
+     * attempt is made to clean up the state - users are required to attempt
+     * a second cancel or close.
+     * @throws ExchangeException 
+     */
     @Override
     public void cancel() throws ExchangeException {
-        // TODO:
+        if (this.tradeInfo == null) {
+            throw new IllegalStateException();
+        }
+        
+        this.controller.cancelOrder(this.id, "TODO: order id");
+        
+        this.reset();
     }
 
     @Override
