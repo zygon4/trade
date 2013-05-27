@@ -19,11 +19,13 @@ import static com.zygon.trade.strategy.TradeType.SHORT;
  */
 public abstract class AbstractTradeImpl implements TradeImpl {
 
+    private static final double MIN_TRADE_VOLUME = 0.01;
+    
     // TODO: configurable
     private static final double TRADE_RISK_PERCENTAGE   = 0.02;
     
     protected double getTradeVolume(double accntBalance, double currentPrice) {
-        return (accntBalance * TRADE_RISK_PERCENTAGE) / currentPrice;
+        return Math.max((accntBalance * TRADE_RISK_PERCENTAGE) / currentPrice, MIN_TRADE_VOLUME);
     }
     
     // TODO: configurable
@@ -87,7 +89,8 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         
         this.tradeInfo = this.createTradeInfo(marketConditions);
         
-        Order order = this.controller.generateOrder(this.id, this.tradeInfo.type.getOrderType(), 
+        // place market order - assume synchronous fill for now.
+        Order order = this.controller.generateMarketOrder(this.id, this.tradeInfo.type.getOrderType(), 
                 this.tradeInfo.volume, marketConditions.getTradeableIdentifier(), Currencies.USD);
         
         try {
@@ -96,8 +99,6 @@ public abstract class AbstractTradeImpl implements TradeImpl {
             this.reset();
             throw ee;
         }
-        
-        // place order - assume synchronous fill for now.
     }
 
     /**
@@ -112,13 +113,17 @@ public abstract class AbstractTradeImpl implements TradeImpl {
             throw new IllegalStateException();
         }
         
-        this.controller.cancelOrder(this.id, "TODO: order id");
+        // Using market orders for now - nothing to explicitly cancel
         
         this.reset();
     }
 
     @Override
     public double close(MarketConditions marketConditions) throws ExchangeException {
+        
+        if (this.tradeInfo == null) {
+            throw new IllegalStateException();
+        }
         
         double currentPrice = marketConditions.getPrice().getValue();
         double priceMargin = 0.0;
@@ -135,19 +140,12 @@ public abstract class AbstractTradeImpl implements TradeImpl {
                 break;
         }
         
-        Order order = this.getController().generateOrder(this.getId(), orderType, this.tradeInfo.volume, marketConditions.getTradeableIdentifier(), Currencies.USD);
+        // place market order - assume synchronous fill for now.
+        Order order = this.getController().generateMarketOrder(this.getId(), orderType, this.tradeInfo.volume, marketConditions.getTradeableIdentifier(), Currencies.USD);
         
-        try {
-            this.getController().placeOrder(this.getId(), order);
-        } catch (ExchangeException ee) {
-            this.reset();
-            throw ee;
-        }
-        
-        // place order - assume synchronous fill for now.
+        this.getController().placeOrder(this.getId(), order);
         
         double profit = priceMargin * this.tradeInfo.volume;
-        
         this.reset();
         
         return profit;

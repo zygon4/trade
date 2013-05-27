@@ -146,6 +146,10 @@ public final class Trade {
             this.logger.info("Closed at {}", new Date(this.exitTimestamp));
         } catch (ExchangeException ee) {
             this.logger.error("Caught exception while closing", ee);
+            
+            // Tactical decision to cancel the active trade.
+            this.cancel();
+            
         } finally {
             writeLock.unlock();
         }
