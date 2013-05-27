@@ -34,11 +34,13 @@ public class InformationModule extends Module {
 
     @Override
     public void initialize() {
+        this.infoMgmt.initialize();
         this.dataModule.getDataManager().setInfoHandler(this.infoMgmt);
     }
 
     @Override
     public void uninitialize() {
+        this.infoMgmt.uninitialize();
         this.dataModule.getDataManager().setInfoHandler(null);
     }
 }

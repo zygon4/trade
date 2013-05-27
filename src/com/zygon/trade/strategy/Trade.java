@@ -89,12 +89,13 @@ public final class Trade {
         Lock writeLock = this.tradeStateLock.writeLock();
         try {
             writeLock.lock();
-        
-            checkState(TradeState.ACTIVE);
             
             this.logger.info("Cancelling trade {}", this.impl.getDisplayIdentifier());
             
-            this.impl.cancel();
+            if (this.getTradeState() == TradeState.ACTIVE) {
+                this.impl.cancel();
+            }
+            
             this.exitTimestamp = System.currentTimeMillis();
             this.tradeState = TradeState.CLOSED;
             

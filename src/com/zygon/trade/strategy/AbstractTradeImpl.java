@@ -102,17 +102,11 @@ public abstract class AbstractTradeImpl implements TradeImpl {
     }
 
     /**
-     * Attempts to cancel the active order.  If this throws an exception no
-     * attempt is made to clean up the state - users are required to attempt
-     * a second cancel or close.
+     * Attempts to cancel the active order
      * @throws ExchangeException 
      */
     @Override
     public void cancel() throws ExchangeException {
-        if (this.tradeInfo == null) {
-            throw new IllegalStateException();
-        }
-        
         // Using market orders for now - nothing to explicitly cancel
         
         this.reset();

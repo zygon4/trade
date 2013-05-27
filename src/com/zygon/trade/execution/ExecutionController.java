@@ -39,11 +39,9 @@ public final class ExecutionController {
         public OrderProvider getOrderProvider(String id);
     }
 
-    private final String transactionCurrency;
     private final Binding binding;
 
-    public ExecutionController(String transactionCurrency, Binding binding) {
-        this.transactionCurrency = transactionCurrency;
+    public ExecutionController(Binding binding) {
         this.binding = binding;
     }
     
@@ -54,18 +52,14 @@ public final class ExecutionController {
         this.binding.getTradeExecutor(id).cancel(orderId);
     }
 
-    public String getTransactionCurrency() {
-        return this.transactionCurrency;
-    }
-    
     public void getOpenOrders(String id, List<LimitOrder> orders) {
         // could trace
         this.binding.getOrderBookProvider(id).getOpenOrders(orders);
     }
     
-    public void getOrderBook(String id, OrderBook book, String tradeableIdentifier) {
+    public void getOrderBook(String id, OrderBook book, String tradeableIdentifier, String currency) {
         // could trace
-        this.binding.getOrderBookProvider(id).getOrderBook(book, tradeableIdentifier, this.transactionCurrency);
+        this.binding.getOrderBookProvider(id).getOrderBook(book, tradeableIdentifier, currency);
     }
     
     public LimitOrder generateLimitOrder(String id, Order.OrderType type, 
