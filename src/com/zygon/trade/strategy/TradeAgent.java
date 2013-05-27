@@ -53,6 +53,8 @@ public class TradeAgent {
                 case ACTIVE:
                     if (trade.canClose()) {
                         trade.closeTrade();
+                    } else if (trade.canCancel()) {
+                        trade.cancel();
                     }
                     break;
                 case OPEN:
