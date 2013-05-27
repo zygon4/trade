@@ -11,6 +11,10 @@ package com.zygon.trade.execution;
 public class ExchangeException extends Exception {
 
     static final long serialVersionUID = 1l;
+
+    public ExchangeException(String message) {
+        super(message);
+    }
     
     public ExchangeException(String message, Throwable cause) {
         super(message, cause);
