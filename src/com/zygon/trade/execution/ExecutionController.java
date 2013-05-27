@@ -8,6 +8,7 @@ import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.trade.LimitOrder;
+import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,12 @@ public final class ExecutionController {
         this.binding.getOrderBookProvider(id).getOrderBook(book, tradeableIdentifier, this.transactionCurrency);
     }
     
-    public Order generateOrder(String id, Order.OrderType type, 
+    public LimitOrder generateLimitOrder(String id, Order.OrderType type, 
+            double tradableAmount, String tradableIdentifier, String transactionCurrency, double price) {
+        return this.binding.getOrderProvider(id).getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
+    }
+    
+    public MarketOrder generateMarketOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
         return this.binding.getOrderProvider(id).getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
@@ -97,13 +103,12 @@ public final class ExecutionController {
         return wallet.getBalance().getAmount().doubleValue();
     }
     
-    // TODO: return string
-    public void placeOrder (String id, Order order) throws ExchangeException {
+    public String placeOrder (String id, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);
         
         // For now let the order fail if there is not enough funds, etc.
-        this.binding.getTradeExecutor(id).execute(order);
+        return this.binding.getTradeExecutor(id).execute(order);
         
         // TBD: post-trade operations?
     }
