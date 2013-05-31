@@ -7,6 +7,7 @@ package com.zygon.trade.execution;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.numeric.Price;
+import com.zygon.trade.market.util.IndicationStore;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 public final class MarketConditions {
     
     private final Map<Identifier, Indication> indicationsByIdentifier = new HashMap<>();
+    private final IndicationStore indicationStore = new IndicationStore();
     
     // would rather not have to worry about the tradeableidentifier at this leve
     // but rather just store/retrieve whatever the users want.
