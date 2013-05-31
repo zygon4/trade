@@ -1,5 +1,8 @@
 
-package com.zygon.trade;
+package com.zygon.trade.modules;
+
+import com.zygon.trade.Module;
+import com.zygon.trade.ModuleProvider;
 
 /**
  * So what's the deal with this class?
@@ -14,6 +17,7 @@ package com.zygon.trade;
  */
 public class CoreModuleProvider implements ModuleProvider {
     
+    @Override
     public Module[] getModules() {
 	return null;
     }
