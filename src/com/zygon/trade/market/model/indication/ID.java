@@ -33,7 +33,6 @@ public class ID implements Identifier {
         this(id, classification, null);
     }
     
-    // TODO: there's probably bugs in here..
     @Override
     public boolean equals(Identifier id) {
         if (id != null) {
