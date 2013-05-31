@@ -11,6 +11,8 @@ dependencies {
     compile group: 'com.xeiam.xchange', name: 'xchange-mtgox', version: '1.6.0'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+    
+    runtime group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
 }
 
 sourceSets {
@@ -22,5 +24,10 @@ sourceSets {
             srcDir 'src'
         }
     }
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/output/lib"
+    from configurations.runtime
 }
 
