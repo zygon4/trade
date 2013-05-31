@@ -40,11 +40,6 @@ public final class ExecutionController {
     }
 
     private final Binding binding;
-
-    // TODO: hold a collection of bindings by some sort of ID.
-//    public ExecutionController(Map<String, Binding> bindings) {
-//        TODO:
-//    }
     
     public ExecutionController(Binding binding) {
         this.binding = binding;
