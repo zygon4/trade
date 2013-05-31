@@ -7,6 +7,8 @@ package com.zygon.trade.market.util;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
 /**
+ * 
+ * Not really a moving average so much as a collection of stats..
  *
  * @author zygon
  * 

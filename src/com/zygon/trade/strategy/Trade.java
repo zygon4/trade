@@ -30,16 +30,18 @@ public final class Trade {
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
     private final TradeSummary tradeSummary = new TradeSummary();
     
-    private final TradeImpl impl;
+    private final TradeImpl strategy;
     
     private MarketConditions marketConditions;
     private TradeState tradeState = TradeState.OPEN;
+    private Signal entrySignal;
+    private Signal exitSignal;
     private long entryTimestamp;
     private long exitTimestamp;
     private double closingProfit;
 
     public Trade(TradeImpl helper) {
-        this.impl = helper;
+        this.strategy = helper;
     }
     
     public final void activateTrade() {
@@ -50,9 +52,9 @@ public final class Trade {
             
             checkState(TradeState.OPEN);
             
-            this.logger.info("Activating trade {}", this.impl.getDisplayIdentifier());
+            this.logger.info("Activating trade {}", this.strategy.getDisplayIdentifier());
             
-            this.impl.activate(this.marketConditions);
+            this.strategy.activate(this.marketConditions);
             this.entryTimestamp = System.currentTimeMillis();
             this.tradeState = TradeState.ACTIVE;
             
@@ -69,7 +71,9 @@ public final class Trade {
         // being OPEN.
         checkState(TradeState.OPEN);
         
-        return this.impl.meetsEntryConditions(marketConditions);
+        this.entrySignal = this.strategy.meetsEntryConditions(marketConditions);
+        
+        return this.entrySignal != null;
     }
     
     public final boolean canCancel() {
@@ -90,10 +94,10 @@ public final class Trade {
         try {
             writeLock.lock();
             
-            this.logger.info("Cancelling trade {}", this.impl.getDisplayIdentifier());
+            this.logger.info("Cancelling trade {}", this.strategy.getDisplayIdentifier());
             
             if (this.getTradeState() == TradeState.ACTIVE) {
-                this.impl.cancel();
+                this.strategy.cancel();
             }
             
             this.exitTimestamp = System.currentTimeMillis();
@@ -112,7 +116,9 @@ public final class Trade {
         // being ACTIVE.
         checkState(TradeState.ACTIVE);
         
-        return this.impl.meetsExitConditions(marketConditions);
+        this.exitSignal = this.strategy.meetsExitConditions(marketConditions);
+        
+        return this.exitSignal != null;
     }
     
     private void checkState(TradeState desiredState) {
@@ -136,9 +142,9 @@ public final class Trade {
         
             checkState(TradeState.ACTIVE);
             
-            this.logger.info("Closing trade {}", this.impl.getDisplayIdentifier());
+            this.logger.info("Closing trade {}", this.strategy.getDisplayIdentifier());
             
-            this.closingProfit = this.impl.close(marketConditions);
+            this.closingProfit = this.strategy.close(marketConditions);
             this.exitTimestamp = System.currentTimeMillis();
             this.tradeState = TradeState.CLOSED;
             
@@ -157,12 +163,12 @@ public final class Trade {
     }
     
     public String getDisplayIdentifier() {
-        return this.impl.getDisplayIdentifier();
+        return this.strategy.getDisplayIdentifier();
     }
     
     public final TradeMonitor getMonitor() {
         checkState(TradeState.ACTIVE);
-        return this.impl.getTradeMonitor();
+        return this.strategy.getTradeMonitor();
     }
     
     public final TradeState getTradeState() {
@@ -194,8 +200,11 @@ public final class Trade {
         
             checkState(TradeState.CLOSED);
             
-            TradePostMortem postMortem = new TradePostMortem(this.exitTimestamp - this.entryTimestamp, this.closingProfit);
+            TradePostMortem postMortem = new TradePostMortem(this.entrySignal, this.exitSignal, 
+                    this.exitTimestamp - this.entryTimestamp, this.closingProfit);
             
+            this.entrySignal = null;
+            this.exitSignal = null;
             this.entryTimestamp = -1;
             this.exitTimestamp = -1;
             this.closingProfit = -1;

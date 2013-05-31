@@ -171,29 +171,38 @@ public abstract class AbstractTradeImpl implements TradeImpl {
     protected abstract TradeInfo createTradeInfo(MarketConditions marketConditions);
 
     @Override
-    public boolean meetsEntryConditions(MarketConditions marketConditions) {
+    public Signal meetsEntryConditions(MarketConditions marketConditions) {
         // other default conditions?
-        return false;
+        return null;
     }
     
+    private static final String EXIT_STOP_LOSS = "STOP_LOSS";
+    private static final String EXIT_TAKE_PROFIT = "TAKE_PROFIT";
+    
     @Override
-    public boolean meetsExitConditions(MarketConditions marketConditions) {
+    public Signal meetsExitConditions(MarketConditions marketConditions) {
         double price = marketConditions.getPrice().getValue();
+        
+        String exitSignal = null;
         
         switch (this.tradeInfo.type) {
             case LONG:
-                if (price <= this.tradeInfo.stopLossPoint || price >= this.tradeInfo.profitPoint) {
-                    return true;
+                if (price <= this.tradeInfo.stopLossPoint) {
+                    exitSignal = EXIT_STOP_LOSS;
+                } else if(price >= this.tradeInfo.profitPoint) {
+                    exitSignal = EXIT_TAKE_PROFIT;
                 }
                 break;
             case SHORT:
-                if (price >= this.tradeInfo.stopLossPoint || price <= this.tradeInfo.profitPoint) {
-                    return true;
+                if (price >= this.tradeInfo.stopLossPoint) {
+                    exitSignal = EXIT_STOP_LOSS;
+                } else if (price <= this.tradeInfo.profitPoint) {
+                    exitSignal = EXIT_TAKE_PROFIT;
                 }
                 break;
         }
         
-        return false;
+        return exitSignal != null ? new Signal(exitSignal) : null;
     }
     
     protected void reset() {

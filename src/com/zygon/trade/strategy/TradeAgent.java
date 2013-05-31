@@ -7,7 +7,6 @@ package com.zygon.trade.strategy;
 import com.zygon.trade.execution.MarketConditions;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +35,10 @@ public class TradeAgent {
                         TimeUnit.MILLISECONDS.toSeconds(duration) - 
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
                     );
+            String entrySignal = postMortem.getEntrySignal().getName();
+            String exitSignal = postMortem.getExitSignal().getName();
 
-            logger.info("Trade lasted {} with a profit/loss of {}", durationDisplay, profit);
+            logger.info("{}, {}, {}, {}", durationDisplay, profit, entrySignal, exitSignal);
         }
     };
 

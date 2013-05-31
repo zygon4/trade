@@ -8,7 +8,6 @@ import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.MarketConditions;
 
 /**
- * Consider an abstract TradeImpl to handle basic things such as price/loss stops
  * 
  * @author zygon
  */
@@ -23,6 +22,6 @@ public interface TradeImpl {
     public double close(MarketConditions marketConditions) throws ExchangeException;
     public String getDisplayIdentifier();
     public TradeMonitor getTradeMonitor();
-    public boolean meetsEntryConditions(MarketConditions marketConditions);
-    public boolean meetsExitConditions(MarketConditions marketConditions);
+    public Signal meetsEntryConditions(MarketConditions marketConditions);
+    public Signal meetsExitConditions(MarketConditions marketConditions);
 }

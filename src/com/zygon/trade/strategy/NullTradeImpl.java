@@ -6,8 +6,6 @@ package com.zygon.trade.strategy;
 
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.MarketConditions;
-import com.zygon.trade.strategy.TradeImpl;
-import com.zygon.trade.strategy.TradeMonitor;
 
 /**
  *
@@ -36,13 +34,13 @@ public class NullTradeImpl implements TradeImpl {
     }
     
     @Override
-    public boolean meetsEntryConditions(MarketConditions marketConditions) {
-        return false;
+    public Signal meetsEntryConditions(MarketConditions marketConditions) {
+        return null;
     }
 
     @Override
-    public boolean meetsExitConditions(MarketConditions marketConditions) {
-        return true;
+    public Signal meetsExitConditions(MarketConditions marketConditions) {
+        return null;
     }
 
     @Override

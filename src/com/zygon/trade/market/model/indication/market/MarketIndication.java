@@ -12,8 +12,6 @@ import com.zygon.trade.market.model.indication.Indication;
  * @author zygon
  */
 public class MarketIndication extends Indication {
-
-    //public static Identifier RSI = new ID("rsi"); 
     
     private final Identifier id;
     

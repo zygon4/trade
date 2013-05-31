@@ -21,11 +21,13 @@ public final class MarketConditions {
     private final Map<Identifier, Indication> indicationsByIdentifier = new HashMap<>();
     private final IndicationStore indicationStore = new IndicationStore();
     
+    private final String marketIdentifier;
     // would rather not have to worry about the tradeableidentifier at this leve
     // but rather just store/retrieve whatever the users want.
     private final String tradeableIdentifier;
     
-    public MarketConditions(String tradeableIdentifier) {
+    public MarketConditions(String marketIdentifier, String tradeableIdentifier) {
+        this.marketIdentifier = marketIdentifier;
         this.tradeableIdentifier = tradeableIdentifier;
     }
 
@@ -35,6 +37,10 @@ public final class MarketConditions {
     
     public synchronized Indication getIndication(Identifier id) {
         return this.indicationsByIdentifier.get(id);
+    }
+
+    public String getMarketIdentifier() {
+        return this.marketIdentifier;
     }
 
     public String getTradeableIdentifier() {
