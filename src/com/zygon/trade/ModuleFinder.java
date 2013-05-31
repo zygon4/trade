@@ -48,7 +48,11 @@ import org.reflections.util.ClasspathHelper;
         ModuleProvider[] moduleProviders = this.getModuleProviders();
         
         for (ModuleProvider provider : moduleProviders) {
-            modules.addAll(Arrays.asList(provider.getModules()));
+            if (provider != null) {
+                if (provider.getModules() != null) {
+                    modules.addAll(Arrays.asList(provider.getModules()));
+                }
+            }
         }
         
         return modules.toArray(new Module[modules.size()]);
