@@ -41,6 +41,7 @@ public final class ExecutionController {
 
     private final Binding binding;
 
+    //TBD: hold a collection of bindings by binding-id?
     public ExecutionController(Binding binding) {
         this.binding = binding;
     }
@@ -71,9 +72,13 @@ public final class ExecutionController {
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
         return this.binding.getOrderProvider(id).getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
-    
+
+    public AccountInfo getAccountInfo(String id) {
+	return this.binding.getAccountController(id).getAccountInfo();
+    }
+
     private Wallet getWallet(String id, String currency) {
-        AccountInfo accountInfo = this.binding.getAccountController(id).getAccountInfo();
+        AccountInfo accountInfo = this.getAccountInfo(id);
         
         // user name of the account??
         for (Wallet wallet : accountInfo.getWallets()) {
