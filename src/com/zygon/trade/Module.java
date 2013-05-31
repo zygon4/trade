@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public abstract class Module {
+public abstract class Module implements OutputProvider {
     
     private final String name;
     private final Logger logger;
@@ -60,6 +61,11 @@ public abstract class Module {
     
     public final String getName() {
         return this.name;
+    }
+
+    @Override
+    public Object getOutput(Map<String, Object> input) {
+        return "";
     }
     
     public abstract void initialize();
