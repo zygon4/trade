@@ -3,7 +3,10 @@
  */
 package com.zygon.trade.modules.execution;
 
+import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
+import java.util.List;
 
 /**
  *
@@ -22,9 +25,9 @@ public class AccountModule extends Module {
     // We are starting to get into the realm of
     // user interaction - oogabooga!
     public void getAccountSummary(StringBuilder sb, String id) {
-	AccountInfo accountInfo = this.getController().getAccountInfo(id);
+	AccountInfo accountInfo = this.execModule.getController().getAccountInfo(id);
 
-	sb.append(accountInfo.getUser());
+	sb.append(accountInfo.getUsername());
 	List<Wallet> wallets = accountInfo.getWallets();
 	
 	if (!wallets.isEmpty()) {
@@ -34,7 +37,7 @@ public class AccountModule extends Module {
 	for (Wallet w : wallets) {
 	    sb.append(w.getCurrency());
 	    sb.append(" - "); // TODO: format string for spacing
-	    sb.append(w.getBalance().getAmmount().doubleValue());
+	    sb.append(w.getBalance().getAmount().doubleValue());
 	}
     }
 
