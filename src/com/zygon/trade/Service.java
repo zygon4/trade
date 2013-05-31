@@ -42,17 +42,34 @@ public class Service implements Daemon {
         this.kernel = new Kernel(this.modules);
     }
 
+    private final Object initLock = new Object();
+    
     @Override
     public void start() throws Exception {
        System.out.println(new Date(System.currentTimeMillis())+": Starting");
        
-       // Call privledged init method
-       this.kernel.doInit();
+       synchronized (this.initLock) {
+           
+           new Thread() {
+               @Override
+               public void run() {
+                   // Call privledged init method
+                   kernel.doInit();
+               }
+           }.start();
+           
+           // The main thread waits indefinitely
+           initLock.wait();
+       }
     }
 
     @Override
     public void stop() throws Exception {
         System.out.println(new Date(System.currentTimeMillis())+": Stopping");
+       
+        synchronized (this.initLock) {
+            initLock.notify();
+        }
         
         // Call privledged uninit method
         this.kernel.doUninit();
@@ -61,6 +78,9 @@ public class Service implements Daemon {
     @Override
     public void destroy() {
         System.out.println(new Date(System.currentTimeMillis())+": Destroying");
+        synchronized (this.initLock) {
+            initLock.notifyAll();
+        }
         this.kernel = null;
     }
 }
