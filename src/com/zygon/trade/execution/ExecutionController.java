@@ -33,54 +33,59 @@ public final class ExecutionController {
      * OrderBook, handling accounting, etc.
      */
     public static interface Binding {
-        public AccountController getAccountController(String id);
-        public OrderBookProvider getOrderBookProvider(String id);
-        public TradeExecutor getTradeExecutor(String id);
-        public OrderProvider getOrderProvider(String id);
+        public AccountController getAccountController();
+        public OrderBookProvider getOrderBookProvider();
+        public TradeExecutor getTradeExecutor();
+        public OrderProvider getOrderProvider();
     }
 
     private final Binding binding;
 
-    //TBD: hold a collection of bindings by binding-id?
+    // TODO: hold a collection of bindings by some sort of ID.
+//    public ExecutionController(Map<String, Binding> bindings) {
+//        TODO:
+//    }
+    
     public ExecutionController(Binding binding) {
         this.binding = binding;
     }
     
-    public void cancelOrder (String id, String orderId) throws ExchangeException {
+    public void cancelOrder (String username, String orderId) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Cancel order request for order id {}", new Date(), orderId);
         
-        this.binding.getTradeExecutor(id).cancel(orderId);
+        this.binding.getTradeExecutor().cancel(username, orderId);
     }
 
-    public void getOpenOrders(String id, List<LimitOrder> orders) {
+    public void getOpenOrders(List<LimitOrder> orders) {
         // could trace
-        this.binding.getOrderBookProvider(id).getOpenOrders(orders);
+        this.binding.getOrderBookProvider().getOpenOrders(orders);
     }
     
-    public void getOrderBook(String id, OrderBook book, String tradeableIdentifier, String currency) {
+    public void getOrderBook(String username, OrderBook book, String tradeableIdentifier, String currency) {
         // could trace
-        this.binding.getOrderBookProvider(id).getOrderBook(book, tradeableIdentifier, currency);
+        this.binding.getOrderBookProvider().getOrderBook(username, book, tradeableIdentifier, currency);
     }
     
     public LimitOrder generateLimitOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency, double price) {
-        return this.binding.getOrderProvider(id).getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
+        return this.binding.getOrderProvider().getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
     }
     
     public MarketOrder generateMarketOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return this.binding.getOrderProvider(id).getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        return this.binding.getOrderProvider().getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
 
-    public AccountInfo getAccountInfo(String id) {
-	return this.binding.getAccountController(id).getAccountInfo();
+    public AccountInfo getAccountInfo(String username) {
+	return this.binding.getAccountController().getAccountInfo(username);
     }
 
-    private Wallet getWallet(String id, String currency) {
-        AccountInfo accountInfo = this.getAccountInfo(id);
+    private Wallet getWallet(String username, String currency) {
+        AccountInfo accountInfo = this.getAccountInfo(username);
         
-        // user name of the account??
+        // check for null account info? check for user name equality?
+        
         for (Wallet wallet : accountInfo.getWallets()) {
             if (wallet.getCurrency().equals(currency)) {
                 return wallet;
@@ -90,8 +95,8 @@ public final class ExecutionController {
         return null;
     }
     
-    public double getBalance(String id, String currency) {
-        Wallet wallet = this.getWallet(id, currency);
+    public double getBalance(String username, String currency) {
+        Wallet wallet = this.getWallet(username, currency);
         
         if (wallet == null) {
             // TBD: open an account on the fly with 0 monies?
@@ -102,12 +107,12 @@ public final class ExecutionController {
         return wallet.getBalance().getAmount().doubleValue();
     }
     
-    public String placeOrder (String id, Order order) throws ExchangeException {
+    public String placeOrder (String username, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);
         
         // For now let the order fail if there is not enough funds, etc.
-        return this.binding.getTradeExecutor(id).execute(order);
+        return this.binding.getTradeExecutor().execute(username, order);
         
         // TBD: post-trade operations?
     }

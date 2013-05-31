@@ -102,7 +102,7 @@ public class SimulationBinding implements ExecutionController.Binding {
         }
         
         @Override
-        public AccountInfo getAccountInfo() {
+        public AccountInfo getAccountInfo(String username) {
             List<Wallet> wallets = new ArrayList<>();
             for (WalletInfo info : this.walletsByCurrency.values()) {
                 wallets.add(info.getWallet());
@@ -145,7 +145,7 @@ public class SimulationBinding implements ExecutionController.Binding {
         }
 
         @Override
-        public void getOrderBook(OrderBook orders, String tradeableIdentifer, String currency) {
+        public void getOrderBook(String username, OrderBook orders, String tradeableIdentifer, String currency) {
             
         }
     }
@@ -176,12 +176,12 @@ public class SimulationBinding implements ExecutionController.Binding {
         }
         
         @Override
-        public void cancel(String orderId) {
+        public void cancel(String username, String orderId) {
             this.log.info("Cancelling orderId: {}", orderId);
         }
 
         @Override
-        public String execute(Order order) {
+        public String execute(String username, Order order) {
             BigDecimal marketPrice = this.marketConditions.getPrice().value();
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
@@ -222,8 +222,8 @@ public class SimulationBinding implements ExecutionController.Binding {
     private final OrderProvider orderProvider;
     private final TradeExecutor tradeExecutor;
 
-    public SimulationBinding(String user, Wallet[] wallets, MarketConditions marketConditions) {
-        this.user = user;
+    public SimulationBinding(String username, Wallet[] wallets, MarketConditions marketConditions) {
+        this.user = username;
         this.accntController = new SimulationAccountController(this.user, wallets);
         this.marketConditions = marketConditions;
         this.orderBookProvider = new SimulationOrderBookProvider();
@@ -232,22 +232,22 @@ public class SimulationBinding implements ExecutionController.Binding {
     }
     
     @Override
-    public AccountController getAccountController(String id) {
+    public AccountController getAccountController() {
         return this.accntController;
     }
 
     @Override
-    public OrderBookProvider getOrderBookProvider(String id) {
+    public OrderBookProvider getOrderBookProvider() {
         return this.orderBookProvider;
     }
 
     @Override
-    public OrderProvider getOrderProvider(String id) {
+    public OrderProvider getOrderProvider() {
         return this.orderProvider;
     }
 
     @Override
-    public TradeExecutor getTradeExecutor(String id) {
+    public TradeExecutor getTradeExecutor() {
         return this.tradeExecutor;
     }
 }

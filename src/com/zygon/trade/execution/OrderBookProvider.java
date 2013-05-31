@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface OrderBookProvider {
     public void getOpenOrders (List<LimitOrder> orders);
-    public void getOrderBook(OrderBook orders, String tradeableIdentifer, String currency);
+    public void getOrderBook(String username, OrderBook orders, String tradeableIdentifer, String currency);
 }
