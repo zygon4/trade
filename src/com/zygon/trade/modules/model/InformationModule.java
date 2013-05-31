@@ -23,10 +23,6 @@ public class InformationModule extends Module {
         this.infoMgmt = infoMgmt;
     }
 
-    public InformationManager getInfoMgmt() {
-        return this.infoMgmt;
-    }
-    
     @Override
     public Module[] getModules() {
         return new Module[]{this.dataModule};
