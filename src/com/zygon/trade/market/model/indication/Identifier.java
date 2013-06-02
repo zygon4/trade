@@ -10,7 +10,6 @@ package com.zygon.trade.market.model.indication;
  */
 public interface Identifier {
     public boolean equals (Identifier id);
-    public Aggregation getAggregation();
     public Classification getClassification();
     public String getID();
 }

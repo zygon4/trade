@@ -15,7 +15,7 @@ import com.zygon.trade.market.model.indication.Identifier;
  */
 public class Price extends NumericIndication {
 
-    public static Identifier ID = new ID("price", Classification.PRICE, null);
+    public static Identifier ID = new ID("price", Classification.PRICE);
     
     private final String currency;
     

@@ -14,9 +14,8 @@ public class ID implements Identifier {
     
     private final String id;
     private final Classification classification;
-    private final Aggregation aggregation;
-
-    public ID(String id, Classification classification, Aggregation aggregation) {
+    
+    public ID(String id, Classification classification) {
         if (id == null) {
             throw new IllegalArgumentException("id cannot be null");
         }
@@ -26,33 +25,17 @@ public class ID implements Identifier {
         
         this.id = id;
         this.classification = classification;
-        this.aggregation = aggregation;
-    }
-
-    public ID(String id, Classification classification) {
-        this(id, classification, null);
     }
     
     @Override
     public boolean equals(Identifier id) {
         if (id != null) {
-            if (this.getID().equals(id.getID()) && this.classification == id.getClassification()) {
-                
-                if ((this.aggregation == null && id.getAggregation() == null) ||
-                    (this.aggregation != null && this.aggregation.isEqual(id.getAggregation()))) {
-                    return true;
-                }
-                
+            if (this.getID().equals(id.getID()) && this.classification == id.getClassification()) {           
                 return true;
             }
         }
         
         return false;
-    }
-
-    @Override
-    public Aggregation getAggregation() {
-        return this.aggregation;
     }
     
     @Override

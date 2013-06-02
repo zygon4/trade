@@ -14,7 +14,7 @@ import com.zygon.trade.market.model.indication.Identifier;
  */
 public class Volume extends NumericIndication {
 
-    public static Identifier VOLUME = new ID("volume", Classification.VOLUME, null);
+    public static Identifier VOLUME = new ID("volume", Classification.VOLUME);
     
     private final String transactionCurrency;
     
