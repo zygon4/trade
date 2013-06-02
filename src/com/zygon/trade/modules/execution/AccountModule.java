@@ -16,7 +16,6 @@ import java.util.List;
 public class AccountModule extends Module {
 
     private static final String ACCNT_SUMMARY = "acnt";
-    private static String USER = "_user";
     
     private final ExecutionModule execModule;
 
