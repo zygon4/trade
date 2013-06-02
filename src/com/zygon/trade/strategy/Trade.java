@@ -40,8 +40,8 @@ public final class Trade {
     private long exitTimestamp;
     private double closingProfit;
 
-    public Trade(TradeImpl helper) {
-        this.strategy = helper;
+    public Trade(TradeImpl strategy) {
+        this.strategy = strategy;
         this.tradeSummary = new TradeSummary(this.strategy.getDisplayIdentifier());
     }
     
@@ -191,6 +191,33 @@ public final class Trade {
         return this.tradeSummary;
     }
     
+    public String getTradeStatusString() {
+        
+        // Read lock to view the entire status atomically
+        this.tradeStateLock.readLock().lock();
+        try {
+            StringBuilder sb = new StringBuilder();
+            
+            sb.append(this.strategy.getDisplayIdentifier()).append(" - ");
+            TradeState state = this.getTradeState();
+            sb.append(state.name());
+            switch (state) {
+                case ACTIVE:
+                    sb.append(" - ").append(this.entryTimestamp).append('-');
+                    sb.append(this.entrySignal);
+                    break;
+                case CLOSED:
+                    sb.append(" - ").append(this.exitTimestamp).append('-');
+                    sb.append(this.exitSignal);
+                    break;
+            }
+        
+            return sb.toString();
+        } finally {
+            this.tradeStateLock.readLock().unlock();
+        }
+    }
+    
     /**
      * Returns the Trade back to OPEN.  The trade must be already CLOSED.
      */
@@ -226,5 +253,10 @@ public final class Trade {
         }
         
         this.marketConditions = marketConditions;
+    }
+
+    @Override
+    public String toString() {
+        return this.getTradeStatusString();
     }
 }

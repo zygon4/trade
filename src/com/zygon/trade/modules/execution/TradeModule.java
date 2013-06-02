@@ -14,7 +14,8 @@ import com.zygon.trade.strategy.TradeSummary;
  */
 public class TradeModule extends Module {
 
-    private static final String TRADE_SUMMARY = "sum";
+    private static final String TRADE_SUMMARY = "summary";
+    private static final String TRADE_STATE = "state";
     
     private final ExecutionModule execModule;    
 
@@ -28,6 +29,10 @@ public class TradeModule extends Module {
 	return null;
     }
 
+    private boolean isTradeStateRequest(Request request) {
+        return request.isCommand(TRADE_STATE);
+    }
+    
     private boolean isTradeSummaryRequest(Request request) {
         return request.isCommand(TRADE_SUMMARY);
     }
@@ -36,11 +41,10 @@ public class TradeModule extends Module {
     public Object getOutput(Request request) {
         
         String output = null;
+        StringBuilder sb = new StringBuilder();
         
         if (request.isCommandRequest()) {
             if (this.isTradeSummaryRequest(request)) {
-                StringBuilder sb = new StringBuilder();
-                
                 for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
                     sb.append(trader.getAgentSummary()).append('\n');
                     
@@ -48,14 +52,20 @@ public class TradeModule extends Module {
                         sb.append(" - ").append(summary).append('\n');
                     }
                 }
-                
-                output = sb.toString();
+            } else if (this.isTradeStateRequest(request)) {
+                for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
+                    trader.getTradeState(sb);
+                    sb.append('\n');
+                }
             } else {
-                output = "Unknown command: " + request.getCommand();
+                sb.append("Unknown command: ").append(request.getCommand());
             }
         } else if (request.isListCommandRequest()) {
-            output = String.format(" - %s", TRADE_SUMMARY);
+            sb.append(String.format(" - %s", TRADE_STATE)).append('\n');
+            sb.append(String.format(" - %s", TRADE_SUMMARY));
         }
+        
+        output = sb.toString();
         
         return output;
     }

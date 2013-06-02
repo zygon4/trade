@@ -59,6 +59,12 @@ public class TradeAgent {
         return this.name;
     }
     
+    public void getTradeState(StringBuilder sb) {
+        for (Trade trade : this.trades) {
+            sb.append(trade.getTradeStatusString()).append('\n');
+        }
+    }
+    
     public TradeSummary[] getTradeSummary() {
         
         List<TradeSummary> summaries = new ArrayList<>();

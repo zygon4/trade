@@ -39,7 +39,7 @@ public final class Request {
     }
     
     public boolean isCommand(String cmd) {
-        return ((String) this.input.get(CMD)).startsWith(cmd);
+        return cmd.startsWith(((String) this.input.get(CMD)));
     }
     
     public boolean isCommandRequest() {
