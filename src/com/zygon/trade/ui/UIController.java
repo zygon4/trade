@@ -51,11 +51,7 @@ public class UIController {
         NavigationNode root = new NavigationNode(this.root, nodes.toArray(new NavigationNode[nodes.size()]));
         
         this.shell = ShellFactory.createConsoleShell(PROMPT, "Stella", root);
-        try {
         this.shell.commandLoop();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
     }
     
     public void uninitialize() {
