@@ -31,6 +31,10 @@ public final class InformationManager implements InformationHandler<Object> {
         this.log = LoggerFactory.getLogger(this.name);
     }
     
+    public final Collection<TradeAgent> getTradeAgents() {
+        return this.tradeAgents;
+    }
+    
     @Override
     public void handle(Object t) {
         this.log.trace("Handling " + t);

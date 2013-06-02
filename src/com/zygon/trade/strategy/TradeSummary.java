@@ -12,11 +12,17 @@ package com.zygon.trade.strategy;
  */
 public class TradeSummary {
 
+    private final String name;
+    
     private int profitableTrades = 0;
     private int loosingTrades = 0;
     private double profitableTradeTotal;
     private double loosingTradeTotal;
     private double netProfit;
+
+    public TradeSummary(String name) {
+        this.name = name;
+    }
     
     public synchronized void add(TradeSummary summary) {
         this.profitableTrades += summary.profitableTrades;
@@ -63,7 +69,8 @@ public class TradeSummary {
         float loosers = getLoosingTrades();
         float pc = (winners/(winners + loosers)) * 100;
         
-        return String.format("%f/%f: %f%% win ratio. %f net profit.", 
+        return String.format("%s: %f/%f: %f%% win ratio. %f net profit.", 
+                this.name,
                 winners, winners + loosers, pc, this.netProfit);
     }
 

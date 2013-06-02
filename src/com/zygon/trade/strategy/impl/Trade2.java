@@ -35,7 +35,7 @@ public final class Trade2 {
     
     private final Logger logger = LoggerFactory.getLogger(Trade2.class);
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
-    private final TradeSummary tradeSummary = new TradeSummary();
+    private final TradeSummary tradeSummary;
     private final String id;
     private final Strategy strategy;
     private final ExecutionController controller;
@@ -49,6 +49,7 @@ public final class Trade2 {
         this.id = id;
         this.strategy = strat;
         this.controller = controller;
+        this.tradeSummary = new TradeSummary(this.id);
     }
     
     public final void enterMarket(MarketConditions marketConditions) {

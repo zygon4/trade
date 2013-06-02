@@ -5,7 +5,9 @@
 package com.zygon.trade.strategy;
 
 import com.zygon.trade.execution.MarketConditions;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +19,9 @@ import org.slf4j.LoggerFactory;
 public class TradeAgent {
 
     private final Logger logger = LoggerFactory.getLogger(TradeAgent.class);
+    private final String name;
     private final Collection<Trade> trades;
-    private final TradeSummary tradeSummary = new TradeSummary();
+    private final TradeSummary tradeSummary;
     
     private final Object shutdownLock = new Object();
     private volatile boolean shutdown = false;
@@ -42,12 +45,29 @@ public class TradeAgent {
         }
     };
 
-    public TradeAgent(Collection<Trade> trades) {
+    public TradeAgent(String name, Collection<Trade> trades) {
+        this.name = name;
         this.trades = trades;
+        this.tradeSummary = new TradeSummary(name);
     }
     
-    public TradeSummary getTradeSummary() {
+    public TradeSummary getAgentSummary() {
         return this.tradeSummary;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+    
+    public TradeSummary[] getTradeSummary() {
+        
+        List<TradeSummary> summaries = new ArrayList<>();
+        
+        for (Trade trade : this.trades) {
+            summaries.add(trade.getTradeSummary());
+        }
+        
+        return summaries.toArray(new TradeSummary[summaries.size()]);
     }
     
     public void manageTrades() {

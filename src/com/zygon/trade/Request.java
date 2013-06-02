@@ -34,6 +34,10 @@ public final class Request {
         return (String) this.input.get(CMD);
     }
     
+    public boolean hasArguments() {
+        return this.input.containsKey(ARGS);
+    }
+    
     public boolean isCommand(String cmd) {
         return ((String) this.input.get(CMD)).startsWith(cmd);
     }

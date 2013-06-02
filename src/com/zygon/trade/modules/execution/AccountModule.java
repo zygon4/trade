@@ -64,12 +64,13 @@ public class AccountModule extends Module {
             if (this.isAccountSummaryRequest(request)) {
                 StringBuilder sb = new StringBuilder();
 
-                String user = this.getUserName(request);
-                if (user != null) {
-                    this.getAccountSummary(sb, user);
+                if (request.hasArguments()) {
+                    String user = this.getUserName(request);
+                    if (user != null) {
+                        this.getAccountSummary(sb, user);
+                    }
                 } else {
-                    // TODO: get a list of all the users to generate account
-                    // summaries
+                    // TODO: get a list of all the users to generate summaries
                 }
 
                 output = sb.toString();

@@ -12,7 +12,6 @@ import asg.cliche.ShellFactory;
 import com.zygon.trade.OutputProvider;
 import com.zygon.trade.Request;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,13 +59,20 @@ public class NavigationNode implements ShellDependent {
         
         Map<String, Object> command = new HashMap<>();
         command.put(Request.CMD, cmd);
-        command.put(Request.ARGS, arguments);
+        if (arguments != null) {
+            command.put(Request.ARGS, arguments);
+        }
         Request request = new Request(command);
         
         Object output = this.outputProvider.getOutput(request);
         if (output != null) {
             System.out.println(output);
         }
+    }
+    
+    @Command(description="Execute a command")
+    public void cmd (@Param(name="command", description="The command to execute") String cmd) {
+        this.cmd(cmd, (String[]) null);
     }
             
     protected NavigationNode getParent() {

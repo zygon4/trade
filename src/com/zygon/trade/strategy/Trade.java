@@ -28,7 +28,7 @@ public final class Trade {
     
     private final Logger logger = LoggerFactory.getLogger(Trade.class);
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
-    private final TradeSummary tradeSummary = new TradeSummary();
+    private final TradeSummary tradeSummary;
     
     private final TradeImpl strategy;
     
@@ -42,6 +42,7 @@ public final class Trade {
 
     public Trade(TradeImpl helper) {
         this.strategy = helper;
+        this.tradeSummary = new TradeSummary(this.strategy.getDisplayIdentifier());
     }
     
     public final void activateTrade() {
@@ -186,7 +187,7 @@ public final class Trade {
         return state;
     }
 
-    public TradeSummary getTradeSummary() {
+    public final TradeSummary getTradeSummary() {
         return this.tradeSummary;
     }
     

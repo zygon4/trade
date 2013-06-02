@@ -37,6 +37,10 @@ public class ExecutionModule extends Module {
 	return this.controller;
     }
 
+    public InformationModule getInformationModule() {
+        return this.informationModule;
+    }
+    
     @Override
     public Module[] getModules() {
 	return this.modules;
