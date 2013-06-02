@@ -51,9 +51,6 @@ public class NavigationNode implements ShellDependent {
         }
     }
 
-    // This inputs command strings - unfortunately right now it is forced to 
-    // take a second arg even though it's a "..." array - the library sees
-    // it as a hard array arg.
     @Command(description="Execute a command")
     public void cmd (@Param(name="command", description="The command to execute") String cmd, String ...arguments) {
         
