@@ -6,8 +6,8 @@ package com.zygon.trade.modules.execution;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
+import com.zygon.trade.Request;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -15,7 +15,8 @@ import java.util.Map;
  */
 public class AccountModule extends Module {
 
-    private static String USER = "_u";
+    private static final String ACCNT_SUMMARY = "acnt";
+    private static String USER = "_user";
     
     private final ExecutionModule execModule;
 
@@ -47,19 +48,40 @@ public class AccountModule extends Module {
 	return null;
     }
     
+    private String getUserName (Request request) {
+        return ((String[]) request.get(Request.ARGS))[0];
+    }
+    
+    private boolean isAccountSummaryRequest(Request request) {
+        return request.isCommand(ACCNT_SUMMARY);
+    }
+    
     @Override
-    public Object getOutput(Map<String, Object> input) {
+    public Object getOutput(Request request) {
         
-        String user = null;
-        if (input.containsKey(USER)) {
-            user = (String) input.get(user);
+        String output = null;
+        
+        if (request.isCommandRequest()) {
+            if (this.isAccountSummaryRequest(request)) {
+                StringBuilder sb = new StringBuilder();
+
+                String user = this.getUserName(request);
+                if (user != null) {
+                    this.getAccountSummary(sb, user);
+                } else {
+                    // TODO: get a list of all the users to generate account
+                    // summaries
+                }
+
+                output = sb.toString();
+            } else {
+                output = "Unknown command: " + request.getCommand();
+            }
+        } else if (request.isListCommandRequest()) {
+            output = " - acnt <user>";
         }
         
-        StringBuilder sb = new StringBuilder();
-        
-        this.getAccountSummary(sb, user);
-        
-        return sb.toString();
+        return output;
     }
 
     @Override

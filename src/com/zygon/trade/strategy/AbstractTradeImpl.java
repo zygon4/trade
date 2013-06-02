@@ -19,10 +19,10 @@ import static com.zygon.trade.strategy.TradeType.SHORT;
  */
 public abstract class AbstractTradeImpl implements TradeImpl {
 
-    private static final double MIN_TRADE_VOLUME = 0.01;
+    private static final double MIN_TRADE_VOLUME = 0.04;
     
     // TODO: configurable
-    private static final double TRADE_RISK_PERCENTAGE   = 0.02;
+    private static final double TRADE_RISK_PERCENTAGE   = 0.01;
     
     protected double getTradeVolume(double accntBalance, double currentPrice) {
         return Math.max((accntBalance * TRADE_RISK_PERCENTAGE) / currentPrice, MIN_TRADE_VOLUME);

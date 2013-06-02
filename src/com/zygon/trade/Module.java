@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Module implements OutputProvider {
     
     private final String name;
+    private Module parent = null;
     private final Logger logger;
 
     protected Module(String name) {
@@ -27,11 +28,18 @@ public abstract class Module implements OutputProvider {
     
     /*pkg*/ void doInit() {
         
+        Module[] modules = this.getModules();
+        
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.setParent(this);
+            }
+        }
+        
         this.logger.info("Initializing module {}", this.name);
         
         this.initialize();
         
-        Module[] modules = this.getModules();
         if (modules != null) {
             for (Module child : this.getModules()) {
                 child.doInit();
@@ -59,16 +67,40 @@ public abstract class Module implements OutputProvider {
     
     public abstract Module[] getModules();
     
-    public final String getName() {
+    @Override
+    public final String getDisplayname() {
         return this.name;
     }
 
     @Override
-    public Object getOutput(Map<String, Object> input) {
+    public String getNavigationElementToken() {
+        return this.name.toLowerCase().replaceAll(" ", "");
+    }
+
+    @Override
+    public Object getOutput(Request request) {
         return "";
+    }
+
+    public Module getParent() {
+        return this.parent;
+    }
+    
+    public final Module getRoot() {
+        Module node = this;
+        
+        while (node.parent != null) {
+            node = node.parent;
+        }
+        
+        return node;
     }
     
     public abstract void initialize();
+
+    private void setParent(Module parent) {
+        this.parent = parent;
+    }
     
     public abstract void uninitialize();
 }
