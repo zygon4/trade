@@ -34,6 +34,7 @@ public abstract class AbstractTradeImpl implements TradeImpl {
     
     private final String name;
     private final String id;
+    private final String tradeableIdentifier;
     private final ExecutionController controller;
     
     private TradeInfo tradeInfo = null;
@@ -74,9 +75,10 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         }
     }
     
-    public AbstractTradeImpl(String name, String id, ExecutionController controller) {
+    public AbstractTradeImpl(String name, String id, String tradeableIdentifier, ExecutionController controller) {
         this.name = name;
         this.id = id;
+        this.tradeableIdentifier = tradeableIdentifier;
         this.controller = controller;
     }
     
@@ -91,7 +93,7 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         
         // place market order - assume synchronous fill for now.
         Order order = this.controller.generateMarketOrder(this.id, this.tradeInfo.type.getOrderType(), 
-                this.tradeInfo.volume, marketConditions.getTradeableIdentifier(), Currencies.USD);
+                this.tradeInfo.volume, this.getTradeableIdentifier(), Currencies.USD);
         
         try {
             this.controller.placeOrder(this.id, order);
@@ -119,7 +121,7 @@ public abstract class AbstractTradeImpl implements TradeImpl {
             throw new IllegalStateException();
         }
         
-        double currentPrice = marketConditions.getPrice().getValue();
+        double currentPrice = marketConditions.getPrice(Currencies.BTC).getValue();
         double priceMargin = 0.0;
         Order.OrderType orderType = null;
         
@@ -135,7 +137,7 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         }
         
         // place market order - assume synchronous fill for now.
-        Order order = this.getController().generateMarketOrder(this.getId(), orderType, this.tradeInfo.volume, marketConditions.getTradeableIdentifier(), Currencies.USD);
+        Order order = this.getController().generateMarketOrder(this.getId(), orderType, this.tradeInfo.volume, this.getTradeableIdentifier(), Currencies.USD);
         
         this.getController().placeOrder(this.getId(), order);
         
@@ -158,6 +160,10 @@ public abstract class AbstractTradeImpl implements TradeImpl {
         return this.id;
     }
 
+    protected String getTradeableIdentifier() {
+        return this.tradeableIdentifier;
+    }
+    
     protected final TradeInfo getTradeInfo() {
         return this.tradeInfo;
     }
@@ -181,7 +187,7 @@ public abstract class AbstractTradeImpl implements TradeImpl {
     
     @Override
     public Signal meetsExitConditions(MarketConditions marketConditions) {
-        double price = marketConditions.getPrice().getValue();
+        double price = marketConditions.getPrice(this.getTradeableIdentifier()).getValue();
         
         String exitSignal = null;
         

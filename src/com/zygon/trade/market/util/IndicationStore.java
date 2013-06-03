@@ -12,32 +12,42 @@ import java.util.Map;
  */
 public final class IndicationStore {
     
-    // lame string key for now - but it should work fine.
-    
-    // Tradable identifier??
-    private  String getKey(Identifier id, Aggregation aggregation) {
-        return id.getID()+"_"+aggregation.getDuration().name()+"_"+
-                aggregation.getUnits().name()+"_"+aggregation.getType().getVal();
+    private  String getKey(Identifier id, String tradeableIdentifier, Aggregation aggregation) {
+        String key = id.getID()+"_"+tradeableIdentifier;
+        if (aggregation != null) {
+            key += "_"+aggregation.getDuration().name()+"_"+aggregation.getUnits().name()+"_"+aggregation.getType().getVal();
+        }
+        return key;
     }
     
     private final Map<String, Indication> indications = new HashMap<>();
     
-    public final void put (Identifier id, Aggregation aggregation, Indication indication) {
-        String key = this.getKey(id, aggregation);
+    public final void put (Indication indication, Aggregation aggregation) {
+        if (indication == null) {
+            throw new IllegalArgumentException();
+        }
+        String key = this.getKey(indication.getId(), indication.getTradableIdentifier(), aggregation);
         
         synchronized(this.indications) {
             this.indications.put(key, indication);
         }
     }
     
-    public final Indication get (Identifier id, Aggregation aggregation) {
+    public final Indication get (Identifier id, String tradeableIdentifier, Aggregation aggregation) {
+        if (id == null || tradeableIdentifier == null) {
+            throw new IllegalArgumentException();
+        }
         Indication val = null;
-        String key = this.getKey(id, aggregation);
+        String key = this.getKey(id, tradeableIdentifier, aggregation);
         
         synchronized (this.indications) {
             val = this.indications.get(key);
         }
         
         return val;
+    }
+    
+    public final Indication get (Indication indication, Aggregation aggregation) {
+        return this.get(indication.getId(), indication.getTradableIdentifier(), aggregation);
     }
 }

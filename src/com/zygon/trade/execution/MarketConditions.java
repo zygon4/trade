@@ -4,12 +4,11 @@
 
 package com.zygon.trade.execution;
 
+import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.numeric.Price;
 import com.zygon.trade.market.util.IndicationStore;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -18,40 +17,30 @@ import java.util.Map;
  */
 public final class MarketConditions {
     
-    private final Map<Identifier, Indication> indicationsByIdentifier = new HashMap<>();
     private final IndicationStore indicationStore = new IndicationStore();
-    
     private final String marketIdentifier;
-    // would rather not have to worry about the tradeableidentifier at this leve
-    // but rather just store/retrieve whatever the users want.
-    private final String tradeableIdentifier;
     
-    public MarketConditions(String marketIdentifier, String tradeableIdentifier) {
+    public MarketConditions(String marketIdentifier) {
         this.marketIdentifier = marketIdentifier;
-        this.tradeableIdentifier = tradeableIdentifier;
     }
 
-    public Price getPrice() {
-        return (Price)this.getIndication(Price.ID);
+    public Price getPrice(String tradeableIdentifier) {
+        return (Price)this.getIndication(Price.ID, tradeableIdentifier);
     }
     
-    public synchronized Indication getIndication(Identifier id) {
-        return this.indicationsByIdentifier.get(id);
+    public synchronized Indication getIndication(Identifier id, String tradeableIdentifier, Aggregation aggregation) {
+        return this.indicationStore.get(id, tradeableIdentifier, aggregation);
     }
 
+    public synchronized Indication getIndication(Identifier id, String tradeableIdentifier) {
+        return this.getIndication(id, tradeableIdentifier, null);
+    }
+    
     public String getMarketIdentifier() {
         return this.marketIdentifier;
     }
-
-    public String getTradeableIdentifier() {
-        return this.tradeableIdentifier;
-    }
     
-    public synchronized void putIndication(Indication indication) {
-        if (!indication.getTradableIdentifier().equals(this.tradeableIdentifier)) {
-            throw new IllegalArgumentException("Invalid");
-        }
-        
-        this.indicationsByIdentifier.put(indication.getId(), indication);
+    public synchronized void putIndication(Indication indication, Aggregation aggregation) {
+        this.indicationStore.put(indication, aggregation);
     }
 }

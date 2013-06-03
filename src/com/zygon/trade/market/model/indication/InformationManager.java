@@ -40,7 +40,7 @@ public final class InformationManager implements InformationHandler<Object> {
         this.log.trace("Handling " + t);
         
         Indication indication = (Indication) t;
-        this.marketConditions.putIndication(indication);
+        this.marketConditions.putIndication(indication, null); // TBD: wrap an indication with optional aggregation?
         
         // This is effectively where the data and strategy worlds collide.
         // This could also be done using a timer task style polling mechanism

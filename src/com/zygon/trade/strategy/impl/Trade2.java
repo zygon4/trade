@@ -37,6 +37,7 @@ public final class Trade2 {
     private final ReentrantReadWriteLock tradeStateLock = new ReentrantReadWriteLock();
     private final TradeSummary tradeSummary;
     private final String id;
+    private final String tradeableIdentifier;
     private final Strategy strategy;
     private final ExecutionController controller;
     
@@ -45,8 +46,9 @@ public final class Trade2 {
     private long exitTimestamp;
     private double enterMarketPrice;
     
-    public Trade2(String id, Strategy strat, ExecutionController controller) {
+    public Trade2(String id, String tradeableIdentifier, Strategy strat, ExecutionController controller) {
         this.id = id;
+        this.tradeableIdentifier = tradeableIdentifier;
         this.strategy = strat;
         this.controller = controller;
         this.tradeSummary = new TradeSummary(this.id);
@@ -66,7 +68,7 @@ public final class Trade2 {
             
             // consider letting the user enter the market
             if (entrySignal.getDecision() != TradeSignal.Decision.DO_NOTHING) {
-                this.enterMarketPrice = marketConditions.getPrice().getValue();
+                this.enterMarketPrice = marketConditions.getPrice(this.tradeableIdentifier).getValue();
                 
                 // place market order - assume synchronous fill for now.
                 Order order = this.controller.generateMarketOrder(this.id, entrySignal.getTradeType().getOrderType(), 
@@ -165,7 +167,7 @@ public final class Trade2 {
             
             this.logger.info("Closing trade based on signal {}", exitSignal);
             
-            double currentPrice = marketConditions.getPrice().getValue();
+            double currentPrice = marketConditions.getPrice(this.tradeableIdentifier).getValue();
             double priceMargin = 0.0;
             
             switch (exitSignal.getTradeType()) {

@@ -4,6 +4,7 @@
 
 package com.zygon.trade.execution.simulation;
 
+import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
@@ -182,7 +183,7 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         @Override
         public String execute(String username, Order order) {
-            BigDecimal marketPrice = this.marketConditions.getPrice().value();
+            BigDecimal marketPrice = this.marketConditions.getPrice(Currencies.BTC).value();
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
             
