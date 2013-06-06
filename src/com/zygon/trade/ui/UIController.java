@@ -51,7 +51,21 @@ public class UIController {
         NavigationNode root = new NavigationNode(this.root, nodes.toArray(new NavigationNode[nodes.size()]));
         
         this.shell = ShellFactory.createConsoleShell(PROMPT, "Stella", root);
-        this.shell.commandLoop();
+        
+        // spawn a cheesy thread to man the command loop
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    shell.commandLoop();
+                } catch (IOException io) {
+                    // TODO: log? remove Cliche completely?
+                    io.printStackTrace();
+                }
+            }
+        };
+        t.setDaemon(true);
+        t.start();
     }
     
     public void uninitialize() {
