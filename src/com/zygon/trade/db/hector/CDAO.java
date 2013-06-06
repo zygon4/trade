@@ -18,13 +18,13 @@ import me.prettyprint.hector.api.query.QueryResult;
 
 /*pkg*/ final class CDAO {
     
-    protected static final AsciiSerializer AsciiType = AsciiSerializer.get();
-    protected static final BytesArraySerializer BytesType = BytesArraySerializer.get();
-    protected static final CompositeSerializer CompositeType = CompositeSerializer.get();
-    protected static final DateSerializer DateType = DateSerializer.get();
-    protected static final LongSerializer LongType = LongSerializer.get();
-    protected static final ObjectSerializer ObjectType = ObjectSerializer.get();
-    protected static final StringSerializer UTF8Type = StringSerializer.get();
+    public static final AsciiSerializer AsciiType = AsciiSerializer.get();
+    public static final BytesArraySerializer BytesType = BytesArraySerializer.get();
+    public static final CompositeSerializer CompositeType = CompositeSerializer.get();
+    public static final DateSerializer DateType = DateSerializer.get();
+    public static final LongSerializer LongType = LongSerializer.get();
+    public static final ObjectSerializer ObjectType = ObjectSerializer.get();
+    public static final StringSerializer UTF8Type = StringSerializer.get();
 
     public <K, N, V> void save(Keyspace keyspace, String columnFamily, 
             K key, Serializer<K> keySerializer, N col, Serializer<N> nameSerializer, V val, Serializer<V> valueSerializer) {
