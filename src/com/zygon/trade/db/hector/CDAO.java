@@ -34,8 +34,9 @@ import me.prettyprint.hector.api.query.QueryResult;
     }
 
     public <K, N, V> V getColumn(Keyspace keyspace, String columnFamily, 
-            K key, N column, Serializer<K> keySerializer,
-            Serializer<N> nameSerializer, Serializer<V> valueSerializer) {
+            K key, Serializer<K> keySerializer, 
+            N column, Serializer<N> nameSerializer, 
+            Serializer<V> valueSerializer) {
         
         ColumnQuery<K, N, V> query = HFactory.createColumnQuery(keyspace,
                 keySerializer, nameSerializer, valueSerializer);
