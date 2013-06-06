@@ -37,11 +37,20 @@ public abstract class Module implements OutputProvider {
         
         this.logger.info("Initializing module {}", this.name);
         
-        this.initialize();
+        boolean initialized = false;
         
-        if (modules != null) {
-            for (Module child : this.getModules()) {
-                child.doInit();
+        try {
+            this.initialize();
+            initialized = true;
+        } catch (Exception e) {
+            this.logger.error("Exception occurred while initializing module " + this.name, e);
+        }
+        
+        if (initialized) {
+            if (modules != null) {
+                for (Module child : this.getModules()) {
+                    child.doInit();
+                }
             }
         }
     }
@@ -62,6 +71,32 @@ public abstract class Module implements OutputProvider {
 
     protected final Logger getLogger() {
         return this.logger;
+    }
+    
+    private Module getModule(Module module, String id) {
+        if (module.name.equals(id)) {
+            return module;
+        } else {
+            Module[] children = module.getModules();
+            if (children != null) {
+                Module mod = null;
+                for (Module m : children) {
+                    mod = getModule(m, id);
+                    if (mod != null) {
+                        break;
+                    }
+                }
+                
+                return mod;
+            }
+        }
+        
+        return null;
+    }
+    
+    protected Module getModule(String id) {
+        Module root = this.getRoot();
+        return this.getModule(root, id);
     }
     
     public abstract Module[] getModules();
