@@ -18,10 +18,12 @@ public class PersistentDataLogger<T> implements DataLogger<T> {
     
     @Override
     public void log(T data) {
-        try {
-            this.database.store(data);
-        } catch (Throwable th) {
-            this.logger.error("Error storing data: " + data, th);
+        if (this.database != null) {
+            try {
+                this.database.store(data);
+            } catch (Throwable th) {
+                logger.error("Error storing data: " + data, th);
+            }
         }
     }
 
