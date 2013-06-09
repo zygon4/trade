@@ -20,7 +20,7 @@ public class CoreModuleProvider implements ModuleProvider {
     public CoreModuleProvider() {
         UIModule uiModule = new UIModule("UI");
         
-        Database db = DatabaseFactory.get("com.zygon.trade.db.hector.CassandraDatabase");
+        Database db = DatabaseFactory.get("com.zygon.trade.db.cassandra.CassandraDatabase");
         DBModule dbModule = new DBModule(db);
         
         this.modules = new Module[]{ uiModule, dbModule };
