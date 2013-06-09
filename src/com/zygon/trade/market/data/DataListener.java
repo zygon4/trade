@@ -29,7 +29,7 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
     private final ScheduledInformationProcessor processor = new ScheduledInformationProcessor(executor);
     private final DataProvider<T_IN> dataProvider;
-    private DataLogger<T_IN> dataLogger = null;
+    private final DataLogger<T_IN> dataLogger;
     
     private InformationHandler<Message> handler;
     private Collection<DataProcessor<T_IN>> dataProcessors;
