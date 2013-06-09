@@ -5,8 +5,9 @@
 package com.zygon.trade.modules.data;
 
 import com.zygon.trade.Module;
-import com.zygon.trade.db.DatabaseMetadata;
 import com.zygon.trade.market.data.DataListener;
+import com.zygon.trade.market.data.DataLogger;
+import com.zygon.trade.market.data.PersistentDataLogger;
 import com.zygon.trade.modules.core.DBModule;
 
 /**
@@ -16,13 +17,11 @@ import com.zygon.trade.modules.core.DBModule;
 public class DataModule extends Module {
 
     private final DataListener listener;
-    private final DatabaseMetadata dbMeta;
     
-    public DataModule(String name, DataListener dataManager, DatabaseMetadata dbMeta) {
+    public DataModule(String name, DataListener dataManager) {
         super(name);
         
         this.listener = dataManager;
-        this.dbMeta = dbMeta;
     }
 
     public DataListener getDataManager() {
@@ -38,7 +37,12 @@ public class DataModule extends Module {
     public void initialize() {
         DBModule dbModule = (DBModule) this.getModule(DBModule.ID);
         
-        dbModule.createStorage(this.dbMeta);
+        // Boo hiss. This should be removed and a cleaner way to provide 
+        // database access should be implemented.
+        DataLogger dataLogger = this.listener.getDataLogger();
+        if (dataLogger != null && dataLogger instanceof PersistentDataLogger) {
+            ((PersistentDataLogger)dataLogger).setDatabase(dbModule.getDatabase());
+        }
         
         this.listener.initalize();
     }

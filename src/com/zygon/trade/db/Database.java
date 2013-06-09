@@ -4,19 +4,14 @@
 
 package com.zygon.trade.db;
 
+import java.io.Closeable;
+
 /**
  * TODO: you know.. getters and setters
  * 
  * @author zygon
  */
-public interface Database {
-    
-    /**
-     * Opaque method of adding a storage space. 
-     * 
-     * @param options runtime implementation specific options.
-     */
-    public void addStorage(DatabaseMetadata metaData);
+public interface Database extends Closeable {
     
     /**
      * Returns this Database's name.
@@ -24,15 +19,7 @@ public interface Database {
      */
     public String getName();
     
-    /**
-     * Initializes the Database with the given options.
-     * 
-     * @param options runtime implementation specific options.
-     */
-    public void initialize(DatabaseMetadata metaData);
+    public <T> T retrieve(Class<T> cls, Object key);
     
-    /**
-     * Uninitializes the entire Database.
-     */
-    public void uninitialize();
+    public void store(Object object);
 }

@@ -28,30 +28,40 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
     private final Logger log;
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(EXEC_THREAD_POOL);
     private final ScheduledInformationProcessor processor = new ScheduledInformationProcessor(executor);
-    private final DataProvider<T_IN> provider;
+    private final DataProvider<T_IN> dataProvider;
+    private DataLogger<T_IN> dataLogger = null;
     
     private InformationHandler<Message> handler;
-    
     private Collection<DataProcessor<T_IN>> dataProcessors;
     
     public DataListener(String name,
                        DataProvider<T_IN> provider, 
+                       DataLogger<T_IN> dataLogger,
                        Collection<DataProcessor<T_IN>> dataProcessors,
                        InformationHandler<Message> handler) {
         this.log = LoggerFactory.getLogger(name);
-        this.provider = provider;
+        this.dataProvider = provider;
+        this.dataLogger = dataLogger;
         this.dataProcessors = dataProcessors;
         this.handler = handler;
     }
     
     public DataListener(String name,
-                       DataProvider<T_IN> provider, 
+                       DataProvider<T_IN> dataProvider, 
+                       DataLogger<T_IN> dataLogger,
                        Collection<DataProcessor<T_IN>> dataProcessors) {
-        this(name, provider, dataProcessors, null);
+        this(name, dataProvider, dataLogger, dataProcessors, null);
+    }
+
+    public DataLogger<T_IN> getDataLogger() {
+        return this.dataLogger;
     }
     
     @Override
     public void handle(T_IN t) {
+        if (this.dataLogger != null) {
+            this.dataLogger.log(t);
+        }
         
         List<Message> messages = new ArrayList<>();
         
@@ -71,9 +81,9 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
     public void setInfoHandler(InformationHandler<Message> handler) {
         this.handler = handler;
     }
-    
+
     public void initalize() {
-        this.processor.register(this.provider, this, this.provider.getInterval(), this.provider.getUnits());
+        this.processor.register(this.dataProvider, this, this.dataProvider.getInterval(), this.dataProvider.getUnits());
     }
     
     public void unintialize() {

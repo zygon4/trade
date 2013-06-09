@@ -2,9 +2,8 @@
  * 
  */
 
-package com.zygon.trade.market.data.provider;
+package com.zygon.trade.market.data;
 
-import com.zygon.trade.market.data.DataProvider;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +17,6 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T> {
     private final String name;
     private final long cacheDuration;
     private final TimeUnit units;
-    private DataLogger<T> logger = null;
     
     protected AbstractDataProvider (String name, long cacheDuration, TimeUnit units) {
         this.name = name;
@@ -49,21 +47,11 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T> {
 
     @Override
     public T get() {
-        T data = this.getData();
-        
-        if (this.logger != null) {
-            this.logger.log(data);
-        }
-        
-        return data;
+        return this.getData();
     }
 
     @Override
     public boolean hasHistoricInformation() {
         return false;
-    }
-
-    public void setLogger(DataLogger<T> logger) {
-        this.logger = logger;
     }
 }

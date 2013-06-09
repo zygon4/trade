@@ -8,8 +8,6 @@ import com.zygon.trade.Module;
 import com.zygon.trade.ModuleProvider;
 import com.zygon.trade.db.Database;
 import com.zygon.trade.db.DatabaseFactory;
-import com.zygon.trade.db.DatabaseMetadataImpl;
-import java.util.Map;
 
 /**
  *
@@ -22,14 +20,8 @@ public class CoreModuleProvider implements ModuleProvider {
     public CoreModuleProvider() {
         UIModule uiModule = new UIModule("UI");
         
-        DatabaseMetadataImpl impl = new DatabaseMetadataImpl();
-        Map<String, String> options = impl.getProperties();
-        
-        options.put("cluster_name", "Test Cluster");
-        options.put("host", "localhost:9160");
-        Database db = DatabaseFactory.get("com.zygon.trade.db.hector.HectorDatabase");
-        
-        DBModule dbModule = new DBModule(db, impl);
+        Database db = DatabaseFactory.get("com.zygon.trade.db.hector.CassandraDatabase");
+        DBModule dbModule = new DBModule(db);
         
         this.modules = new Module[]{ uiModule, dbModule };
     }

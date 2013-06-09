@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.market.data.provider;
+package com.zygon.trade.market.data;
 
 /**
  *
