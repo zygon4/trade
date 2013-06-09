@@ -6,9 +6,11 @@ package com.zygon.trade.db.cassandra;
 
 import com.zygon.trade.db.Database;
 import java.io.IOException;
+import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  *
@@ -49,6 +51,12 @@ public class CassandraDatabase implements Database {
     @Override
     public <T> T retrieve(Class<T> cls, Object key) {
         return this.em.find(cls, key);
+    }
+
+    @Override
+    public <T> Collection<T> retrieve(Class<T> cls, String query) {
+        Query q = em.createQuery(query);
+        return q.getResultList();
     }
 
     @Override
