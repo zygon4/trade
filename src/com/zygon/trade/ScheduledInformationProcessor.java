@@ -51,9 +51,14 @@ public class ScheduledInformationProcessor {
                     System.out.println(new Date(System.currentTimeMillis()) + ": Done loading historical data");
                 }
             } else {
-                Object val = this.provider.get();
-                for (InformationHandler handler : this.handlers) {
-                    handler.handle(val);
+                try {
+                    Object val = this.provider.get();
+                    for (InformationHandler handler : this.handlers) {
+                        handler.handle(val);
+                    }
+                } catch (Exception e) {
+                    // TODO: log
+                    e.printStackTrace();
                 }
             }
         }
