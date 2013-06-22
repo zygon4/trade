@@ -7,6 +7,9 @@ package com.zygon.trade.strategy;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.MarketConditions;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.slf4j.Logger;
@@ -19,6 +22,23 @@ import org.slf4j.LoggerFactory;
  */
 public final class Trade {
 
+    
+    // NOTE: prototypical
+    private static final int MAX_TRADE_COUNT = 4; // duration unspecified here
+    private volatile int tradeCount = 0;
+    private final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+    {
+        exec.scheduleAtFixedRate(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        tradeCount = 0; // reset
+                    }
+                }, 
+                1, 1, TimeUnit.HOURS);
+    }
+    
+    
     // This tenatively/cautiously ordinal in terms of trade progression.
     public static enum TradeState {
         OPEN,
@@ -72,9 +92,18 @@ public final class Trade {
         // being OPEN.
         checkState(TradeState.OPEN);
         
-        this.entrySignal = this.strategy.meetsEntryConditions(marketConditions);
+        if (this.tradeCount < MAX_TRADE_COUNT) {
+            this.entrySignal = this.strategy.meetsEntryConditions(marketConditions);
+            boolean canActivate = this.entrySignal != null;
+            
+            if (canActivate) {
+                tradeCount ++;
+            }
+            
+            return canActivate;
+        }
         
-        return this.entrySignal != null;
+        return false;
     }
     
     public final boolean canCancel() {
