@@ -4,6 +4,7 @@
 
 package com.zygon.trade.market.data;
 
+import com.zygon.trade.db.Database;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractDataProvider<T> implements DataProvider<T> {
 
+    private Database database = null;
+    
     private final String name;
     private final long cacheDuration;
     private final TimeUnit units;
@@ -24,6 +27,10 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T> {
         this.units = units;
     }
 
+    protected final Database getDatabase() {
+        return this.database;
+    }
+    
     @Override
     public Collection<T> getHistoric() {
         throw new UnsupportedOperationException("Not supported by this data provider.");
@@ -53,5 +60,10 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T> {
     @Override
     public boolean hasHistoricInformation() {
         return false;
+    }
+    
+    // wish we didn't have to set a database here..
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 }

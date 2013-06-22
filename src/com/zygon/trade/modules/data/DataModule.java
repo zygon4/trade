@@ -5,8 +5,11 @@
 package com.zygon.trade.modules.data;
 
 import com.zygon.trade.Module;
+import com.zygon.trade.db.Database;
+import com.zygon.trade.market.data.AbstractDataProvider;
 import com.zygon.trade.market.data.DataListener;
 import com.zygon.trade.market.data.DataLogger;
+import com.zygon.trade.market.data.DataProvider;
 import com.zygon.trade.market.data.PersistentDataLogger;
 import com.zygon.trade.modules.core.DBModule;
 
@@ -37,11 +40,19 @@ public class DataModule extends Module {
     public void initialize() {
         DBModule dbModule = (DBModule) this.getModule(DBModule.ID);
         
-        // Boo hiss. This should be removed and a cleaner way to provide 
+        Database db = dbModule.getDatabase();
+        
+        // Boo hiss. These should be removed and a cleaner way to provide 
         // database access should be implemented.
+        
         DataLogger dataLogger = this.listener.getDataLogger();
         if (dataLogger != null && dataLogger instanceof PersistentDataLogger) {
-            ((PersistentDataLogger)dataLogger).setDatabase(dbModule.getDatabase());
+            ((PersistentDataLogger)dataLogger).setDatabase(db);
+        }
+        
+        DataProvider dataProvider = this.listener.getDataProvider();
+        if (dataProvider != null && dataProvider instanceof AbstractDataProvider) {
+            ((AbstractDataProvider) this.listener.getDataProvider()).setDatabase(db);
         }
         
         this.listener.initalize();

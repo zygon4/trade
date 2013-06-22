@@ -10,7 +10,9 @@ import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,10 +20,17 @@ import javax.persistence.Query;
  */
 public class CassandraDatabase implements Database {
     
+    private static final Logger logger = LoggerFactory.getLogger(CassandraDatabase.class);
+    
     // TODO: collapse into single database
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");
-    private EntityManager em = emf.createEntityManager();
+    private EntityManager em = this.emf.createEntityManager();
 
+    public CassandraDatabase() {
+        this.em.setProperty("cql.version", "3.0.0");
+    }
+
+    
     @Override
     public void close() throws IOException {
         try {
@@ -50,17 +59,35 @@ public class CassandraDatabase implements Database {
     
     @Override
     public <T> T retrieve(Class<T> cls, Object key) {
-        return this.em.find(cls, key);
+        try {
+            return this.em.find(cls, key);
+        } catch (Exception e) {
+            logger.error("error retrieving "+ key, e);
+        }
+        
+        return null;
     }
 
     @Override
     public <T> Collection<T> retrieve(Class<T> cls, String query) {
-        Query q = em.createQuery(query);
-        return q.getResultList();
+        try {
+            em.clear();
+            TypedQuery<T> q = em.createQuery(query, cls);
+            q.setMaxResults(Integer.MAX_VALUE);
+            return q.getResultList();
+        } catch (Exception e) {
+            logger.error("error retrieving with query"+ query, e);
+        }
+        
+        return null;
     }
 
     @Override
     public void store(Object obj) {
-        this.em.persist(obj);
+        try {
+            this.em.persist(obj);
+        } catch (Exception e) {
+            logger.error("error persisting: " + obj, e);
+        }
     }
 }

@@ -51,6 +51,11 @@ public final class InformationManager implements InformationHandler<Object> {
         }
     }
     
+    public void handleHistoric(Object msg) {
+        Indication indication = (Indication) msg;
+        this.marketConditions.putIndication(indication, null);
+    }
+    
     public void initialize() {
         for (TradeAgent trader : this.tradeAgents) {
             trader.set(this.marketConditions);
