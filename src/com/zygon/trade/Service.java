@@ -5,9 +5,12 @@
 package com.zygon.trade;
 
 import java.util.Date;
+
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,13 +18,15 @@ import org.apache.commons.daemon.DaemonInitException;
  */
 public class Service implements Daemon {
 
+    private static final Logger log = LoggerFactory.getLogger(Service.class);
+
     private static Module[] findModules() {
         ModuleFinder moduleFinder = new ModuleFinder();
         return moduleFinder.getModules();
     }
     
     private Module kernel;
-    private Module[] modules;
+    private final Module[] modules;
 
     public Service(Module[] modules) {
         this.modules = modules;
@@ -33,7 +38,7 @@ public class Service implements Daemon {
     
     @Override
     public void init(DaemonContext dc) throws DaemonInitException, Exception {
-        System.out.println(new Date(System.currentTimeMillis())+": Initializing");
+        log.info(new Date(System.currentTimeMillis())+": Initializing");
         
         if (this.kernel != null) {
             throw new IllegalStateException("Kernel is already initialized");
@@ -46,14 +51,14 @@ public class Service implements Daemon {
     
     @Override
     public void start() throws Exception {
-       System.out.println(new Date(System.currentTimeMillis())+": Starting");
+       log.info(new Date(System.currentTimeMillis())+": Starting");
        
        synchronized (this.initLock) {
            
            new Thread() {
                @Override
                public void run() {
-                   // Call privledged init method
+                   // Call privileged init method
                    kernel.doInit();
                }
            }.start();
@@ -65,19 +70,19 @@ public class Service implements Daemon {
 
     @Override
     public void stop() throws Exception {
-        System.out.println(new Date(System.currentTimeMillis())+": Stopping");
+        log.info(new Date(System.currentTimeMillis())+": Stopping");
        
         synchronized (this.initLock) {
             initLock.notify();
         }
         
-        // Call privledged uninit method
+        // Call privileged uninit method
         this.kernel.doUninit();
     }
 
     @Override
     public void destroy() {
-        System.out.println(new Date(System.currentTimeMillis())+": Destroying");
+        log.info(new Date(System.currentTimeMillis())+": Destroying");
         synchronized (this.initLock) {
             initLock.notifyAll();
         }
