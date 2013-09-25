@@ -29,6 +29,7 @@ dependencies {
     compile group: 'com.impetus.core', name: 'kundera-core', version: '2.5'
     compile group: 'com.impetus.client', name: 'kundera-cassandra', version: '2.5'
 
+    compile group: 'com.eaio.uuid', name: 'uuid', version: '3.2'
     
     runtime group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
 }
