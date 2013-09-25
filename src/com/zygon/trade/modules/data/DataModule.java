@@ -55,7 +55,7 @@ public class DataModule extends Module {
             ((AbstractDataProvider) this.listener.getDataProvider()).setDatabase(db);
         }
         
-        this.listener.initalize();
+        this.listener.initialize();
     }
 
     @Override

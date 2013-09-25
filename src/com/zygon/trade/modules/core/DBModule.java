@@ -39,14 +39,6 @@ public class DBModule extends Module {
         // nothing to do
     }
 
-    public <T> T retrieve(Class<T> cls, Object key) {
-        return this.database.retrieve(cls, key);
-    }
-    
-    public void store(Object object) {
-        this.database.store(object);
-    }
-    
     @Override
     public void uninitialize() {
         try {
