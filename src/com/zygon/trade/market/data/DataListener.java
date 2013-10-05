@@ -101,7 +101,7 @@ public class DataListener<T_IN> implements InformationHandler<T_IN> {
         this.handler = handler;
     }
 
-    public void initalize() {
+    public void initialize() {
         this.processor.register(this.dataProvider, this, this.dataProvider.getInterval(), this.dataProvider.getUnits());
     }
     
