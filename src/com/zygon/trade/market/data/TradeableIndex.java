@@ -4,36 +4,41 @@
 
 package com.zygon.trade.market.data;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 /**
+ * This may or may not be required/good anymore
  *
  * @author zygon
  */
-@Embeddable
-public class TradeableIndex implements Serializable {
+public class TradeableIndex {
     
-    @Column(name="identifier")
-    private String identifer;
+    private final String identifer;
+    private final long ts;
+
+    private String source;
+
+    public TradeableIndex(String identifer, String source, long ts) {
+        this.identifer = identifer;
+        this.source = source;
+        this.ts = ts;
+    }
     
-    @Column(name="ts")
-    private long ts;
+    public TradeableIndex(String identifer, long ts) {
+        this(identifer, null, ts);
+    }
 
     public String getIdentifer() {
         return this.identifer;
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public long getTs() {
         return this.ts;
     }
 
-    public void setIdentifer(String identifer) {
-        this.identifer = identifer;
-    }
-
-    public void setTs(long ts) {
-        this.ts = ts;
+    public void setSource(String source) {
+        this.source = source;
     }
 }

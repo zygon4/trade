@@ -5,38 +5,23 @@
 package com.zygon.trade.market.data;
 
 import com.zygon.trade.market.Message;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import org.joda.money.BigMoney;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
  * @author zygon
  */
-@Entity
-@Table(name="ticker", schema = "trade@cassandra_pu")
-public class Ticker extends Message implements Serializable {
+public class Ticker extends Message {
     
-    @EmbeddedId
     private TradeableIndex idx;
     
-    @Column(name="last_price")
     private BigMoney last;
-    @Column(name="bid")
     private BigMoney bid;
-    @Column(name="ask")
     private BigMoney ask;
-    @Column(name="high")
     private BigMoney high;
-    @Column(name="low")
     private BigMoney low;
-    @Column(name="volume")
     private BigDecimal volume;
     
     public Ticker(TradeableIndex idx, BigMoney last, BigMoney bid, BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
@@ -50,9 +35,7 @@ public class Ticker extends Message implements Serializable {
     }
     
     private static TradeableIndex create(com.xeiam.xchange.dto.marketdata.Ticker tick) {
-        TradeableIndex idx = new TradeableIndex();
-        idx.setIdentifer(tick.getTradableIdentifier());
-        idx.setTs(tick.getTimestamp().getTime());
+        TradeableIndex idx = new TradeableIndex(tick.getTradableIdentifier(), tick.getTimestamp().getTime());
         return idx;
     }
     
@@ -88,6 +71,10 @@ public class Ticker extends Message implements Serializable {
         return this.idx.getIdentifer();
     }
 
+    public String getSource() {
+        return this.idx.getSource();
+    }
+    
     public BigDecimal getVolume() {
         return this.volume;
     }
