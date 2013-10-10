@@ -32,6 +32,8 @@ dependencies {
     compile group: 'com.eaio.uuid', name: 'uuid', version: '3.2'
     
     runtime group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
+    runtime group: 'org.apache.derby', name: 'derby', version: '10.10.1.1'
+    runtime group: 'org.apache.derby', name: 'derbytools', version: '10.10.1.1'
 }
 
 sourceSets {

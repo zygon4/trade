@@ -13,6 +13,10 @@ import java.util.Map;
  * @author david.charubini
  */
 public class DerbyStorage implements InstallableStorage {
+
+    static {
+	System.setProperty("derby.system.home", "/tmp");
+    }
     
     private static final String TABLE_NAME = "install";
     private static final String SCHEMA = "(id int)";

@@ -41,7 +41,10 @@ public class UIController {
                     children.add(new NavigationNode(
                             // Here we are injecting some additional functionality to keep the configuration
                             // code outside of the Module implementation.
-                            new OutputProviderImpl(module, new ConfigurationCommandProcessor(module, module.getSchema(), module.getChildSchema(), this.configurationManager)), null)
+                            new OutputProviderImpl(module, 
+						   new ConfigurationCommandProcessor(module, module.getSchema(), 
+										     module.getChildSchema(), 
+										     this.configurationManager)), null)
                             );
                 } else {
                     this.buildNavigationTree(children, module.getModules());
