@@ -23,5 +23,5 @@ public interface OutputProvider {
      * @param input - a collection of (possibly empty) input items. 
      * @return an output Object.
      */
-    public Object getOutput(Request request);
+    public Response getOutput(Request request);
 }

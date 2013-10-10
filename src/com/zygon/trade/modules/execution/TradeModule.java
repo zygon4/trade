@@ -5,6 +5,7 @@ package com.zygon.trade.modules.execution;
 
 import com.zygon.trade.Module;
 import com.zygon.trade.Request;
+import com.zygon.trade.Response;
 import com.zygon.trade.strategy.TradeAgent;
 import com.zygon.trade.strategy.TradeSummary;
 
@@ -38,7 +39,7 @@ public class TradeModule extends Module {
     }
     
     @Override
-    public Object getOutput(Request request) {
+    public Response getOutput(Request request) {
         
         String output = null;
         StringBuilder sb = new StringBuilder();
@@ -58,7 +59,7 @@ public class TradeModule extends Module {
                     sb.append('\n');
                 }
             } else {
-                sb.append("Unknown command: ").append(request.getCommand());
+                sb.append("Unknown command: ").append(request.getCommandName());
             }
         } else if (request.isListCommandRequest()) {
             sb.append(String.format(" - %s", TRADE_STATE)).append('\n');
@@ -67,7 +68,7 @@ public class TradeModule extends Module {
         
         output = sb.toString();
         
-        return output;
+        return new Response(output);
     }
     
     @Override

@@ -28,7 +28,7 @@ public class UIModule extends Module {
     @Override
     public void initialize() {
         
-        this.controller = new UIController(this.getRoot(), this.getRoot().getModules());
+        this.controller = new UIController(this.getRoot(), this.getRoot().getModules(), null); // null for now
         
         try {
             this.controller.initialize();

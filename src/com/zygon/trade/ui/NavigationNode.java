@@ -11,6 +11,7 @@ import asg.cliche.ShellDependent;
 import asg.cliche.ShellFactory;
 import com.zygon.trade.OutputProvider;
 import com.zygon.trade.Request;
+import com.zygon.trade.Response;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,7 +127,7 @@ public class NavigationNode implements ShellDependent {
         Map<String, Object> lc = new HashMap<>();
         lc.put(Request.LC, null);
         Request request = new Request(lc);
-        String output = (String) this.outputProvider.getOutput(request);
+        Response output = this.outputProvider.getOutput(request);
         
         System.out.println(output);
     }

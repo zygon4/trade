@@ -4,6 +4,8 @@
 
 package com.zygon.trade;
 
+import java.io.File;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.apache.commons.daemon.Daemon;
@@ -20,20 +22,20 @@ public class Service implements Daemon {
 
     private static final Logger log = LoggerFactory.getLogger(Service.class);
 
+    @Deprecated
     private static Module[] findModules() {
         ModuleFinder moduleFinder = new ModuleFinder();
         return moduleFinder.getModules();
     }
     
+    private final ConnectionManager connectionManager;
+    private ConfigurationManager configurationManager;
+    private ModuleSet moduleSet;
+    
     private Module kernel;
-    private final Module[] modules;
-
-    public Service(Module[] modules) {
-        this.modules = modules;
-    }
-
-    public Service() {
-        this(findModules());
+    
+    public Service() throws ClassNotFoundException {
+        this.connectionManager = new ConnectionManager("org.apache.derby.jdbc.EmbeddedDriver");
     }
     
     @Override
@@ -44,7 +46,17 @@ public class Service implements Daemon {
             throw new IllegalStateException("Kernel is already initialized");
         }
         
-        this.kernel = new Kernel(this.modules);
+        // TODO: pass in root dir
+        System.setProperty("trade.rootdir", File.pathSeparator + "home" + File.pathSeparator + 
+                "zygon" + File.pathSeparator + "opt" + File.pathSeparator + "trade");
+        
+        // ConfigurationManager is a bump on a log right now.
+        this.configurationManager = new ConfigurationManager(new DerbyStorage(this.connectionManager.getConnection()));
+        
+        this.moduleSet = new ModuleSet(this.configurationManager.getStorage());
+        Module[] modules = this.moduleSet.getModules();
+        
+        this.kernel = new Kernel(modules);
     }
 
     private final Object initLock = new Object();
@@ -83,6 +95,14 @@ public class Service implements Daemon {
     @Override
     public void destroy() {
         log.info(new Date(System.currentTimeMillis())+": Destroying");
+        
+        try {
+            this.connectionManager.close();
+        } catch (SQLException e) {
+            // Not sure what else to do..
+            e.printStackTrace(System.err);
+        }
+        
         synchronized (this.initLock) {
             initLock.notifyAll();
         }

@@ -32,6 +32,7 @@ public class CassandraDatabase implements Database {
 
     @Override
     public void close() throws IOException {
+        // TDB
     }
 
     @Override

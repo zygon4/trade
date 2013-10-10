@@ -30,7 +30,7 @@ public final class Request {
         return (String[]) this.input.get(ARGS);
     }
     
-    public String getCommand() {
+    public String getCommandName() {
         return (String) this.input.get(CMD);
     }
     

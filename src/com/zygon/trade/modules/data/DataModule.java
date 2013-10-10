@@ -5,6 +5,8 @@
 package com.zygon.trade.modules.data;
 
 import com.zygon.trade.Module;
+import com.zygon.trade.Property;
+import com.zygon.trade.Schema;
 import com.zygon.trade.db.Database;
 import com.zygon.trade.market.data.AbstractDataProvider;
 import com.zygon.trade.market.data.DataListener;
@@ -21,12 +23,24 @@ public class DataModule extends Module {
 
     private final DataListener listener;
     
-    public DataModule(String name, DataListener dataManager) {
-        super(name);
+    private static Schema CHILD_SCHEMA = new Schema(
+            new Property[]{
+                new Property("name"),
+                new Property("feed-provider", new String[] {"BOX", "MTGOX"}),
+                new Property("element", new String[] {"TRADE", "TICK"}),
+                new Property("foo", "thedefault")
+            });
+    
+    public DataModule(DataListener dataManager) {
+        super("Data", null, CHILD_SCHEMA, null);
         
         this.listener = dataManager;
     }
-
+    
+    public DataModule() {
+        this(null);
+    }
+    
     public DataListener getDataManager() {
         return this.listener;
     }

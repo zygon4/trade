@@ -7,6 +7,7 @@ import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
 import com.zygon.trade.Request;
+import com.zygon.trade.Response;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class AccountModule extends Module {
     }
     
     @Override
-    public Object getOutput(Request request) {
+    public Response getOutput(Request request) {
         
         String output = null;
         
@@ -75,13 +76,13 @@ public class AccountModule extends Module {
 
                 output = sb.toString();
             } else {
-                output = "Unknown command: " + request.getCommand();
+                output = "Unknown command: " + request.getCommandName();
             }
         } else if (request.isListCommandRequest()) {
             output = " - acnt <user>";
         }
         
-        return output;
+        return new Response(output);
     }
 
     @Override

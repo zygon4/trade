@@ -6,7 +6,10 @@ package com.zygon.trade.ui;
 
 import asg.cliche.Shell;
 import asg.cliche.ShellFactory;
+import com.zygon.trade.ConfigurationCommandProcessor;
+import com.zygon.trade.ConfigurationManager;
 import com.zygon.trade.Module;
+import com.zygon.trade.OutputProviderImpl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +22,27 @@ public class UIController {
 
     private final Module root;
     private final Module[] modules;
+    private final ConfigurationManager configurationManager;
     
     private Shell shell = null;
 
-    public UIController(Module root, Module[] modules) {
+    // Not crazy about passing through the Configuration Manager but i don't
+    // want each Module to have a reference to it.
+    public UIController(Module root, Module[] modules, ConfigurationManager configurationManager) {
         this.root = root;
         this.modules = modules;
+        this.configurationManager = configurationManager;
     }
 
     private void buildNavigationTree (List<NavigationNode> children, Module[] modules) {
         if (modules != null) {
             for (Module module : modules) {
                 if (module.getModules() == null) {
-                    children.add(new NavigationNode(module, null));
+                    children.add(new NavigationNode(
+                            // Here we are injecting some additional functionality to keep the configuration
+                            // code outside of the Module implementation.
+                            new OutputProviderImpl(module, new ConfigurationCommandProcessor(module, module.getSchema(), module.getChildSchema(), this.configurationManager)), null)
+                            );
                 } else {
                     this.buildNavigationTree(children, module.getModules());
                 }
