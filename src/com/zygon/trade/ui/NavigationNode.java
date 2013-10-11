@@ -154,4 +154,14 @@ public class NavigationNode implements ShellDependent {
     private void setParent(NavigationNode parent) {
         this.parent = parent;
     }
+    
+    @Command(description="Display current", abbrev="s")
+    public void status() {
+        Map<String, Object> status = new HashMap<>();
+        status.put(Request.STATUS, null);
+        Request request = new Request(status);
+        Response output = this.outputProvider.getOutput(request);
+        
+        System.out.println(output);
+    }
 }
