@@ -13,6 +13,8 @@ import java.util.Map;
 public final class Request {
     
     public static final String CMD = "_cmd";
+    public static final String CREATE = "_create";
+    public static final String EDIT = "_edit";
     public static final String ARGS = "_args";
     public static final String LC = "_lc";
     public static final String STATUS = "_s";
@@ -47,6 +49,14 @@ public final class Request {
         return this.input.containsKey(CMD);
     }
 
+    public boolean isCreateRequest() {
+        return this.input.containsKey(CREATE);
+    }
+    
+    public boolean isEditRequest() {
+        return this.input.containsKey(EDIT);
+    }
+    
     public boolean isListCommandRequest() {
         return this.input.containsKey(LC);
     }
