@@ -278,34 +278,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     @Override
     public CommandResult process(Command command) {
         return CommandResult.SUCCESS;
-        
-//        CommandResult result = null;
-//        
-//        if (command.isEditRequest()) {
-//            if (this.hasSchema()) {
-//                if (command.hasArguments()) {
-//                    
-//                    // TODO: link up the args with the schema
-//                    
-//                } else {
-//                    // do we care?
-//                }
-//                
-//            } else {
-//                logger.error("Unable to process edit request. No schema.");
-//                throw new IllegalArgumentException("Unable to process edit request. No schema.");
-//            }
-//        } else if (command.isCreateRequest()) {
-//            if (this.hasChildSchema()) {
-//                
-//                // TODO
-//            } else {
-//                logger.error("Unable to process create request. No child schema.");
-//                throw new IllegalArgumentException("Unable to process create request. No child schema.");
-//            }
-//        }
-//        
-//        return result;
     }
     
     private void setParent(Module parent) {

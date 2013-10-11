@@ -25,7 +25,8 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
     }
     
     private CommandResult handleEditRequest(Schema schema, String[] arguments) {
-        return null;
+        // TODO:
+        return CommandResult.SUCCESS;
     }
     
     @Override
