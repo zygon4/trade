@@ -21,6 +21,10 @@ public class Command {
         this.arguments = arguments;
     }
 
+    public String[] getArguments() {
+        return this.arguments;
+    }
+
     public String getName() {
         return this.name;
     }
