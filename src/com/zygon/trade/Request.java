@@ -15,6 +15,7 @@ public final class Request {
     public static final String CMD = "_cmd";
     public static final String ARGS = "_args";
     public static final String LC = "_lc";
+    public static final String STATUS = "_s";
     
     private final Map<String, Object> input;
 
@@ -48,5 +49,9 @@ public final class Request {
 
     public boolean isListCommandRequest() {
         return this.input.containsKey(LC);
+    }
+    
+    public boolean isStatusRequest() {
+        return this.input.containsKey(STATUS);
     }
 }
