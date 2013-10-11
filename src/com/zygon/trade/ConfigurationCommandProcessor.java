@@ -24,6 +24,10 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
         this.configurationManager = configurationManager;
     }
     
+    private CommandResult handleEditRequest(Schema schema, String[] arguments) {
+        return null;
+    }
+    
     @Override
     public CommandResult process(Command command) {
         CommandResult result = null;
@@ -31,11 +35,10 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
         if (command.isEditRequest()) {
             if (this.schema != null) {
                 if (command.hasArguments()) {
-                    
-                    // TODO: link up the args with the schema
-                    
+                    result = this.handleEditRequest(this.schema, command.getArguments());
                 } else {
-                    // do we care?
+                    logger.error("Unable to process create request. No arguments provided.");
+                    throw new IllegalArgumentException("Unable to process edit request. No arguments provided.");
                 }
                 
             } else {

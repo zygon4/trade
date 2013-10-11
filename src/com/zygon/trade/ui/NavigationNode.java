@@ -72,6 +72,22 @@ public class NavigationNode implements ShellDependent {
     public void cmd (@Param(name="command", description="The command to execute") String cmd) {
         this.cmd(cmd, (String[]) null);
     }
+    
+    @Command(description="Edit configuration")
+    public void edit (@Param(name="edit", description="name=<value>") String ...arguments) {
+        
+        Map<String, Object> command = new HashMap<>();
+        command.put(Request.EDIT, null);
+        if (arguments != null) {
+            command.put(Request.ARGS, arguments);
+        }
+        Request request = new Request(command);
+        
+        Object output = this.outputProvider.getOutput(request);
+        if (output != null) {
+            System.out.println(output);
+        }
+    }
             
     protected NavigationNode getParent() {
         return this.parent;

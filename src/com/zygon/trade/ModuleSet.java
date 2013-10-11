@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author zygon
  */
-public class ModuleSet {
+/*pkg*/ class ModuleSet {
 
     private final Map<String, Module> modulesById = new HashMap<>();
     private final InstallableStorage installableStorage;
@@ -18,6 +18,10 @@ public class ModuleSet {
     public ModuleSet(InstallableStorage installableStorage) {
         this.installableStorage = installableStorage;
         this.loadModules();
+    }
+    
+    void configure() {
+        // TBD:
     }
     
     private Module createModule(MetaData metaData) 
@@ -55,7 +59,10 @@ public class ModuleSet {
             }
             
             try {
-                this.modulesById.put(moduleId, createModule(moduleMeta));
+                Module module = createModule(moduleMeta);
+                module.configure(moduleMeta.getConfigurable().getConfiguration());
+                
+                this.modulesById.put(moduleId, module);
             } catch (Exception e) {
                 // Not quite sure what to do - this is fatal
                 throw new RuntimeException(e);

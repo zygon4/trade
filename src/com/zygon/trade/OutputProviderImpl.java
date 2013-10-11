@@ -39,7 +39,7 @@ public class OutputProviderImpl implements OutputProvider {
         if (request.isCommandRequest()) {
             String commandName = request.getCommandName();
             
-            if (commandName.equals(Command.CREATE) || commandName.equals(Command.EDIT)) {
+            if (request.isCreateRequest() || request.isEditRequest()) {
                 
                 Command command = new Command(commandName, request.getArgs());
                 CommandResult result = this.cmdProcessor.process(command);

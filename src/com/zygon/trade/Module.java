@@ -58,7 +58,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
     
     private void createChild(String cls, String[] configuration) {
-        Configuration config = new Configuration(); // TODO: feed in args
+        Configuration config = null; //new Configuration(); // TODO: feed in args
         
         Class<?> clazz = null;
         
@@ -130,6 +130,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         this.uninitialize();
     }
 
+    protected void doWriteStatus(StringBuilder sb) {
+        // If children have additional info to write out
+    }
+    
     @Override
     public ChildSchema getChildSchema() {
         return this.childSchema;
@@ -219,6 +223,15 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
             }
             
             output = sb.toString();
+        } else if (request.isStatusRequest()) {
+            if (this.hasSchema()) {
+                StringBuilder sb = new StringBuilder();
+                this.writeStatus(sb, this);
+                sb.append('\n');
+                output = sb.toString();
+            } else {
+                output = "";
+            }
         }
         
         return new Response(output);
@@ -308,6 +321,25 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         // TODO: remove meta information
         
         logger.info("Uninstallation of " + this.getDisplayname() + " complete");
+    }
+    
+    private void writeStatus (StringBuilder sb, Configurable configurable) {
+        Configuration config = configurable.getConfiguration();
+        Schema schema = config.getSchema();
+        
+        for (int i = 0; i < schema.getProperties().length; i++) {
+            Property prop = schema.getProperties()[i];
+            String configValue = config.getValue(prop.getName());
+            if (configValue == null) {
+                configValue = "[        ]";
+            }
+            sb.append(prop.getName()).append(":").append(configValue);
+            if (i < schema.getProperties().length - 1) {
+                sb.append('\n');
+            }
+        }
+        
+        this.doWriteStatus(sb);
     }
     
     // TBD: an output controller

@@ -54,7 +54,9 @@ public class Service implements Daemon {
         this.configurationManager = new ConfigurationManager(new DerbyStorage(this.connectionManager.getConnection()));
         
         this.moduleSet = new ModuleSet(this.configurationManager.getStorage());
+        
         Module[] modules = this.moduleSet.getModules();
+        this.moduleSet.configure();
         
         this.kernel = new Kernel(modules);
     }
