@@ -15,6 +15,7 @@ import com.zygon.trade.market.data.DataLogger;
 import com.zygon.trade.market.data.DataProvider;
 import com.zygon.trade.market.data.PersistentDataLogger;
 import com.zygon.trade.modules.core.DBModule;
+import java.util.Collection;
 
 /**
  *
@@ -22,19 +23,8 @@ import com.zygon.trade.modules.core.DBModule;
  */
 public class DataModule extends Module {
 
-    private final DataListener listener;
-  
-    private static Schema CHILD_SCHEMA = null;
-    /*
-      new ChildSchema(
-            new Property[]{
-                new Property("name"),
-                new Property("feed-provider", new String[] {"BOX", "MTGOX"}),
-                new Property("element", new String[] {"TRADE", "TICK"}),
-                new Property("foo", "thedefault")
-            });
-    */
-
+    private final DataListener listener = null;
+    
     private static Schema SCHEMA = new Schema(
             new Property[]{
                 new Property("name"),
@@ -43,14 +33,24 @@ public class DataModule extends Module {
                 new Property("foo", "thedefault")
             });
     
-    public DataModule(DataListener dataManager) {
-        super("Data", SCHEMA, CHILD_SCHEMA, null);
-        
-        this.listener = dataManager;
-    }
+    private static Schema CHILD_SCHEMA = null;
+
+    /*
+    new ChildSchema(
+    new Property[]{
+    new Property("name"),
+    new Property("feed-provider", new String[] {"BOX", "MTGOX"}),
+    new Property("element", new String[] {"TRADE", "TICK"}),
+    new Property("foo", "thedefault")
+    });
+     */
     
+    public DataModule(String name, Schema schema, ChildSchema childSchema) {
+        super(name, schema, childSchema, null);
+    }
+
     public DataModule() {
-        this(null);
+        super("data", SCHEMA, null);
     }
     
     public DataListener getDataManager() {
