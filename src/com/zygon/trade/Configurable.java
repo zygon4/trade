@@ -7,7 +7,7 @@ package com.zygon.trade;
  */
 public interface Configurable {
     public void configure(Configuration configuration);
-    public Schema getChildSchema();
+    public ChildSchema getChildSchema();
     public Configuration getConfiguration();
     public Schema getSchema();
 }

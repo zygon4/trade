@@ -22,13 +22,13 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     private final String name;
     private final Logger logger;
     private final Schema schema; 
-    private final Schema childSchema;
+    private final ChildSchema childSchema;
     private final Set<String> commands = new HashSet<>();
      
     private Module parent = null;
     private Configuration configuration; // is it easier to set a config once
                                          // and mutate it - or keep resetting it?
-    protected Module(String name, Schema schema, Schema childSchema, Collection<String> supportedCommands) {
+    public Module(String name, Schema schema, ChildSchema childSchema, Collection<String> supportedCommands) {
         this.name = name;
         this.logger = LoggerFactory.getLogger(this.name);
         
@@ -42,7 +42,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         }
     }
     
-    protected Module(String name, Schema schema, Schema childSchema) {
+    protected Module(String name, Schema schema, ChildSchema childSchema) {
         this(name, schema, childSchema, null);
     }
     
@@ -131,7 +131,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
 
     @Override
-    public Schema getChildSchema() {
+    public ChildSchema getChildSchema() {
         return this.childSchema;
     }
 
