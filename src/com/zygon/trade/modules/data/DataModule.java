@@ -15,7 +15,6 @@ import com.zygon.trade.market.data.DataLogger;
 import com.zygon.trade.market.data.DataProvider;
 import com.zygon.trade.market.data.PersistentDataLogger;
 import com.zygon.trade.modules.core.DBModule;
-import java.util.Collection;
 
 /**
  *
