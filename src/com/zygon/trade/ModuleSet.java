@@ -3,7 +3,6 @@ package com.zygon.trade;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class ModuleSet {
         } else {
             constructor = clazz.getConstructor(String.class);
             newInstance = constructor.newInstance(metaData.getId());
-        }
+        } 
         
         return newInstance;
     }
