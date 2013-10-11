@@ -11,6 +11,8 @@ import java.io.IOException;
 /**
  *
  * @author zygon
+ * 
+ * TODO: Embedded Jetty
  */
 public class UIModule extends Module {
 
