@@ -25,9 +25,9 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     compile group: 'org.hectorclient', name: 'hector-core', version: '1.1-4'
     compile group: 'com.googlecode.cliche', name: 'cliche', version: '1.0-SNAPSHOT'
-
-    compile group: 'com.impetus.core', name: 'kundera-core', version: '2.5'
-    compile group: 'com.impetus.client', name: 'kundera-cassandra', version: '2.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.3'
 
     compile group: 'com.eaio.uuid', name: 'uuid', version: '3.2'
     
