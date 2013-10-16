@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Data",
+    "description": "These are the options available for the Data module",
+    "type": "object",
+
+    "properties": {
+        "id": {
+            "description": "The unique identifier for a product",
+            "type": "integer"
+        }
+    },
+    "required": ["id"]
+}

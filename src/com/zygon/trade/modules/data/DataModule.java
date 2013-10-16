@@ -15,6 +15,10 @@ import com.zygon.trade.market.data.DataLogger;
 import com.zygon.trade.market.data.DataProvider;
 import com.zygon.trade.market.data.PersistentDataLogger;
 import com.zygon.trade.modules.core.DBModule;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -87,4 +91,19 @@ public class DataModule extends Module {
     public void uninitialize() {
         this.listener.unintialize();
     }
+    
+    public static void main (String[] args) throws IOException, URISyntaxException {
+        
+        Map<String,Object> userData = new HashMap<String,Object>();
+        Map<String,String> nameStruct = new HashMap<String,String>();
+        nameStruct.put("first", "Joe");
+        nameStruct.put("last", "Sixpack");
+        userData.put("name", nameStruct);
+        userData.put("gender", "MALE");
+        userData.put("verified", Boolean.FALSE);
+        userData.put("userImage", "Rm9vYmFyIQ==");
+
+        
+    }
+    
 }

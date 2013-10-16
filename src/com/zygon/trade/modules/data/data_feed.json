@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Data feed",
+    "description": "This represents a data feed instance",
+    "type": "object",
+
+    "properties": {
+        "id": {
+            "description": "The unique identifier for a feed",
+            "type": "integer"
+        },
+        "name": {
+            "description": "Name of the feed",
+            "type": "string"
+        },
+        
+    },
+    "required": ["id", "name"]
+}
