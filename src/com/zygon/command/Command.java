@@ -1,5 +1,5 @@
 
-package com.zygon.trade;
+package com.zygon.command;
 
 /**
  *
@@ -33,11 +33,11 @@ public class Command {
         return this.arguments != null;
     }
     
-    /*pkg*/ boolean isCreateRequest() {
+    public boolean isCreateRequest() {
         return this.name.equals(CREATE);
     }
     
-    /*pkg*/ boolean isEditRequest() {
+    public boolean isEditRequest() {
         return this.name.equals(EDIT);
     }
 }

@@ -4,6 +4,9 @@
 
 package com.zygon.trade;
 
+import com.zygon.command.CommandProcessor;
+import com.zygon.command.CommandResult;
+import com.zygon.command.Command;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
