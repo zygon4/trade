@@ -1,8 +1,8 @@
 
 package com.zygon.data.feed;
 
-import enterprise.db.data.Context;
-import enterprise.db.data.PollFeed;
+import com.zygon.data.Context;
+import com.zygon.data.PollFeed;
 
 /**
  *

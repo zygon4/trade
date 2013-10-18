@@ -1,8 +1,8 @@
 
 package com.zygon.data.feed.currency;
 
-import enterprise.db.data.Context;
-import enterprise.db.data.feed.PollFeedAdapter;
+import com.zygon.data.Context;
+import com.zygon.data.feed.PollFeedAdapter;
 
 /**
  *

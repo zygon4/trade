@@ -1,7 +1,7 @@
 
 package com.zygon.data.feed;
 
-import enterprise.db.data.Context;
+import com.zygon.data.Context;
 
 /**
  *

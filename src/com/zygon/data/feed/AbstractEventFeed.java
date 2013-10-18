@@ -1,8 +1,9 @@
 
 package com.zygon.data.feed;
 
-import enterprise.db.data.Context;
-import enterprise.db.data.EventFeed;
+import com.zygon.data.Context;
+import com.zygon.data.EventFeed;
+import com.zygon.data.EventFeed.Registration;
 import java.util.HashSet;
 import java.util.Set;
 

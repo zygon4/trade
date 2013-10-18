@@ -5,9 +5,8 @@ import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
 import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.service.polling.PollingMarketDataService;
-import enterprise.db.data.Context;
-import enterprise.db.data.feed.currency.CurrencyEventFeed;
-import java.io.IOException;
+import com.zygon.data.Context;
+import com.zygon.data.feed.currency.CurrencyEventFeed;
 
 /**
  *
@@ -31,8 +30,6 @@ public class KrakenFeed extends CurrencyEventFeed<Ticker> {
             ticker = this.marketDataService.getTicker(this.getTradeable(), this.getCurrency());
         } catch (ExchangeException ee) {
             ee.printStackTrace();
-        } catch (IOException io) {
-            io.printStackTrace();
         }
         
         return ticker;

@@ -1,8 +1,8 @@
 
 package com.zygon.data.feed;
 
-import enterprise.db.data.Context;
-import enterprise.db.data.Feed;
+import com.zygon.data.Context;
+import com.zygon.data.Feed;
 
 /**
  *
@@ -17,11 +17,13 @@ public abstract class AbstractFeed<T> implements Feed<T> {
         this.ctx = ctx;
         this.name = ctx.getName();
     }
+
+    public Context getCtx() {
+        return ctx;
+    }
     
     @Override
     public String getDisplayIdentifier() {
         return this.name;
     }
-
-    
 }
