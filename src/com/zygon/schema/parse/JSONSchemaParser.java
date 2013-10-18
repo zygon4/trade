@@ -2,14 +2,19 @@
 package com.zygon.schema.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zygon.schema.ArraySchemaElement;
+import com.zygon.schema.IntegerSchemaElement;
+import com.zygon.schema.NumericSchemaElement;
 import com.zygon.schema.PropertiesSchemaElement;
 import com.zygon.schema.Schema;
 import com.zygon.schema.SchemaElement;
+import com.zygon.schema.StringElement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -19,7 +24,10 @@ public class JSONSchemaParser implements SchemaParser {
 
     private static enum Type {
         ARRAY ("array"),
-        OBJECT ("object");
+        INTEGER ("integer"),
+        NUMBER ("number"),
+        OBJECT ("object"),
+        STRING ("string");
         
         private final String val;
 
@@ -44,12 +52,18 @@ public class JSONSchemaParser implements SchemaParser {
     
     private static enum Keyword {
         ARRAY ("array"),
+        EXCLUSIVE_MINIMUM ("exclusiveMinimum"),
         SCHEMA ("$schema"),
         TITLE ("title"),
         DESC ("description"),
+        ITEMS ("items"),
+        MAXIMUM ("maximum"),
+        MIN_ITEMS ("minItems"),
+        MINIMUM ("minimum"),
         PROPERTIES ("properties"),
         TYPE ("type"),
-        REQUIRED ("required");
+        REQUIRED ("required"),
+        UNIQUE ("uniqueItems");
         
         private final String val;
 
@@ -72,34 +86,189 @@ public class JSONSchemaParser implements SchemaParser {
         }
     }
     
-    private static final String PROP_SCHEMA = "$schema";
-    private static final String PROP_TITLE = "title";
-    private static final String PROP_DESC = "description";
-    private static final String PROP_TYPE = "type";
-    private static final String PROP_REQUIRED = "required";
-    
-    
-    private static final String TYPE_OBJECT = "object";
-    private static final String TYPE_ARRAY = "array";
-    
-    private SchemaElement parse (String key, Object prop) {
-        String id = null;
-        String desc = null;
-        Type type = null;
+    // TODO: unfinished
+    private ArraySchemaElement parseArray (String title, String description, Map<String, Object> props) {
+        /*
+         "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        }
+         */
         
+        if (props.containsKey(Keyword.TITLE.getVal())) {
+            title = (String) props.get(Keyword.TITLE.getVal());
+        }
         
+        if (props.containsKey(Keyword.DESC.getVal())) {
+            description = (String) props.get(Keyword.DESC.getVal());
+        }
         
-        return null;
+        int minItems = 0;
+        
+        if (props.containsKey(Keyword.MIN_ITEMS.getVal())) {
+            minItems = (int) props.get(Keyword.MIN_ITEMS.getVal());
+        }
+        
+        boolean uniqueItems = false;
+        
+        if (props.containsKey(Keyword.UNIQUE.getVal())) {
+            uniqueItems = (boolean) props.get(Keyword.UNIQUE.getVal());
+        }
+        
+        SchemaElement element = null;
+        
+        if (props.containsKey(Keyword.ITEMS.getVal())) {
+            Map<String, Object> properties = (Map<String, Object>) props.get(Keyword.ITEMS.getVal());
+            element = this.parse(properties, title);
+        } else {
+            throw new IllegalStateException();
+        }
+        
+        return new ArraySchemaElement(title, description, element, minItems, uniqueItems);
     }
     
-    private SchemaElement parse (HashMap<String, Object> props) {
-//        String id = props.get(id);
-        String desc = null;
-        Type type = null;
+    private PropertiesSchemaElement parseProperties (String title, String description, Map<String, Object> props) {
         
+        /*
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "The unique identifier for a product",
+                "type": "integer"
+            },
+            "name": {
+                "description": "Name of the product",
+                "type": "string"
+            },
+        }
+        "required": ["id", "name"]
+        */
         
+        String[] required = null;
         
-        return null;
+        if (props.containsKey(Keyword.REQUIRED.getVal())) {
+            List<String> req = (List<String>) props.get(Keyword.REQUIRED.getVal());
+            required = req.toArray(new String[req.size()]);
+        }
+        
+        SchemaElement[] elements = null;
+        
+        if (props.containsKey(Keyword.PROPERTIES.getVal())) {
+            List<SchemaElement> elems = new ArrayList<>();
+            Map<String, Object> properties = (Map<String, Object>) props.get(Keyword.PROPERTIES.getVal());
+            
+            for (String key : properties.keySet()) {
+                elems.add(this.parse((Map<String,Object>)properties.get(key), key));
+            }
+            
+            elements = elems.toArray(new SchemaElement[elems.size()]);
+        } else {
+            throw new IllegalStateException();
+        }
+        
+        return new PropertiesSchemaElement(description, elements, required);
+    }
+    
+    private IntegerSchemaElement parseInteger (String title, String description, Map<String, Object> props) {
+        
+//        "price": {
+//            "type": "number",
+//            "minimum": 0,
+//            "exclusiveMinimum": true
+//        },
+        
+        int min = 0;
+        
+        if (props.containsKey(Keyword.MINIMUM.getVal())) {
+            min = (int) props.get(Keyword.MINIMUM.getVal());
+        }
+        
+        int max = 0;
+        
+        if (props.containsKey(Keyword.MAXIMUM.getVal())) {
+            max = (int) props.get(Keyword.MAXIMUM.getVal());
+        }
+        
+        boolean exclusiveMin = false;
+        
+        if (props.containsKey(Keyword.EXCLUSIVE_MINIMUM.getVal())) {
+            exclusiveMin = (boolean) props.get(Keyword.EXCLUSIVE_MINIMUM.getVal());
+        }
+        
+        return new IntegerSchemaElement(title, description, min, max, exclusiveMin);
+    }
+    
+    private NumericSchemaElement parseNumeric (String title, String description, Map<String, Object> props) {
+        
+//        "price": {
+//            "type": "number",
+//            "minimum": 0,
+//            "exclusiveMinimum": true
+//        },
+        
+        int min = 0;
+        
+        if (props.containsKey(Keyword.MINIMUM.getVal())) {
+            min = (int) props.get(Keyword.MINIMUM.getVal());
+        }
+        
+        int max = 0;
+        
+        if (props.containsKey(Keyword.MAXIMUM.getVal())) {
+            max = (int) props.get(Keyword.MAXIMUM.getVal());
+        }
+        
+        boolean exclusiveMin = false;
+        
+        if (props.containsKey(Keyword.EXCLUSIVE_MINIMUM.getVal())) {
+            exclusiveMin = (boolean) props.get(Keyword.EXCLUSIVE_MINIMUM.getVal());
+        }
+        
+        return new NumericSchemaElement(title, description, min, max, exclusiveMin);
+    }
+    
+    private StringElement parseString (String title, String description, Map<String, Object> props) {
+        // TBD: regex, constraints, etc
+        return new StringElement(title, description);
+    }
+    
+    private SchemaElement parse (Map<String, Object> props, String id) {
+        
+        String desc = (String) props.get(Keyword.DESC.getVal());
+        Type type = Type.instance((String) props.get(Keyword.TYPE.getVal()));
+        
+        SchemaElement element = null;
+        
+        switch (type) {
+            case ARRAY:
+                element = parseArray(id, desc, props);
+                break;
+            case INTEGER:
+                element = parseInteger(id, desc, props);
+                break;
+            case NUMBER:
+                element = parseNumeric(id, desc, props);
+                break;
+            case OBJECT:
+                element = parseProperties(id, desc, props);
+                break;
+            case STRING:
+                element = parseString(id, desc, props);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        
+        return element;
+    }
+    
+    private SchemaElement parse (Map<String, Object> props) {
+        String id = (String) props.get(Keyword.TITLE.getVal());
+        return this.parse (props, id);
     }
     
     @Override
@@ -107,68 +276,8 @@ public class JSONSchemaParser implements SchemaParser {
         
         HashMap<String, Object> props = (HashMap<String,Object>) new ObjectMapper().readValue(is, HashMap.class);
         
-//        SchemaElement element = this.parse(null, props.)
-        
-        String schema = null;
-        String title = null;
-        String desc = null;
-        
-        Type type = null;
-        List<String> required = null;
-        List<SchemaElement> elements = new ArrayList<>();
-        
-        for (String key : props.keySet()) {
-            Keyword kw = Keyword.instance(key);
-                
-            switch (kw) {
-                case ARRAY:
-                    if (!elements.isEmpty()) {
-                        throw new IllegalStateException();
-                    }
-                    throw new UnsupportedOperationException();
-                case DESC:
-                    desc = (String) props.get(key);
-                    break;
-                case PROPERTIES:
-                    if (!elements.isEmpty()) {
-                        throw new IllegalStateException();
-                    }
-                    
-                    HashMap<String, Object> properties = (HashMap<String, Object>) props.get(key);
-                    
-                    for (String propertyName : properties.keySet()) {
-                        elements.add(parse(propertyName, properties.get(propertyName)));
-                    }
-                    
-                    break;
-                case REQUIRED:
-                    required = (List<String>) props.get(key);
-                    break;
-                case SCHEMA:
-                    schema = (String) props.get(key);
-                    break;
-                case TITLE:
-                    title = (String) props.get(key);
-                    break;
-                case TYPE:
-                    type = Type.instance((String) props.get(key));
-                    break;
-            }
-        }
-        
-        if (schema == null || title == null || type == null || elements.isEmpty()) {
-            // TODO: why
-            throw new IllegalArgumentException("invalid schema");
-        }
-        
-        SchemaElement element = null;
-        switch (type) {
-            case ARRAY:
-                throw new UnsupportedOperationException();
-            case OBJECT:
-//                element = new PropertiesSchemaElement(elements.toArray(new SchemaElement[elements.size()]), required.toArray(new String[required.size()]));
-                break;
-        }
+        String schema = (String) props.get(Keyword.SCHEMA.getVal());
+        SchemaElement element = parse(props);
         
         return new Schema(schema, element);
     }
