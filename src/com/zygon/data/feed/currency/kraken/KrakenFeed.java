@@ -11,6 +11,8 @@ import com.zygon.data.feed.currency.CurrencyEventFeed;
 /**
  *
  * @author david.charubini
+ * 
+ * TODO: move to behind the trade package wall
  */
 public class KrakenFeed extends CurrencyEventFeed<Ticker> {
 
