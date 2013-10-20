@@ -11,6 +11,7 @@ public class Command {
     public static final String CREATE = "create";
 
     private final String name;
+    // TBD: string array args seems like weak sauce
     private final String[] arguments;
 
     public Command(String name, String[] arguments) {
