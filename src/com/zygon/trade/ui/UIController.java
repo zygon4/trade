@@ -42,7 +42,7 @@ public class UIController {
                             // Here we are injecting some additional functionality to keep the configuration
                             // code outside of the Module implementation.
                             new OutputProviderImpl(module, 
-						   new ConfigurationCommandProcessor(module, module.getSchema(), 
+						   new ConfigurationCommandProcessor(module, module, 
 										     this.configurationManager)), null)
                             );
                 } else {

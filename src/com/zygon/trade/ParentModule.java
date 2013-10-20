@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ParentModule extends Module {
 
-    private final Class<Module> childClazz;
+    private final Class<? extends Module> childClazz;
     private final Logger logger;
     private final ConfigurationSchema childSchema;
     
-    public ParentModule(String name, Schema schema, Collection<String> supportedCommands, Class<Module> childClazz) {
+    public ParentModule(String name, Schema schema, Collection<String> supportedCommands, Class<? extends Module> childClazz) {
         super(name, schema, supportedCommands);
         
         this.childClazz = childClazz;
@@ -38,11 +38,11 @@ public abstract class ParentModule extends Module {
         this.childSchema = instance.getSchema();
     }
 
-    public ParentModule(String name, Schema schema, Class<Module> childClazz) {
+    public ParentModule(String name, Schema schema, Class<? extends Module> childClazz) {
         this (name, schema, null, childClazz);
     }
 
-    public ParentModule(String name, Class<Module> childClazz) {
+    public ParentModule(String name, Class<? extends Module> childClazz) {
         this(name, null, null, childClazz);
     }
     

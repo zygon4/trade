@@ -17,16 +17,26 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationCommandProcessor.class);
     
     private final CommandProcessor cmdProcessor;
-    private final ConfigurationSchema schema;
+    private final Configurable configurable;
     private final ConfigurationManager configurationManager;
 
-    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, ConfigurationSchema schema, ConfigurationManager configurationManager) {
+    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, Configurable configurable, ConfigurationManager configurationManager) {
         this.cmdProcessor = cmdProcessor;
-        this.schema = schema;
+        this.configurable = configurable;
         this.configurationManager = configurationManager;
     }
     
-    private CommandResult handleEditRequest(ConfigurationSchema schema, String[] arguments) {
+    private CommandResult handleEditRequest(Configurable configurable, String[] arguments) {
+        
+        /*
+         * TODO:
+         * - Convert args into something more tangible
+         * - Validate versus the config element
+         * - 
+         */
+        
+        
+//        this.configurable.c
         // TODO:
         return CommandResult.SUCCESS;
     }
@@ -36,9 +46,9 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
         CommandResult result = null;
         
         if (command.isEditRequest()) {
-            if (this.schema != null) {
+            if (this.configurable != null) {
                 if (command.hasArguments()) {
-                    result = this.handleEditRequest(this.schema, command.getArguments());
+                    result = this.handleEditRequest(this.configurable, command.getArguments());
                 } else {
                     logger.error("Unable to process create request. No arguments provided.");
                     throw new IllegalArgumentException("Unable to process edit request. No arguments provided.");
