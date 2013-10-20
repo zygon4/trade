@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The purpose of this class is to abstract away the responsibilities of 
+ * advertising, creating, deleting children
  *
  * @author zygon
  */
