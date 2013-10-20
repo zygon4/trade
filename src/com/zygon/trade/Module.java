@@ -74,7 +74,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     @Override
     public void configure(Configuration configuration) {
         // TODO: inspect properties and take action probably before setting
-        // the perm config
+        // the in memory config
         this.configuration = configuration;
     }
     
