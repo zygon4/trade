@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ParentModule extends Module {
 
-    private final Class<?> childClazz;
+    private final Class<Module> childClazz;
     private final Logger logger;
     private final ConfigurationSchema childSchema;
     
