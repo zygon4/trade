@@ -7,11 +7,11 @@ package com.zygon.schema;
  */
 public class NumericSchemaElement extends PrimativeSchemaElement {
 
-    private final int min; 
-    private final int max;
+    private final Integer min; 
+    private final Integer max;
     private final boolean exclusiveMinimum;
     
-    protected NumericSchemaElement(String id, String type, String description, int min, int max, boolean exclusiveMinimum) {
+    protected NumericSchemaElement(String id, Type type, String description, Integer min, Integer max, boolean exclusiveMinimum) {
         super(id, type, description);
         
         this.min = min;
@@ -19,19 +19,19 @@ public class NumericSchemaElement extends PrimativeSchemaElement {
         this.exclusiveMinimum = exclusiveMinimum;
     }
 
-    public NumericSchemaElement(String id, String description, int min, int max, boolean exclusiveMinimum) {
-        this(id, "number", description, min, max, exclusiveMinimum);
+    public NumericSchemaElement(String id, String description, Integer min, Integer max, boolean exclusiveMinimum) {
+        this(id, Type.NUMBER, description, min, max, exclusiveMinimum);
     }
     
-    public int getMax() {
-        return max;
+    public Integer getMax() {
+        return this.max;
     }
 
-    public int getMin() {
-        return min;
+    public Integer getMin() {
+        return this.min;
     }
 
     public boolean isExclusiveMinimum() {
-        return exclusiveMinimum;
+        return this.exclusiveMinimum;
     }
 }

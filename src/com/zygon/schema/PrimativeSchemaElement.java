@@ -7,7 +7,7 @@ package com.zygon.schema;
  */
 public class PrimativeSchemaElement extends SchemaElement {
     
-    public PrimativeSchemaElement(String id, String type, String description) {
+    public PrimativeSchemaElement(String id, Type type, String description) {
         super(id, type, description);
         
     }

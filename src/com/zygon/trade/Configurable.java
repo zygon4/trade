@@ -1,13 +1,14 @@
 
 package com.zygon.trade;
 
+import com.zygon.schema.ConfigurationSchema;
+
 /**
  *
  * @author zygon
  */
 public interface Configurable {
     public void configure(Configuration configuration);
-    public ChildSchema getChildSchema();
     public Configuration getConfiguration();
-    public Schema getSchema();
+    public ConfigurationSchema getSchema();
 }

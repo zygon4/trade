@@ -5,17 +5,16 @@ package com.zygon.trade;
  *
  * @author zygon
  * 
- * TODO: make schema flat file based - json?
  */
 public class Schema {
-    
-    private final Property[] properties;
-    
-    public Schema(Property[] properties) {
-        this.properties = properties;
+
+    private final String schemaResource;
+
+    public Schema(String schemaResource) {
+        this.schemaResource = schemaResource;
     }
 
-    public Property[] getProperties() {
-        return this.properties;
+    public String getSchemaResource() {
+        return this.schemaResource;
     }
 }

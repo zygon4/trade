@@ -4,6 +4,7 @@ package com.zygon.trade;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;
 import com.zygon.command.Command;
+import com.zygon.schema.ConfigurationSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,18 +17,16 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationCommandProcessor.class);
     
     private final CommandProcessor cmdProcessor;
-    private final Schema schema;
-    private final Schema childSchema;
+    private final ConfigurationSchema schema;
     private final ConfigurationManager configurationManager;
 
-    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, Schema schema, Schema childSchema, ConfigurationManager configurationManager) {
+    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, ConfigurationSchema schema, ConfigurationManager configurationManager) {
         this.cmdProcessor = cmdProcessor;
         this.schema = schema;
-        this.childSchema = childSchema;
         this.configurationManager = configurationManager;
     }
     
-    private CommandResult handleEditRequest(Schema schema, String[] arguments) {
+    private CommandResult handleEditRequest(ConfigurationSchema schema, String[] arguments) {
         // TODO:
         return CommandResult.SUCCESS;
     }
@@ -50,13 +49,16 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
                 throw new IllegalArgumentException("Unable to process edit request. No schema.");
             }
         } else if (command.isCreateRequest()) {
-            if (this.childSchema != null) {
-                
-                // TODO
-            } else {
-                logger.error("Unable to process create request. No child schema.");
-                throw new IllegalArgumentException("Unable to process create request. No child schema.");
-            }
+            
+            // TODO
+            
+//            if (this.childSchema != null) {
+//                
+//                
+//            } else {
+//                logger.error("Unable to process create request. No child schema.");
+//                throw new IllegalArgumentException("Unable to process create request. No child schema.");
+//            }
         } else {
             result = this.cmdProcessor.process(command);
         }

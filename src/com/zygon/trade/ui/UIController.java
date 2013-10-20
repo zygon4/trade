@@ -43,7 +43,6 @@ public class UIController {
                             // code outside of the Module implementation.
                             new OutputProviderImpl(module, 
 						   new ConfigurationCommandProcessor(module, module.getSchema(), 
-										     module.getChildSchema(), 
 										     this.configurationManager)), null)
                             );
                 } else {

@@ -7,6 +7,10 @@ package com.zygon.trade;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;
 import com.zygon.command.Command;
+import com.zygon.schema.ConfigurationSchema;
+import com.zygon.schema.parse.JSONSchemaParser;
+import com.zygon.schema.parse.SchemaParser;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,29 +28,43 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
 
     private final String name;
     private final Logger logger;
-    private final Schema schema; 
-    private final ChildSchema childSchema;
+    private final ConfigurationSchema schema; 
     private final Set<String> commands = new HashSet<>();
+    private final SchemaRenderer schemaRender = new SchemaRenderer();
      
     private Module parent = null;
     private Configuration configuration; // is it easier to set a config once
                                          // and mutate it - or keep resetting it?
-    public Module(String name, Schema schema, ChildSchema childSchema, Collection<String> supportedCommands) {
+    /*pkg*/ Module(String name, Schema schema, Collection<String> supportedCommands, SchemaParser schemaParser) {
         this.name = name;
         this.logger = LoggerFactory.getLogger(this.name);
         
-        this.schema = schema;
-        this.childSchema = childSchema;
+        try {
+            if (schema != null) {
+                this.schema = schemaParser.parse(schema.getSchemaResource(), this.getClass().getResourceAsStream(schema.getSchemaResource()));
+            } else {
+                this.schema = null;
+            }
+            
+        } catch (IOException io) {
+            // TBD: what to do? This is fatal..
+            this.logger.error(null, io);
+            throw new RuntimeException();
+        }
         
         if (supportedCommands != null) {
             for (String cmdName : supportedCommands) {
                 this.commands.add(cmdName);
             }
         }
+    }    
+    
+    public Module(String name, Schema schema, Collection<String> supportedCommands) {
+        this(name, schema, supportedCommands, new JSONSchemaParser());
     }
     
-    protected Module(String name, Schema schema, ChildSchema childSchema) {
-        this(name, schema, childSchema, null);
+    protected Module(String name, Schema schema) {
+        this(name, schema, null);
     }
     
     protected Module(String name) {
@@ -58,35 +76,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         // TODO: inspect properties and take action probably before setting
         // the perm config
         this.configuration = configuration;
-    }
-    
-    private void createChild(String cls, String[] configuration) {
-        Configuration config = null; //new Configuration(); // TODO: feed in args
-        
-        Class<?> clazz = null;
-        
-        try {
-            clazz = Class.forName(cls);
-        } catch (ClassNotFoundException cnfe) {
-            logger.error(null, cnfe);
-        }
-        
-        Module instance = null;
-        
-        try {
-            instance = (Module) clazz.getConstructor().newInstance();
-        } catch (Exception e) {
-            logger.error(null, e);
-        }
-        
-        instance.install();
-        
-        instance.configure(config);
-        instance.setParent(this);
-        
-        // TBD: how are children persisted? ?
-        
-        instance.initialize();
     }
     
     /*pkg*/ void doInit() {
@@ -135,11 +124,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
 
     protected void doWriteStatus(StringBuilder sb) {
         // If children have additional info to write out
-    }
-    
-    @Override
-    public ChildSchema getChildSchema() {
-        return this.childSchema;
     }
 
     @Override
@@ -215,13 +199,8 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
             
             if (this.hasSchema()) {
                 sb.append(Command.EDIT);
-                this.writeProperties(sb, this.schema);
                 sb.append('\n');
-            }
-            
-            if (this.hasChildSchema()) {
-                sb.append(Command.CREATE);
-                this.writeProperties(sb, this.childSchema);
+                this.writeProperties(sb, this.schema);
                 sb.append('\n');
             }
             
@@ -255,12 +234,8 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
 
     @Override
-    public Schema getSchema() {
+    public ConfigurationSchema getSchema() {
         return this.schema;
-    }
-    
-    protected final boolean hasChildSchema() {
-        return this.childSchema != null;
     }
     
     protected final boolean hasSchema() {
@@ -283,7 +258,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return CommandResult.SUCCESS;
     }
     
-    private void setParent(Module parent) {
+    /*pkg*/ void setParent(Module parent) {
         this.parent = parent;
     }
     
@@ -300,41 +275,26 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     private void writeStatus (StringBuilder sb, Configurable configurable) {
         Configuration config = configurable.getConfiguration();
-        Schema schema = config.getSchema();
+        ConfigurationSchema schema = config.getSchema();
         
-        for (int i = 0; i < schema.getProperties().length; i++) {
-            Property prop = schema.getProperties()[i];
-            String configValue = config.getValue(prop.getName());
-            if (configValue == null) {
-                configValue = "[        ]";
-            }
-            sb.append(prop.getName()).append(":").append(configValue);
-            if (i < schema.getProperties().length - 1) {
-                sb.append('\n');
-            }
-        }
+        // TBD
+        
+//        for (int i = 0; i < schema.getProperties().length; i++) {
+//            Property prop = schema.getProperties()[i];
+//            String configValue = config.getValue(prop.getName());
+//            if (configValue == null) {
+//                configValue = "[        ]";
+//            }
+//            sb.append(prop.getName()).append(":").append(configValue);
+//            if (i < schema.getProperties().length - 1) {
+//                sb.append('\n');
+//            }
+//        }
         
         this.doWriteStatus(sb);
     }
     
-    // TBD: an output controller
-    private void writeProperties (StringBuilder sb, Schema schema) {
-        for (Property prop : schema.getProperties()) {
-            if (prop.hasOptions()) {
-                sb.append(" <|");
-                String[] options = prop.getOptions();
-                for (int i = 0; i < options.length; i++) {
-                    sb.append(options[i]);
-                    if (i < options.length - 1) {
-                        sb.append("|");
-                    }
-                }
-                sb.append("|>");
-            } else if (prop.hasDefault()) {
-                sb.append(" <").append(prop.getName()).append("|").append(prop.getDefaultValue()).append(">");
-            } else {
-                sb.append(" <").append(prop.getName()).append(">");
-            }
-        }
+    protected void writeProperties (StringBuilder sb, ConfigurationSchema schema) {
+        this.schemaRender.render(sb, schema.getElement());
     }
 }

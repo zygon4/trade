@@ -11,7 +11,7 @@ public class PropertiesSchemaElement extends SchemaElement {
     private final String[] requiredElementIdentifiers;
     
     public PropertiesSchemaElement(String description, SchemaElement[] possibleElements, String[] requiredElementIdentifiers) {
-        super("properties", "object", description);
+        super("properties", Type.OBJECT, description);
         
         this.possibleElements = possibleElements;
         this.requiredElementIdentifiers = requiredElementIdentifiers;

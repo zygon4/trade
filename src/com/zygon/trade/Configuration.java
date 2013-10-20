@@ -1,6 +1,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.schema.ConfigurationSchema;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,44 +11,48 @@ import java.util.Map;
  */
 public class Configuration {
 
+    // TBD: this is fucked now - need to rethink considering
+    //      new configuration schema.
+    
     private final Map<String, Property> propertiesByName = new HashMap<>();
     private final Map<String, String> valuesByName = new HashMap<>();
     
-    private final Schema schema;
+    private final ConfigurationSchema schema;
 
-    public Configuration(Schema schema) {
+    public Configuration(ConfigurationSchema schema) {
         this.schema = schema;
         
-        for (Property prop : this.schema.getProperties()) {
-            this.propertiesByName.put(prop.getName(), prop);
-        }
+        // TBD
+//        for (Property prop : this.schema.getProperties()) {
+//            this.propertiesByName.put(prop.getName(), prop);
+//        }
     }
 
-    public Schema getSchema() {
+    public ConfigurationSchema getSchema() {
         return this.schema;
     }
     
-    public String getValue(String name) {
-        if (!this.propertiesByName.containsKey(name)) {
-            throw new IllegalArgumentException();
-        }
-        
-        String val = this.valuesByName.get(name);
-        
-        if (val == null) {
-            Property prop = this.propertiesByName.get(name);
-            if (prop.hasDefault()) {
-                val = prop.getDefaultValue();
-            }
-        }
-        
-        return val;
-    }
+//    public String getValue(String name) {
+//        if (!this.propertiesByName.containsKey(name)) {
+//            throw new IllegalArgumentException();
+//        }
+//        
+//        String val = this.valuesByName.get(name);
+//        
+//        if (val == null) {
+//            Property prop = this.propertiesByName.get(name);
+//            if (prop.hasDefault()) {
+//                val = prop.getDefaultValue();
+//            }
+//        }
+//        
+//        return val;
+//    }
     
     public void setValue(String name, String value) {
-        if (!this.propertiesByName.containsKey(name)) {
-            throw new IllegalArgumentException();
-        }
+//        if (!this.propertiesByName.containsKey(name)) {
+//            throw new IllegalArgumentException();
+//        }
         
         this.valuesByName.put(name, value);
     }

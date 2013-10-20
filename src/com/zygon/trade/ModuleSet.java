@@ -32,10 +32,15 @@ import java.util.Map;
         Constructor<Module> constructor = null;
         Module newInstance = null;
         
-        if (metaData.getConfigurable().getSchema() != null || 
-            metaData.getConfigurable().getChildSchema() != null) {
-            constructor = clazz.getConstructor(String.class, Schema.class, ChildSchema.class);
-            newInstance = constructor.newInstance(metaData.getId(), metaData.getConfigurable().getSchema(), metaData.getConfigurable().getChildSchema());
+        if (metaData.getConfigurable().getSchema() != null) {
+            constructor = clazz.getConstructor(String.class, Schema.class);
+            
+            Schema schema = null;
+            if (metaData.getConfigurable().getSchema() != null) {
+                schema = new Schema(metaData.getConfigurable().getSchema().getSchemaResourceName());
+            }
+            
+            newInstance = constructor.newInstance(metaData.getId(), schema);
         } else {
             constructor = clazz.getConstructor(String.class);
             newInstance = constructor.newInstance(metaData.getId());
@@ -65,6 +70,7 @@ import java.util.Map;
                 this.modulesById.put(moduleId, module);
             } catch (Exception e) {
                 // Not quite sure what to do - this is fatal
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

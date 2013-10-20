@@ -8,6 +8,10 @@
         "id": {
             "description": "The unique identifier for a product",
             "type": "integer"
+        },
+        "foo": {
+            "description": "A very special foo christmas",
+            "type": "string"
         }
     },
     "required": ["id"]

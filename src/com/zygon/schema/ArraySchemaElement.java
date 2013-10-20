@@ -12,7 +12,7 @@ public class ArraySchemaElement extends SchemaElement {
     private final boolean uniqueElements;
     
     public ArraySchemaElement(String title, String description, SchemaElement element, int minElements, boolean uniqueElements) {
-        super(title, "array", description);
+        super(title, Type.ARRAY, description);
         
         this.element = element;
         this.minElements = minElements;

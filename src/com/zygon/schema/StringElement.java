@@ -8,7 +8,7 @@ package com.zygon.schema;
 public class StringElement extends PrimativeSchemaElement {
 
     public StringElement(String id, String description) {
-        super(id, "string", description);
+        super(id, Type.STRING, description);
     }
 
     // TBD: regex? min/max length?

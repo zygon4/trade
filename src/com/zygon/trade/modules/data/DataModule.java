@@ -5,9 +5,8 @@
 package com.zygon.trade.modules.data;
 
 import com.zygon.trade.Module;
-import com.zygon.trade.Property;
 import com.zygon.trade.Schema;
-import com.zygon.trade.ChildSchema;
+import com.zygon.trade.ParentModule;
 import com.zygon.trade.db.Database;
 import com.zygon.trade.market.data.AbstractDataProvider;
 import com.zygon.trade.market.data.DataListener;
@@ -24,19 +23,11 @@ import java.util.Map;
  *
  * @author zygon
  */
-public class DataModule extends Module {
+public class DataModule extends ParentModule {
 
     private final DataListener listener = null;
     
-    private static Schema SCHEMA = new Schema(
-            new Property[]{
-                new Property("name"),
-                new Property("feed-provider", new String[] {"BOX", "MTGOX"}),
-                new Property("element", new String[] {"TRADE", "TICK"}),
-                new Property("foo", "thedefault")
-            });
-    
-    private static Schema CHILD_SCHEMA = null;
+    private static Schema SCHEMA = new Schema("data_schema.json");
 
     /*
     new ChildSchema(
@@ -48,12 +39,12 @@ public class DataModule extends Module {
     });
      */
     
-    public DataModule(String name, Schema schema, ChildSchema childSchema) {
-        super(name, schema, childSchema, null);
+    public DataModule(String name, Schema schema) {
+        super (name, schema, FeedModule.class);
     }
 
     public DataModule() {
-        super("data", SCHEMA, null);
+        this ("data", SCHEMA);
     }
     
     public DataListener getDataManager() {

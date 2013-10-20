@@ -1,6 +1,7 @@
 
-package com.zygon.schema.parse;
+package com.zygon.trade.modules.data;
 
+import com.zygon.schema.parse.*;
 import com.zygon.schema.ConfigurationSchema;
 import java.io.InputStream;
 
@@ -20,8 +21,8 @@ public class Tester {
     public static void main(String[] args) throws Exception {
         JSONSchemaParser schemaParser = new JSONSchemaParser();
         
-        InputStream io = Tester.class.getResourceAsStream("test_schema.json");
+        InputStream io = Tester.class.getResourceAsStream("data_schema.json");
         
-        ConfigurationSchema schema = schemaParser.parse("test_schema.json", io);
+        ConfigurationSchema schema = schemaParser.parse("data_schema.json", io);
     }
 }

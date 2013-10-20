@@ -8,10 +8,10 @@ package com.zygon.schema;
 public class SchemaElement {
     
     private final String id;
-    private final String type;
+    private final Type type;
     private final String description;
 
-    public SchemaElement(String id, String type, String description) {
+    public SchemaElement(String id, Type type, String description) {
         this.id = id;
         this.type = type;
         this.description = description;
@@ -25,7 +25,7 @@ public class SchemaElement {
         return this.id;
     }
 
-    public final String getType() {
+    public final Type getType() {
         return this.type;
     }
 }

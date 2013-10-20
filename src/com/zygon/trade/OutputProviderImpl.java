@@ -39,18 +39,14 @@ public class OutputProviderImpl implements OutputProvider {
     @Override
     public Response getOutput(Request request) {
         
-        if (request.isCommandRequest()) {
+        if (request.isCreateRequest() || request.isEditRequest()) {
             String commandName = request.getCommandName();
-            
-            if (request.isCreateRequest() || request.isEditRequest()) {
-                
-                Command command = new Command(commandName, request.getArgs());
-                CommandResult result = this.cmdProcessor.process(command);
-                
-                if (!result.isSuccessful()) {
-                    String outputMessage = "Command failed due to: " + result.getMessage();
-                    logger.debug(outputMessage);
-                }
+            Command command = new Command(commandName, request.getArgs());
+            CommandResult result = this.cmdProcessor.process(command);
+
+            if (!result.isSuccessful()) {
+                String outputMessage = "Command failed due to: " + result.getMessage();
+                logger.debug(outputMessage);
             }
         }
         

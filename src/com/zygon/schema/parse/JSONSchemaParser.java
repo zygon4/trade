@@ -1,12 +1,13 @@
 
 package com.zygon.schema.parse;
 
+import com.zygon.schema.Type;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zygon.schema.ArraySchemaElement;
 import com.zygon.schema.IntegerSchemaElement;
 import com.zygon.schema.NumericSchemaElement;
 import com.zygon.schema.PropertiesSchemaElement;
-import com.zygon.schema.Schema;
+import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.SchemaElement;
 import com.zygon.schema.StringElement;
 import java.io.IOException;
@@ -21,34 +22,6 @@ import java.util.Map;
  * @author zygon
  */
 public class JSONSchemaParser implements SchemaParser {
-
-    private static enum Type {
-        ARRAY ("array"),
-        INTEGER ("integer"),
-        NUMBER ("number"),
-        OBJECT ("object"),
-        STRING ("string");
-        
-        private final String val;
-
-        private Type(String val) {
-            this.val = val;
-        }
-
-        public String getVal() {
-            return this.val;
-        }
-        
-        private static Type instance(String val) {
-            for (Type type : Type.values()) {
-                if (type.getVal().equals(val)) {
-                    return type;
-                }
-            }
-            
-            return null;
-        }
-    }
     
     private static enum Keyword {
         ARRAY ("array"),
@@ -181,13 +154,13 @@ public class JSONSchemaParser implements SchemaParser {
 //            "exclusiveMinimum": true
 //        },
         
-        int min = 0;
+        Integer min = null;
         
         if (props.containsKey(Keyword.MINIMUM.getVal())) {
             min = (int) props.get(Keyword.MINIMUM.getVal());
         }
         
-        int max = 0;
+        Integer max = null;
         
         if (props.containsKey(Keyword.MAXIMUM.getVal())) {
             max = (int) props.get(Keyword.MAXIMUM.getVal());
@@ -272,13 +245,13 @@ public class JSONSchemaParser implements SchemaParser {
     }
     
     @Override
-    public Schema parse(InputStream is) throws IOException {
+    public ConfigurationSchema parse(String schemaResourceName, InputStream is) throws IOException {
         
         HashMap<String, Object> props = (HashMap<String,Object>) new ObjectMapper().readValue(is, HashMap.class);
         
         String schema = (String) props.get(Keyword.SCHEMA.getVal());
         SchemaElement element = parse(props);
         
-        return new Schema(schema, element);
+        return new ConfigurationSchema(schemaResourceName, schema, element);
     }
 }

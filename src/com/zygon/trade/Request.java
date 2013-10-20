@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.command.Command;
 import java.util.Map;
 
 /**
@@ -34,7 +35,13 @@ public final class Request {
     }
     
     public String getCommandName() {
-        return (String) this.input.get(CMD);
+        if (this.isCreateRequest()) {
+            return Command.CREATE;
+        } else if (this.isEditRequest()) {
+            return Command.EDIT;
+        } else {
+            return (String) this.input.get(CMD);
+        }
     }
     
     public boolean hasArguments() {
