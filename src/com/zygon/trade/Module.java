@@ -68,7 +68,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
     
     protected Module(String name) {
-        this(name, null, null);
+        this(name, null);
     }
 
     @Override

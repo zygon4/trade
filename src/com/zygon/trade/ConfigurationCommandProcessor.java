@@ -26,6 +26,14 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
         this.configurationManager = configurationManager;
     }
     
+    private CommandResult handleCreateRequest(CommandProcessor cmdProcessor, Command command) {
+        // TODO: 
+        
+        CommandResult result = cmdProcessor.process(command);
+        
+        return result;
+    }
+    
     private CommandResult handleEditRequest(Configurable configurable, String[] arguments) {
         
         /*
@@ -60,15 +68,13 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
             }
         } else if (command.isCreateRequest()) {
             
-            // TODO
+            if (this.cmdProcessor instanceof ParentModule) {
+                result = ((ParentModule) this.cmdProcessor).process(command);
+            } else {
+                logger.error("Unable to process create request. Not a parent.");
+                throw new IllegalArgumentException("Unable to process create request. Not a parent.");
+            }
             
-//            if (this.childSchema != null) {
-//                
-//                
-//            } else {
-//                logger.error("Unable to process create request. No child schema.");
-//                throw new IllegalArgumentException("Unable to process create request. No child schema.");
-//            }
         } else {
             result = this.cmdProcessor.process(command);
         }

@@ -32,22 +32,22 @@ public class Configuration {
         return this.schema;
     }
     
-//    public String getValue(String name) {
+    public String getValue(String name) {
 //        if (!this.propertiesByName.containsKey(name)) {
 //            throw new IllegalArgumentException();
 //        }
-//        
-//        String val = this.valuesByName.get(name);
-//        
-//        if (val == null) {
-//            Property prop = this.propertiesByName.get(name);
-//            if (prop.hasDefault()) {
-//                val = prop.getDefaultValue();
-//            }
-//        }
-//        
-//        return val;
-//    }
+        
+        String val = this.valuesByName.get(name);
+        
+        if (val == null) {
+            Property prop = this.propertiesByName.get(name);
+            if (prop.hasDefault()) {
+                val = prop.getDefaultValue();
+            }
+        }
+        
+        return val;
+    }
     
     public void setValue(String name, String value) {
 //        if (!this.propertiesByName.containsKey(name)) {

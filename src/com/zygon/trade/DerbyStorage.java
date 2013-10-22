@@ -2,6 +2,7 @@ package com.zygon.trade;
 
 import com.zygon.trade.modules.core.UIModule;
 import com.zygon.trade.modules.data.DataModule;
+import com.zygon.trade.modules.data.FeedModule;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -45,7 +46,8 @@ public class DerbyStorage implements InstallableStorage {
         }
     }
     
-    // sanity checking for now
+    // this, right here, is just some loggygagging - this needs to 
+    // come from storage - and cleaner.
     private final Map<String, MetaData> metadataById = new HashMap<>();
     
     {
@@ -53,11 +55,19 @@ public class DerbyStorage implements InstallableStorage {
         
         DataModule data = new DataModule();
         Configuration config = new Configuration(data.getSchema());
-        config.setValue("name", "Feed1");
-        config.setValue("feed-provider", "BOX");
-        config.setValue("element", "TICK");
+        
         data.configure(config);
         this.metadataById.put("data", new MetaData("data", "com.zygon.trade.modules.data.DataModule", data));
+        
+        
+        FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
+        Configuration feedConfig = new Configuration(mtGoxTicker.getSchema());
+        
+        feedConfig.setValue("name", mtGoxTicker.getDisplayname());
+        feedConfig.setValue("class", "com.zygon.data.feed.currency.mtgox.MtGoxFeed");
+        mtGoxTicker.configure(feedConfig);
+        
+        this.metadataById.put(mtGoxTicker.getDisplayname(), new MetaData(mtGoxTicker.getDisplayname(), "com.zygon.trade.modules.data.FeedModule", mtGoxTicker));
     }
     
     @Override

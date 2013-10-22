@@ -32,19 +32,36 @@ import java.util.Map;
         Constructor<Module> constructor = null;
         Module newInstance = null;
         
-        if (metaData.getConfigurable().getSchema() != null) {
-            constructor = clazz.getConstructor(String.class, Schema.class);
-            
-            Schema schema = null;
-            if (metaData.getConfigurable().getSchema() != null) {
-                schema = new Schema(metaData.getConfigurable().getSchema().getSchemaResourceName());
-            }
-            
-            newInstance = constructor.newInstance(metaData.getId(), schema);
-        } else {
+        // TBD: this got a little weird - not quite sure what constructors 
+        // are required now and when..
+        try {
             constructor = clazz.getConstructor(String.class);
             newInstance = constructor.newInstance(metaData.getId());
-        } 
+        } catch (NoSuchMethodException nsme) {
+            // try again..
+            
+            constructor = clazz.getConstructor();
+            newInstance = constructor.newInstance();
+        }
+        
+//        if (metaData.getConfigurable().getSchema() != null) {
+//            constructor = clazz.getConstructor(String.class);
+//            
+//            // TBD: can't remember why I want to push schema to the constructor
+//            // here.  If there' an upgrade from what's stored in the DB.. then
+//            // upgrade first and then let the module get on with its life
+//            // using its known schema..
+//            
+////            Schema schema = null;
+////            if (metaData.getConfigurable().getSchema() != null) {
+////                schema = new Schema(metaData.getConfigurable().getSchema().getSchemaResourceName());
+////            }
+//            
+//            newInstance = constructor.newInstance(metaData.getId());
+//        } else {
+//            constructor = clazz.getConstructor(String.class);
+//            newInstance = constructor.newInstance(metaData.getId());
+//        } 
         
         return newInstance;
     }

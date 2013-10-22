@@ -29,22 +29,8 @@ public class DataModule extends ParentModule {
     
     private static Schema SCHEMA = new Schema("data_schema.json");
 
-    /*
-    new ChildSchema(
-    new Property[]{
-    new Property("name"),
-    new Property("feed-provider", new String[] {"BOX", "MTGOX"}),
-    new Property("element", new String[] {"TRADE", "TICK"}),
-    new Property("foo", "thedefault")
-    });
-     */
-    
-    public DataModule(String name, Schema schema) {
-        super (name, schema, FeedModule.class);
-    }
-
     public DataModule() {
-        this ("data", SCHEMA);
+        super ("data", SCHEMA, FeedModule.class);
     }
     
     public DataListener getDataManager() {

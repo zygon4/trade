@@ -4,14 +4,18 @@
     "description": "This represents a data feed instance",
     "type": "object",
     "properties": {
-        "id": {
-            "description": "The unique identifier for a feed",
-            "type": "integer"
-        },
         "name": {
             "description": "Name of the feed",
             "type": "string"
+        },
+        "tradeable": {
+            "description": "The tradeable to watch",
+            "type": "string"
+        },
+        "currency": {
+            "description": "The currency to watch the tradeable in",
+            "type": "string"
         }
     },
-    "required": ["id", "name"]
+    "required": ["name", "tradeable", "currency"]
 }

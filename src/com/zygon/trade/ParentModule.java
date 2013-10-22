@@ -46,13 +46,14 @@ public abstract class ParentModule extends Module {
         this(name, null, null, childClazz);
     }
     
-    private void createChild(String[] configuration) {
-        Configuration config = null; //new Configuration(); // TODO: feed in args
+    /*pkg*/ void createChild(Configuration config) {
+        
+        String name = config.getValue("name");
         
         Module instance = null;
         
         try {
-            instance = (Module) this.childClazz.getConstructor().newInstance();
+            instance = (Module) this.childClazz.getConstructor(String.class).newInstance(name);
         } catch (Exception e) {
             logger.error(null, e);
         }
@@ -61,6 +62,8 @@ public abstract class ParentModule extends Module {
         
         instance.configure(config);
         instance.setParent(this);
+        
+        
         
         // TBD: how are children persisted? ?
         
@@ -90,5 +93,27 @@ public abstract class ParentModule extends Module {
         }
         
         return new Response(output);
+    }
+
+    @Override
+    public CommandResult process(Command command) {
+        if (command.isCreateRequest()) {
+            String[] cmdArgs = command.getArguments();
+            
+            // TBD: parse arguments into a validated Configuration object
+            Configuration config = new Configuration(this.childSchema);
+            // Totally ghetto for now
+            config.setValue("name", "foo");
+            
+            try {
+                this.createChild(config);
+            } catch (Exception e) {
+                return new CommandResult(false, e.getMessage());
+            }
+            
+            return CommandResult.SUCCESS;
+        } else {
+            return super.process(command);
+        }
     }
 }
