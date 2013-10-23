@@ -17,15 +17,8 @@ import org.slf4j.LoggerFactory;
  * @author zygon
  * 
  */
+@Deprecated
 public class DataProcessor<T_IN> {
-
-    /**
-     * Responsible for (optionally) interpreting incoming data into another 
-     * form.  This could be time based aggregation, filtering, etc.
-     */
-    public static interface Interpreter<T_IN> {
-        public Message[] interpret(T_IN data);
-    }
     
     private final Logger log;
     private final Collection<Interpreter<T_IN>> translators;
