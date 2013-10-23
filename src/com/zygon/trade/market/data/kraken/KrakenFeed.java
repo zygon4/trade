@@ -1,5 +1,5 @@
 
-package com.zygon.data.feed.currency.mtgox;
+package com.zygon.trade.market.data.kraken;
 
 import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
@@ -14,14 +14,14 @@ import com.zygon.data.feed.currency.CurrencyEventFeed;
  * 
  * TODO: move to behind the trade package wall
  */
-public class MtGoxFeed extends CurrencyEventFeed<Ticker> {
+public class KrakenFeed extends CurrencyEventFeed<Ticker> {
 
     private final PollingMarketDataService marketDataService;
     
-    public MtGoxFeed(Context ctx) {
-        super(ctx, 30000);
+    public KrakenFeed(Context ctx) {
+        super(ctx, 15000);
         
-        this.marketDataService = ExchangeFactory.INSTANCE.createExchange("com.xeiam.xchange.mtgox.v2.MtGoxExchange").getPollingMarketDataService();
+        this.marketDataService = ExchangeFactory.INSTANCE.createExchange("com.xeiam.xchange.kraken.KrakenExchange").getPollingMarketDataService();
     }
 
     @Override
