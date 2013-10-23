@@ -19,7 +19,7 @@ public abstract class AbstractEventFeed<T> extends AbstractFeed<T> implements Ev
 
     private final Set<Handler<T>> registrations = new HashSet<Handler<T>>();
 
-    protected final Set<Handler<T>> getRegistrations() {
+    protected final Set<Handler<T>> getHandlers() {
         return this.registrations;
     }
     

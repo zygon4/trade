@@ -23,7 +23,7 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
             while (this.running) {
                 T t = PollFeedAdapter.this.get();
                 if (this.running) {
-                    for (Handler<T> reg : PollFeedAdapter.this.getRegistrations()) {
+                    for (Handler<T> reg : PollFeedAdapter.this.getHandlers()) {
                         reg.handle(t);
                     }
                 }
@@ -56,7 +56,7 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
     public void unregister(Handler<T> reg) {
         super.unregister(reg);
         
-        if (getRegistrations().isEmpty()) {
+        if (getHandlers().isEmpty()) {
             this.runner.running = false;
             this.runner = null;
             this.started = false;
