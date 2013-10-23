@@ -6,11 +6,11 @@ package com.zygon.data;
  */
 public interface EventFeed<T> extends Feed<T> {
 
-    public static interface Registration<R> {
+    public static interface Handler<R> {
         public void handle(R r);
     }
     
-    public void register (Registration<T> reg);
+    public void register (Handler<T> reg);
     
-    public void unregister (Registration<T> reg);
+    public void unregister (Handler<T> reg);
 }

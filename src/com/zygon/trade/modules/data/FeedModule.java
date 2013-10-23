@@ -3,7 +3,7 @@ package com.zygon.trade.modules.data;
 
 import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
-import com.zygon.data.EventFeed.Registration;
+import com.zygon.data.EventFeed.Handler;
 import com.zygon.data.FeedProvider;
 import com.zygon.data.FeedProviderImpl;
 import com.zygon.trade.Configuration;
@@ -31,7 +31,7 @@ public class FeedModule extends Module {
     private static final Schema SCHEMA = new Schema("data_feed.json");
     
     private final FeedProvider feedProvider = new FeedProviderImpl();
-    private final Collection<Registration> feedRegistrations = new ArrayList<Registration>();
+    private final Collection<Handler> feedRegistrations = new ArrayList<Handler>();
     private EventFeed feed = null;
     
     public FeedModule(String name) {
@@ -53,23 +53,23 @@ public class FeedModule extends Module {
             this.feed = (EventFeed<?>) this.feedProvider.createFeed(ctx);
         }
         
-        for (Registration<?> reg : this.feedRegistrations) {
+        for (Handler<?> reg : this.feedRegistrations) {
             this.feed.register(reg);
         }
     }
     
-    public void register (Registration reg) {
+    public void register (Handler reg) {
         this.feedRegistrations.add(reg);
     }
 
     @Override
     public void uninitialize() {
-        for (Registration<?> reg : this.feedRegistrations) {
+        for (Handler<?> reg : this.feedRegistrations) {
             this.feed.unregister(reg);
         }
     }
     
-    public void unregister (Registration reg) {
+    public void unregister (Handler reg) {
         this.feedRegistrations.remove(reg);
     }
 }

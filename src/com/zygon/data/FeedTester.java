@@ -42,7 +42,7 @@ public class FeedTester {
         Feed krakenFeed = fp.createFeed(new Context(getProps("enterprise.db.data.feed.currency.kraken.KrakenFeed", Currencies.BTC, Currencies.USD)));
         eventFeeds.add((EventFeed<Ticker>) krakenFeed);
         
-        final EventFeed.Registration<Ticker> reg = new EventFeed.Registration<Ticker>() {
+        final EventFeed.Handler<Ticker> reg = new EventFeed.Handler<Ticker>() {
 
             @Override
             public void handle(Ticker r) {

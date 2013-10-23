@@ -3,7 +3,7 @@ package com.zygon.data.feed;
 
 import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
-import com.zygon.data.EventFeed.Registration;
+import com.zygon.data.EventFeed.Handler;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,19 +17,19 @@ public abstract class AbstractEventFeed<T> extends AbstractFeed<T> implements Ev
         super(ctx);
     }
 
-    private final Set<Registration<T>> registrations = new HashSet<Registration<T>>();
+    private final Set<Handler<T>> registrations = new HashSet<Handler<T>>();
 
-    protected final Set<Registration<T>> getRegistrations() {
+    protected final Set<Handler<T>> getRegistrations() {
         return this.registrations;
     }
     
     @Override
-    public void register(Registration<T> reg) {
+    public void register(Handler<T> reg) {
         this.registrations.add(reg);
     }
 
     @Override
-    public void unregister(Registration<T> reg) {
+    public void unregister(Handler<T> reg) {
         this.registrations.remove(reg);
     }
 }

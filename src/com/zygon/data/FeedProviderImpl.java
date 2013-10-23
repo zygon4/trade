@@ -49,7 +49,7 @@ public class FeedProviderImpl implements FeedProvider {
         createFeed = fp.createFeed(ctx);
         EventFeed<String> pushFeed = (EventFeed<String>) createFeed;
         
-        EventFeed.Registration<String> reg = new EventFeed.Registration<String>() {
+        EventFeed.Handler<String> reg = new EventFeed.Handler<String>() {
 
             @Override
             public void handle(String r) {
