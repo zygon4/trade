@@ -97,6 +97,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
             initialized = true;
         } catch (Exception e) {
             this.logger.error("Exception occurred while initializing module " + this.name, e);
+            e.printStackTrace();
         }
         
         if (initialized) {
@@ -128,6 +129,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
 
     @Override
     public Configuration getConfiguration() {
+        // TBD: return default config if nothing is set.
         return this.configuration;
     }
 
