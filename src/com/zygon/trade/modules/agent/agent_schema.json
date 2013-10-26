@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Data feed",
+    "description": "This represents a data feed instance",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "Name of the feed",
+            "type": "string"
+        },
+        "tradeable": {
+            "description": "The tradeable to watch",
+            "type": "string"
+        },
+        "currency": {
+            "description": "The currency to watch the tradeable in",
+            "type": "string"
+        }
+    },
+    "required": ["name", "tradeable", "currency"]
+}

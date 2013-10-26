@@ -1,5 +1,6 @@
 package com.zygon.trade;
 
+import com.zygon.trade.modules.agent.AgentModule;
 import com.zygon.trade.modules.core.UIModule;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.data.FeedModule;
@@ -51,8 +52,6 @@ public class DerbyStorage implements InstallableStorage {
     private final Map<String, MetaData> metadataById = new HashMap<>();
     
     {
-        this.metadataById.put("UI", new MetaData("UI", "com.zygon.trade.modules.core.UIModule", new UIModule("ui")));
-        
         DataModule data = new DataModule();
         Configuration config = new Configuration(data.getSchema());
         
@@ -60,14 +59,19 @@ public class DerbyStorage implements InstallableStorage {
         this.metadataById.put("data", new MetaData("data", "com.zygon.trade.modules.data.DataModule", data));
         
         
-        FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
-        Configuration feedConfig = new Configuration(mtGoxTicker.getSchema());
+        AgentModule agent = new AgentModule("agent");
+        this.metadataById.put("agent", new MetaData("agent", "com.zygon.trade.modules.agent.AgentModule", agent));
         
-        feedConfig.setValue("name", mtGoxTicker.getDisplayname());
-        feedConfig.setValue("class", "com.zygon.data.feed.currency.mtgox.MtGoxFeed");
-        mtGoxTicker.configure(feedConfig);
+//        FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
+//        Configuration feedConfig = new Configuration(mtGoxTicker.getSchema());
+//        
+//        feedConfig.setValue("name", mtGoxTicker.getDisplayname());
+//        feedConfig.setValue("class", "com.zygon.data.feed.currency.mtgox.MtGoxFeed");
+//        mtGoxTicker.configure(feedConfig);
+//        
+//        this.metadataById.put(mtGoxTicker.getDisplayname(), new MetaData(mtGoxTicker.getDisplayname(), "com.zygon.trade.modules.data.FeedModule", mtGoxTicker));
         
-        this.metadataById.put(mtGoxTicker.getDisplayname(), new MetaData(mtGoxTicker.getDisplayname(), "com.zygon.trade.modules.data.FeedModule", mtGoxTicker));
+        this.metadataById.put("UI", new MetaData("UI", "com.zygon.trade.modules.core.UIModule", new UIModule("ui")));
     }
     
     @Override

@@ -35,7 +35,7 @@ public class FeedModule extends Module {
     private EventFeed feed = null;
     
     public FeedModule(String name) {
-        super(name, SCHEMA, null);
+        super(name, SCHEMA);
     }
 
     @Override

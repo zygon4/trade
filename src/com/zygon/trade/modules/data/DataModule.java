@@ -4,6 +4,7 @@
 
 package com.zygon.trade.modules.data;
 
+import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.ParentModule;
@@ -29,8 +30,15 @@ public class DataModule extends ParentModule {
     
     private static Schema SCHEMA = new Schema("data_schema.json");
 
+    private final FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
+    
     public DataModule() {
         super ("data", SCHEMA, FeedModule.class);
+        
+        this.mtGoxTicker.configure(new Configuration(this.mtGoxTicker.getSchema()));
+        this.mtGoxTicker.getConfiguration().setValue("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
+        this.mtGoxTicker.getConfiguration().setValue("tradeable", "BTC");
+        this.mtGoxTicker.getConfiguration().setValue("currency", "USD");
     }
     
     public DataListener getDataManager() {
@@ -39,29 +47,30 @@ public class DataModule extends ParentModule {
     
     @Override
     public Module[] getModules() {
-        return null;
+        return new Module[]{this.mtGoxTicker};
     }
 
     @Override
     public void initialize() {
-        DBModule dbModule = (DBModule) this.getModule(DBModule.ID);
+        // TBD: rejigger data module
+//        DBModule dbModule = (DBModule) this.getModule(DBModule.ID);
         
-        Database db = dbModule.getDatabase();
-        
-        // Boo hiss. These should be removed and a cleaner way to provide 
-        // database access should be implemented.
-        
-        DataLogger dataLogger = this.listener.getDataLogger();
-        if (dataLogger != null && dataLogger instanceof PersistentDataLogger) {
-            ((PersistentDataLogger)dataLogger).setDatabase(db);
-        }
-        
-        DataProvider dataProvider = this.listener.getDataProvider();
-        if (dataProvider != null && dataProvider instanceof AbstractDataProvider) {
-            ((AbstractDataProvider) this.listener.getDataProvider()).setDatabase(db);
-        }
-        
-        this.listener.initialize();
+//        Database db = dbModule.getDatabase();
+//        
+//        // Boo hiss. These should be removed and a cleaner way to provide 
+//        // database access should be implemented.
+//        
+//        DataLogger dataLogger = this.listener.getDataLogger();
+//        if (dataLogger != null && dataLogger instanceof PersistentDataLogger) {
+//            ((PersistentDataLogger)dataLogger).setDatabase(db);
+//        }
+//        
+//        DataProvider dataProvider = this.listener.getDataProvider();
+//        if (dataProvider != null && dataProvider instanceof AbstractDataProvider) {
+//            ((AbstractDataProvider) this.listener.getDataProvider()).setDatabase(db);
+//        }
+//        
+//        this.listener.initialize();
     }
 
     @Override

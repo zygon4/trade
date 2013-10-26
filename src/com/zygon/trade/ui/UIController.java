@@ -34,22 +34,31 @@ public class UIController {
         this.configurationManager = configurationManager;
     }
 
-    private void buildNavigationTree (List<NavigationNode> children, Module[] modules) {
+    private List<NavigationNode> buildNavigationTree(Module[] modules) {
+        
+        List<NavigationNode> nodes = new ArrayList<>();
+        
         if (modules != null) {
             for (Module module : modules) {
-                if (module.getModules() == null) {
-                    children.add(new NavigationNode(
-                            // Here we are injecting some additional functionality to keep the configuration
-                            // code outside of the Module implementation.
-                            new OutputProviderImpl(module, 
-						   new ConfigurationCommandProcessor(module, module, 
-										     this.configurationManager)), null)
-                            );
-                } else {
-                    this.buildNavigationTree(children, module.getModules());
+                
+                NavigationNode[] children = null;
+                
+                if (module.getModules() != null && module.getModules().length > 0) {
+                    List<NavigationNode> childrenNodes = buildNavigationTree(module.getModules());
+                    children = childrenNodes.toArray(new NavigationNode[childrenNodes.size()]);
                 }
+                
+                nodes.add(new NavigationNode(
+                        // Here we are injecting some additional functionality to keep the configuration
+                        // code outside of the Module implementation.
+                        new OutputProviderImpl(module, 
+                                               new ConfigurationCommandProcessor(module, module, 
+                                                                                 this.configurationManager)), children)
+                        );
             }
         }
+        
+        return nodes;
     }
     
     private static final String PROMPT = ">";
@@ -59,8 +68,8 @@ public class UIController {
             throw new IllegalStateException();
         }
         
-        List<NavigationNode> nodes = new ArrayList<>();
-        this.buildNavigationTree(nodes, this.modules);
+        List<NavigationNode> nodes = this.buildNavigationTree(this.modules);
+        
         NavigationNode root = new NavigationNode(this.root, nodes.toArray(new NavigationNode[nodes.size()]));
         
         this.shell = ShellFactory.createConsoleShell(PROMPT, "Stella", root);

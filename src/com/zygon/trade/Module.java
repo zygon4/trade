@@ -78,7 +78,9 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         this.configuration = configuration;
     }
     
-    /*pkg*/ void doInit() {
+    /*pkg*/ void doHook() {
+        
+        this.logger.info("Hooking module {}", this.name);
         
         Module[] modules = this.getModules();
         
@@ -87,6 +89,19 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
                 child.setParent(this);
             }
         }
+        
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.doHook();
+            }
+        }
+        
+        this.hook();
+    }
+    
+    /*pkg*/ void doInit() {
+        
+        Module[] modules = this.getModules();
         
         this.logger.info("Initializing module {}", this.name);
         
@@ -107,6 +122,18 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
                 }
             }
         }
+    }
+    
+    /*pkg*/ void doUnHook() {
+        this.logger.info("Unhooking module {}", this.name);
+        Module[] modules = this.getModules();
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.doUnHook();
+            }
+        }
+        
+        this.unhook();
     }
     
     /*pkg*/ void doUninit() {
@@ -244,6 +271,14 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return this.schema != null;
     }
     
+    /**
+     * This gives a module a time to collaborate with other modules before
+     * initialization occurs.  Collaboration may include registrations, etc.
+     */
+    protected void hook() {
+        // nothing by default
+    }
+    
     public abstract void initialize();
 
     @Override
@@ -262,6 +297,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     /*pkg*/ void setParent(Module parent) {
         this.parent = parent;
+    }
+
+    protected void unhook() {
+        // nothing by default
     }
     
     public abstract void uninitialize();

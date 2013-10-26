@@ -59,6 +59,8 @@ public class Service implements Daemon {
         this.moduleSet.configure();
         
         this.kernel = new Kernel(modules);
+        
+        this.kernel.doHook();
     }
 
     private final Object initLock = new Object();
@@ -85,13 +87,15 @@ public class Service implements Daemon {
     @Override
     public void stop() throws Exception {
         log.info(new Date(System.currentTimeMillis())+": Stopping");
-       
+        
         synchronized (this.initLock) {
             initLock.notify();
         }
         
         // Call privileged uninit method
         this.kernel.doUninit();
+        
+        this.kernel.doUnHook();
     }
 
     @Override
