@@ -27,4 +27,9 @@ public class MACDSignalCross extends MACD {
     public boolean crossAboveSignal() {
         return this.crossAboveSignal;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " cross " + (this.crossAboveSignal ? "above" : "below") + " signal";
+    }
 }

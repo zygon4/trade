@@ -27,4 +27,9 @@ public class MACDZeroCross extends MACD {
     public boolean crossAboveZero() {
         return this.crossAboveZero;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " cross " + (this.crossAboveZero ? "above" : "below") + " zero";
+    }
 }

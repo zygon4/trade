@@ -7,12 +7,13 @@ package com.zygon.trade.market.model.indication.market;
 import com.zygon.trade.market.model.indication.Classification;
 import com.zygon.trade.market.model.indication.ID;
 import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.Indication;
 
 /**
  *
  * @author zygon
  */
-public class BollingerBand extends MarketIndication {
+public class BollingerBand extends Indication {
 
     public static Identifier ID = new ID("bollinger", Classification.PRICE);
     

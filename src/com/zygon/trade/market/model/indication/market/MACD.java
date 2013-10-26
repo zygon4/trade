@@ -5,6 +5,7 @@
 package com.zygon.trade.market.model.indication.market;
 
 import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.Indication;
 
 /**
  *
@@ -35,7 +36,7 @@ import com.zygon.trade.market.model.indication.Identifier;
  * the MACD is below zero. As you can see from the chart above, the zero line 
  * often acts as an area of support and resistance for the indicator."
  */
-public class MACD extends MarketIndication {
+public class MACD extends Indication {
 
     public static enum IndicationType {
         SIGNAL_CROSS,
@@ -53,5 +54,10 @@ public class MACD extends MarketIndication {
 
     public IndicationType getIndicationType() {
         return this.type;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", super.toString(), this.getIndicationType().name());
     }
 }
