@@ -43,7 +43,9 @@ public abstract class Agent<T> implements EventFeed.Handler<T> {
                 }
             }
             
-            this.handle(messages);
+            if (!messages.isEmpty()) {
+                this.handle(messages);
+            }
             
         } else {
             this.log.trace("No translator available to process " + t);
