@@ -1,10 +1,10 @@
 
 package com.zygon.trade.modules.agent;
 
+import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
-import com.zygon.trade.agent.SimpleMAAgent;
-import com.zygon.trade.modules.data.FeedModule;
+import com.zygon.trade.modules.data.DataModule;
 
 /**
  *
@@ -14,12 +14,10 @@ public class Agent extends Module {
 
     private static final Schema SCHEMA = new Schema("agent_schema.json");
     
-    private final com.zygon.trade.agent.SimpleMAAgent agent;
+    private com.zygon.trade.agent.Agent agent = null;
     
     public Agent(String name) {
         super (name); // TODO: schema
-        
-        this.agent = new SimpleMAAgent(name+"_agent");
     }
     
     @Override
@@ -30,7 +28,7 @@ public class Agent extends Module {
     @Override
     protected void hook() {
         super.hook();
-        FeedModule module = (FeedModule) this.getModule("mtgox-ticker");
+        DataModule module = (DataModule) this.getModule("data");
         module.register(this.agent);
     }
     
@@ -39,15 +37,25 @@ public class Agent extends Module {
         
     }
 
+    // this is for testing/development only
+    /*pkg*/ void setAgent(com.zygon.trade.agent.Agent agent) {
+        this.agent = agent;
+    }
+    
     @Override
     protected void unhook() {
         super.unhook();
-        FeedModule module = (FeedModule) this.getModule("mtgox-ticker");
+        DataModule module = (DataModule) this.getModule("data");
         module.unregister(this.agent);
     }
     
     @Override
     public void uninitialize() {
         
+    }
+
+    @Override
+    public void configure(Configuration configuration) {
+        super.configure(configuration); //To change body of generated methods, choose Tools | Templates.
     }
 }

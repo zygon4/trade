@@ -17,6 +17,7 @@ public class Ticker extends Message {
     
     private TradeableIndex idx;
     
+    private String currency;
     private BigMoney last;
     private BigMoney bid;
     private BigMoney ask;
@@ -24,8 +25,10 @@ public class Ticker extends Message {
     private BigMoney low;
     private BigDecimal volume;
     
-    public Ticker(TradeableIndex idx, BigMoney last, BigMoney bid, BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
+    public Ticker(TradeableIndex idx, String currency, BigMoney last, BigMoney bid, 
+            BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
         this.idx = idx;
+        this.currency = currency;
         this.last = last;
         this.bid = bid;
         this.ask = ask;
@@ -39,8 +42,8 @@ public class Ticker extends Message {
         return idx;
     }
     
-    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick) {
-        this (create(tick), tick.getLast(), tick.getBid(), tick.getAsk(), 
+    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String currency) {
+        this (create(tick), currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
                 tick.getHigh(), tick.getLow(), tick.getVolume());
     }
 
@@ -53,6 +56,10 @@ public class Ticker extends Message {
 
     public BigMoney getBid() {
         return this.bid;
+    }
+    
+    public String getCurrency() {
+        return this.currency;
     }
 
     public BigMoney getHigh() {
@@ -91,6 +98,10 @@ public class Ticker extends Message {
         this.bid = bid;
     }
 
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+    
     public void setHigh(BigMoney high) {
         this.high = high;
     }
@@ -115,8 +126,9 @@ public class Ticker extends Message {
     public String toString() {
         String toString = null;
         try {
-            toString = String.format("%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
+            toString = String.format("%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
                 this.getTradableIdentifier(),
+                this.getCurrency(),
                 this.last.getAmount().toPlainString(),
                 this.bid.getAmount().toPlainString(),
                 this.ask.getAmount().toPlainString(),

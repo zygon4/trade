@@ -28,7 +28,7 @@ public class MtGoxFeed extends CurrencyEventFeed<Ticker> {
         Ticker ticker = null;
         
         try {
-            ticker = new Ticker(this.marketDataService.getTicker(this.getTradeable(), this.getCurrency()));
+            ticker = new Ticker(this.marketDataService.getTicker(this.getTradeable(), this.getCurrency()), this.getCurrency());
         } catch (ExchangeException ee) {
             ee.printStackTrace();
         }

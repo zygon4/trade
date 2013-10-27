@@ -4,17 +4,13 @@
 
 package com.zygon.trade.modules.data;
 
+import com.xeiam.xchange.currency.CurrencyPair;
+import com.zygon.data.EventFeed;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.ParentModule;
-import com.zygon.trade.db.Database;
-import com.zygon.trade.market.data.AbstractDataProvider;
 import com.zygon.trade.market.data.DataListener;
-import com.zygon.trade.market.data.DataLogger;
-import com.zygon.trade.market.data.DataProvider;
-import com.zygon.trade.market.data.PersistentDataLogger;
-import com.zygon.trade.modules.core.DBModule;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -30,15 +26,46 @@ public class DataModule extends ParentModule {
     
     private static Schema SCHEMA = new Schema("data_schema.json");
 
-    private final FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
+    private final FeedModule[] feeds;
+    
+    private static FeedModule get(String clazz, String tradeable, String currency) {
+        
+        FeedModule feed = new FeedModule(tradeable + "_" + currency);
+        
+        feed.configure(new Configuration(feed.getSchema()));
+        feed.getConfiguration().setValue("class", clazz);
+        feed.getConfiguration().setValue("tradeable", tradeable);
+        feed.getConfiguration().setValue("currency", currency);
+        
+        return feed;
+    }
+    
+    private static FeedModule[] get(CurrencyPair[] pairs) {
+        
+        FeedModule[] feeds = new FeedModule[pairs.length];
+        
+        int i = 0;
+        
+        for (CurrencyPair pair : pairs) {
+            feeds[i++] = get("com.zygon.trade.market.data.mtgox.MtGoxFeed", pair.baseCurrency, pair.counterCurrency);
+        }
+        
+        return feeds;
+    }
+    
+    private static final CurrencyPair[] PAIRS = new CurrencyPair[]{
+        CurrencyPair.BTC_USD,
+        CurrencyPair.BTC_GBP,
+        CurrencyPair.BTC_EUR,
+        CurrencyPair.BTC_JPY,
+        CurrencyPair.BTC_CHF,
+        CurrencyPair.BTC_AUD,
+        CurrencyPair.BTC_CAD
+    };
     
     public DataModule() {
         super ("data", SCHEMA, FeedModule.class);
-        
-        this.mtGoxTicker.configure(new Configuration(this.mtGoxTicker.getSchema()));
-        this.mtGoxTicker.getConfiguration().setValue("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
-        this.mtGoxTicker.getConfiguration().setValue("tradeable", "BTC");
-        this.mtGoxTicker.getConfiguration().setValue("currency", "USD");
+        this.feeds = get(PAIRS);
     }
     
     public DataListener getDataManager() {
@@ -47,7 +74,7 @@ public class DataModule extends ParentModule {
     
     @Override
     public Module[] getModules() {
-        return new Module[]{this.mtGoxTicker};
+        return this.feeds;
     }
 
     @Override
@@ -73,9 +100,22 @@ public class DataModule extends ParentModule {
 //        this.listener.initialize();
     }
 
+    public void register (EventFeed.Handler reg) {
+        for (FeedModule feed : this.feeds) {
+            feed.register(reg);
+        }
+    }
+    
+    
     @Override
     public void uninitialize() {
         this.listener.unintialize();
+    }
+    
+    public void unregister (EventFeed.Handler reg) {
+        for (FeedModule feed : this.feeds) {
+            feed.unregister(reg);
+        }
     }
     
     public static void main (String[] args) throws IOException, URISyntaxException {
