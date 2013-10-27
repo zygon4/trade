@@ -30,7 +30,7 @@ public class NumericIndication extends Indication {
         StringBuilder sb = new StringBuilder();
         
         sb.append(super.toString());
-        sb.append(' ');
+        sb.append(", ");
         sb.append(this.getValue());
         
         return sb.toString();
