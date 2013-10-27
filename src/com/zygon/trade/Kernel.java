@@ -5,6 +5,9 @@
 package com.zygon.trade;
 
 /**
+ * This is the heart of the system. It holds all the Modules.
+ * 
+ * TBD: Add a shutdown command?
  *
  * @author zygon
  */
