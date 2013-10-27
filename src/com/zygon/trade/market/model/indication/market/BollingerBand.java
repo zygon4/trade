@@ -68,9 +68,9 @@ public class BollingerBand extends Indication {
     
     /**
      * Returns true if the price is 1 std from the moving average AND not beyond 
-     * the outer bands.  This  potentially signals an exit.
+     * the outer bands.  This potentially signals an exit.
      * @return true if the price is 1 std from the moving average AND not beyond 
-     * the outer bands.  This  potentially signals an exit.
+     * the outer bands.  This potentially signals an exit.
      */
     public boolean isNearMovingAverage () {
         return this.isNearMovingAverage;
