@@ -37,7 +37,15 @@ public class MovingAverage {
         return this.values.getMin();
     }
     
+    public long getAvailableValues() {
+        return this.values.getN();
+    }
+    
     public double getStd() {
         return this.values.getStandardDeviation();
+    }
+    
+    public double[] getValues() {
+        return this.values.getValues();
     }
 }
