@@ -29,6 +29,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
     private static final int MILLIS_IN_SECOND = 1000;
     private static final int NANOS_IN_MILLI = 1000;
     
+    
+    // This "ticks per minute" is a workaround to the problem of not having
+    // a true time based moving average. the moving average is just tick based.
     protected static int getWindow (Aggregation aggregation) {
         int window = 0;
         
