@@ -28,4 +28,9 @@ public class Price extends NumericIndication {
     public String getCurrency() {
         return currency;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + this.getCurrency();
+    }
 }
