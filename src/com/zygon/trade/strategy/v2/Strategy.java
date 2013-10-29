@@ -37,21 +37,21 @@ public class Strategy {
     // TBD: The max size should be constrained and monitored.
     private final Queue<Message> messageQueue = new ArrayBlockingQueue<Message>(Integer.MAX_VALUE); 
     private final TradeSummary summary = new TradeSummary("tbd");
-    private final Collection<Identifier> supportedIdentifiers;
+    private final Collection<Identifier> supportedIndicators;
     private final EventCriteria enterCriteria;
     private final EventCriteria exitCriteria;
     
     private StrategyThread runner = null;
     private boolean started = false;
     
-    public Strategy(Collection<Identifier> supportedIdentifiers, EventCriteria enterCriteria, EventCriteria exitCriteria) {
-        this.supportedIdentifiers = supportedIdentifiers;
+    public Strategy(Collection<Identifier> supportedIndicators, EventCriteria enterCriteria, EventCriteria exitCriteria) {
+        this.supportedIndicators = supportedIndicators;
         this.enterCriteria = enterCriteria;
         this.exitCriteria = exitCriteria;
     }
     
-    public Collection<Identifier> getSupportedIndications() {
-        return this.supportedIdentifiers;
+    public Collection<Identifier> getSupportedIndicators() {
+        return this.supportedIndicators;
     }
     
     public TradeSummary getTradeSummary() {
