@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.strategy.impl;
+package com.zygon.trade.agent;
 
 import com.zygon.trade.strategy.TradeType;
 

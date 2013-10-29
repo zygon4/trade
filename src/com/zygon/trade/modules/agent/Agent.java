@@ -34,7 +34,7 @@ public class Agent extends Module {
     
     @Override
     public void initialize() {
-        
+        this.agent.initialize();
     }
 
     // this is for testing/development only
@@ -51,7 +51,7 @@ public class Agent extends Module {
     
     @Override
     public void uninitialize() {
-        
+        this.agent.uninitialize();
     }
 
     @Override

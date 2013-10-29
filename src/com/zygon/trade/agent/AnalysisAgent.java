@@ -1,17 +1,23 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.market.Message;
+import com.xeiam.xchange.dto.trade.Wallet;
+import com.zygon.trade.execution.ExecutionController;
+import com.zygon.trade.execution.MarketConditions;
+import com.zygon.trade.execution.simulation.SimulationBinding;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
+import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.market.model.indication.numeric.Price;
 import com.zygon.trade.market.util.MovingAverage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
+import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -27,17 +33,20 @@ public class AnalysisAgent extends  AbstractTickerAgent {
         return interpreters;
     }
     
-    public AnalysisAgent(String name) {
-        super(name, getInterpreters());
-    }
-
-    @Override
-    protected void handle(List<Message> messages) {
-        for (Message msg : messages) {
-            System.out.println(msg);
-        }
+    private static Strategy getStrategy() {
+        Collection<Identifier> identifiers = new ArrayList<Identifier>(Arrays.asList(Price.ID));
+        
+        Strategy strategy = new Strategy(PriceAgent.class.getName()+"_Strategy", identifiers, null, null, 
+                new ExecutionController(
+                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox"))));
+        
+        return strategy;
     }
     
+    public AnalysisAgent(String name) {
+        super(name, getInterpreters(), getStrategy());
+    }
+
     private static final double[] VALS = {
         188.17255
         ,188.17255

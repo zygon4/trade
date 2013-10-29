@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy.impl;
 
+import com.zygon.trade.agent.TradeSignal;
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.ExecutionController;
