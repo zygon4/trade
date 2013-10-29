@@ -1,8 +1,11 @@
 
-package com.zygon.trade.strategy.v3;
+package com.zygon.trade.strategy.v2;
 
 import com.zygon.trade.market.Message;
+import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.strategy.TradeSummary;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -44,6 +47,10 @@ public class Strategy {
     public Strategy(EventCriteria enterCriteria, EventCriteria exitCriteria) {
         this.enterCriteria = enterCriteria;
         this.exitCriteria = exitCriteria;
+    }
+    
+    public Collection<Identifier> getSupportedIndications() {
+        return Collections.EMPTY_LIST;
     }
     
     public TradeSummary getTradeSummary() {

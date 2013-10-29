@@ -1,5 +1,5 @@
 
-package com.zygon.trade.strategy.v3;
+package com.zygon.trade.strategy.v2;
 
 /**
  *
