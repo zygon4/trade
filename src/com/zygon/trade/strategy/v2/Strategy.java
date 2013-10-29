@@ -5,7 +5,6 @@ import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.strategy.TradeSummary;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -38,19 +37,21 @@ public class Strategy {
     // TBD: The max size should be constrained and monitored.
     private final Queue<Message> messageQueue = new ArrayBlockingQueue<Message>(Integer.MAX_VALUE); 
     private final TradeSummary summary = new TradeSummary("tbd");
+    private final Collection<Identifier> supportedIdentifiers;
     private final EventCriteria enterCriteria;
     private final EventCriteria exitCriteria;
     
     private StrategyThread runner = null;
     private boolean started = false;
     
-    public Strategy(EventCriteria enterCriteria, EventCriteria exitCriteria) {
+    public Strategy(Collection<Identifier> supportedIdentifiers, EventCriteria enterCriteria, EventCriteria exitCriteria) {
+        this.supportedIdentifiers = supportedIdentifiers;
         this.enterCriteria = enterCriteria;
         this.exitCriteria = exitCriteria;
     }
     
     public Collection<Identifier> getSupportedIndications() {
-        return Collections.EMPTY_LIST;
+        return this.supportedIdentifiers;
     }
     
     public TradeSummary getTradeSummary() {
