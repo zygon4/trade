@@ -4,15 +4,12 @@ package com.zygon.trade.modules.agent;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
-import com.zygon.trade.agent.AbstractSignalGenerator;
 import com.zygon.trade.agent.AgentBuilder;
-import com.zygon.trade.agent.SignalGenerator;
 import com.zygon.trade.agent.SignalHandler;
-import com.zygon.trade.agent.TradeSignal;
+import com.zygon.trade.agent.signal.MACDSignalGenerator;
 import com.zygon.trade.execution.ExecutionController;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.simulation.SimulationBinding;
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerMACD;
@@ -43,13 +40,7 @@ public class AgentModule extends ParentModule {
                     new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox"))))
                 );
         
-        builder.setSignalGenerator(new AbstractSignalGenerator(new SignalGenerator() {
-
-            @Override
-            public TradeSignal getSignal(Message message) {
-                return TradeSignal.DO_NOTHING;
-            }
-        }));
+        builder.setSignalGenerator(new MACDSignalGenerator());
         
         return builder.build();
     }

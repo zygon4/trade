@@ -1,6 +1,8 @@
 
-package com.zygon.trade.agent;
+package com.zygon.trade.agent.signal;
 
+import com.zygon.trade.agent.SignalGenerator;
+import com.zygon.trade.agent.TradeSignal;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Indication;
@@ -8,19 +10,15 @@ import com.zygon.trade.market.model.indication.Indication;
 /**
  * @author zygon
  */
-public class AbstractSignalGenerator implements SignalGenerator {
-
+public abstract class SignalGeneratorImpl implements SignalGenerator {
     
-    private final SignalGenerator signalGenerator;
     private final MarketConditions marketConditions = new MarketConditions("MtGox");
-    
-    public AbstractSignalGenerator(SignalGenerator signalGenerator) {
-        this.signalGenerator = signalGenerator;
-    }
     
     protected final MarketConditions getMarketConditions() {
         return this.marketConditions;
     }
+    
+    protected abstract TradeSignal doGetSignal(Indication indication);
     
     @Override
     public TradeSignal getSignal(Message message) {
@@ -28,6 +26,6 @@ public class AbstractSignalGenerator implements SignalGenerator {
         Indication indication = (Indication) message;
         this.marketConditions.putIndication(indication, null);
         
-        return this.signalGenerator.getSignal(message);
+        return this.doGetSignal(indication);
     }
 }
