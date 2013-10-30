@@ -1,9 +1,5 @@
 package com.zygon.trade.agent;
 
-
-
-
-import com.zygon.trade.execution.ExecutionController;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.strategy.TradeSummary;
@@ -54,36 +50,32 @@ public class Strategy {
     // orders. E.g. this generates orders and pushes them off.. but then it
     // doesn't know about trade summary.
     
-    private final TradeSummary summary;
     private final String name;
     private final Collection<Identifier> supportedIndicators;
-    private final EventCriteria enterCriteria;
-    private final EventCriteria exitCriteria;
-    private final ExecutionController execution;
+    private final SignalGenerator signalGenerator;
+    private final SignalHandler signalHandler;
     
     private StrategyThread runner = null;
     private boolean started = false;
     
-    public Strategy(String name, 
+    public Strategy(
+            String name, 
             Collection<Identifier> supportedIndicators, 
-            EventCriteria enterCriteria, 
-            EventCriteria exitCriteria,
-            ExecutionController execution) {
+            SignalGenerator signalGenerator,
+            SignalHandler signalHandler) {
         
         this.name = name;
         this.supportedIndicators = supportedIndicators;
-        this.enterCriteria = enterCriteria;
-        this.exitCriteria = exitCriteria;
-        this.execution = execution;
-        this.summary = new TradeSummary(this.name+"_summary");
+        this.signalGenerator = signalGenerator;
+        this.signalHandler = signalHandler;
+    }
+
+    public String getName() {
+        return this.name;
     }
     
     public Collection<Identifier> getSupportedIndicators() {
         return this.supportedIndicators;
-    }
-    
-    public TradeSummary getTradeSummary() {
-        return this.summary;
     }
     
     private void process(Message msg) {
@@ -92,8 +84,10 @@ public class Strategy {
         // Should we have criteria or just a simple "get signal" interface?
         // If we do have a single interface that returns a signal.. should
         // we even process it here? or push that off to someone else?
-        
-        System.out.println(msg);
+        TradeSignal signal = this.signalGenerator.getSignal(msg);
+        if (signal != TradeSignal.DO_NOTHING) {
+            this.signalHandler.handle(signal);
+        }
     }
     
     public void send(Message message) {

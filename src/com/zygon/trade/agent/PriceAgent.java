@@ -34,9 +34,12 @@ public class PriceAgent extends AbstractTickerAgent {
         
         Collection<Identifier> identifiers = new ArrayList<Identifier>(Arrays.asList(Price.ID));
         
-        Strategy strategy = new Strategy(PriceAgent.class.getName()+"_Strategy", identifiers, null, null, 
-                new ExecutionController(
-                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox"))));
+        Strategy strategy = new Strategy(
+                PriceAgent.class.getName()+"_Strategy", 
+                identifiers, 
+                null, 
+                new SignalHandler(new ExecutionController(
+                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox")))));
         
         return strategy;
     }
