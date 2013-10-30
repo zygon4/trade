@@ -34,7 +34,7 @@ import org.joda.money.CurrencyUnit;
 public class AgentModule extends ParentModule {
 
     private static com.zygon.trade.agent.Agent buildAgent(String name) {
-        AgentBuilder builder = new AgentBuilder();
+        AgentBuilder<Ticker> builder = new AgentBuilder<Ticker>();
         builder.setName(name+"_agent");
         builder.setInterpreters(getInterpreters());
         builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
