@@ -20,9 +20,9 @@ public class AgentBuilder<T> {
     private SignalGenerator signalGenerator;
     private SignalHandler signalHandler;
     
-    public Agent build() {
+    public Agent<T> build() {
         Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.signalGenerator, this.signalHandler);
-        return new Agent(this.name, this.interpreters, strategy);
+        return new Agent<T>(this.name, this.interpreters, strategy);
     }
 
     public void setInterpreters(Collection<Interpreter<T>> interpreters) {

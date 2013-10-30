@@ -33,7 +33,7 @@ import org.joda.money.CurrencyUnit;
  */
 public class AgentModule extends ParentModule {
 
-    private static com.zygon.trade.agent.Agent buildAgent(String name) {
+    private static com.zygon.trade.agent.Agent<Ticker> buildAgent(String name) {
         AgentBuilder<Ticker> builder = new AgentBuilder<Ticker>();
         builder.setName(name+"_agent");
         builder.setInterpreters(getInterpreters());
