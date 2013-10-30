@@ -1,7 +1,7 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.agent.EventCriteria;
+import com.zygon.trade.agent.SignalGenerator;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExecutionController;
 import com.zygon.trade.execution.MarketConditions;
@@ -94,8 +94,9 @@ public class StrategyTester {
     private final Strategy testStrategy = new Strategy(
             "test", 
             this.testIdentifiers, 
-            null, null,
-            new ExecutionController(new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("mc"))));
+            null,
+            new SignalHandler(new ExecutionController(
+                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox")))));
     
     
     
