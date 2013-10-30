@@ -8,9 +8,6 @@ Using some open source stuff:
 
 xeiam/xchange
 reflections
-guava
 math3
 commons/daemon
-
-
-TODO: Complete gradleize
+gradle
