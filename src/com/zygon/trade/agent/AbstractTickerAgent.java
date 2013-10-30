@@ -9,6 +9,7 @@ import java.util.Collection;
  *
  * @author zygon
  */
+@Deprecated
 public abstract class AbstractTickerAgent extends Agent<Ticker> {
 
     public AbstractTickerAgent(String name, Collection<Interpreter<Ticker>> interpreters, Strategy strategy) {

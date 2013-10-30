@@ -23,6 +23,7 @@ import org.joda.money.CurrencyUnit;
  *
  * @author zygon
  */
+@Deprecated
 public class SimpleMAAgent extends AbstractTickerAgent {
 
     private static Collection<Interpreter<Ticker>> getInterpreters() {
