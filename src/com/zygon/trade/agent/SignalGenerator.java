@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.market.Message;
 
 /**

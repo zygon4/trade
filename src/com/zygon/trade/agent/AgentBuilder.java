@@ -18,10 +18,9 @@ public class AgentBuilder<T> {
     // These are Strategy specific
     private Collection<Identifier> supportedIndicators;
     private SignalGenerator signalGenerator;
-    private SignalHandler signalHandler;
     
     public Agent<T> build() {
-        Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.signalGenerator, this.signalHandler);
+        Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.signalGenerator);
         return new Agent<T>(this.name, this.interpreters, strategy);
     }
 
@@ -35,10 +34,6 @@ public class AgentBuilder<T> {
 
     public void setSignalGenerator(SignalGenerator signalGenerator) {
         this.signalGenerator = signalGenerator;
-    }
-
-    public void setSignalHandler(SignalHandler signalHandler) {
-        this.signalHandler = signalHandler;
     }
 
     public void setSupportedIndicators(Collection<Identifier> supportedIndicators) {

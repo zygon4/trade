@@ -2,7 +2,7 @@
 package com.zygon.trade.agent.signal;
 
 import com.xeiam.xchange.currency.Currencies;
-import com.zygon.trade.agent.TradeSignal;
+import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.market.Direction;
 import com.zygon.trade.market.model.indication.market.Direction.MarketDirection;
@@ -21,8 +21,8 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
     // This should probably be introduced as a higher level concept as well.
     private MarketDirection getMarketDirection(Indication indication) {
         // TBD: tradeable BS ?
-        MACDZeroCross zeroCross = (MACDZeroCross) this.getMarketConditions().getIndication(MACDZeroCross.ID, Currencies.BTC);
-        MACDSignalCross signalCross = (MACDSignalCross) this.getMarketConditions().getIndication(MACDSignalCross.ID, Currencies.BTC);
+        MACDZeroCross zeroCross = this.getZeroCross();
+        MACDSignalCross signalCross = this.getSignalCross();
         
         MarketDirection dir = null;
         
@@ -41,6 +41,14 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
         return dir;
     }
 
+    protected MACDZeroCross getZeroCross() {
+        return (MACDZeroCross) this.getMarketConditions().getIndication(MACDZeroCross.ID, Currencies.BTC);
+    }
+    
+    protected MACDSignalCross getSignalCross() {
+        return (MACDSignalCross) this.getMarketConditions().getIndication(MACDSignalCross.ID, Currencies.BTC);
+    }
+    
     @Override
     protected TradeSignal doGetSignal(Indication indication) {
         MarketDirection marketDirection = this.getMarketDirection(indication);

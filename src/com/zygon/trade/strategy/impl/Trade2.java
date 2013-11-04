@@ -4,7 +4,7 @@
 
 package com.zygon.trade.strategy.impl;
 
-import com.zygon.trade.agent.TradeSignal;
+import com.zygon.trade.trade.TradeSignal;
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.ExecutionController;
@@ -12,8 +12,8 @@ import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.strategy.TradeMonitor;
 import com.zygon.trade.strategy.TradePostMortem;
 import com.zygon.trade.strategy.TradeSummary;
-import static com.zygon.trade.strategy.TradeType.LONG;
-import static com.zygon.trade.strategy.TradeType.SHORT;
+import static com.zygon.trade.trade.TradeType.LONG;
+import static com.zygon.trade.trade.TradeType.SHORT;
 import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

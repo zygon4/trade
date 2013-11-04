@@ -4,13 +4,14 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.TradeType;
 import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.dto.Order;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.ExecutionController;
 import com.zygon.trade.execution.MarketConditions;
-import static com.zygon.trade.strategy.TradeType.LONG;
-import static com.zygon.trade.strategy.TradeType.SHORT;
+import static com.zygon.trade.trade.TradeType.LONG;
+import static com.zygon.trade.trade.TradeType.SHORT;
 
 /**
  * Work in progress...

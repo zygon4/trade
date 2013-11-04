@@ -1,15 +1,10 @@
 
 package com.zygon.trade.modules.agent;
 
-import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.agent.AgentBuilder;
-import com.zygon.trade.agent.SignalHandler;
 import com.zygon.trade.agent.signal.MACDSignalGenerator;
-import com.zygon.trade.execution.ExecutionController;
-import com.zygon.trade.execution.MarketConditions;
-import com.zygon.trade.execution.simulation.SimulationBinding;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerMACD;
@@ -21,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -35,10 +28,6 @@ public class AgentModule extends ParentModule {
         builder.setName(name+"_agent");
         builder.setInterpreters(getInterpreters());
         builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
-        builder.setSignalHandler(
-                new SignalHandler(new ExecutionController(
-                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox"))))
-                );
         
         builder.setSignalGenerator(new MACDSignalGenerator());
         

@@ -1,10 +1,6 @@
 
 package com.zygon.trade.agent;
 
-import com.xeiam.xchange.dto.trade.Wallet;
-import com.zygon.trade.execution.ExecutionController;
-import com.zygon.trade.execution.MarketConditions;
-import com.zygon.trade.execution.simulation.SimulationBinding;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
@@ -16,8 +12,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -40,9 +34,7 @@ public class AnalysisAgent extends  AbstractTickerAgent {
         Strategy strategy = new Strategy(
                 PriceAgent.class.getName()+"_Strategy", 
                 identifiers, 
-                null, 
-                new SignalHandler(new ExecutionController(
-                    new SimulationBinding("joe", new Wallet[]{new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0))}, new MarketConditions("MtGox")))));
+                null);
         
         return strategy;
     }

@@ -4,7 +4,7 @@
 
 package com.zygon.trade.strategy.impl;
 
-import com.zygon.trade.agent.TradeSignal;
+import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.execution.MarketConditions;
 
 /**

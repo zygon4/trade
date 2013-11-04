@@ -2,7 +2,7 @@
 package com.zygon.trade.agent.signal;
 
 import com.zygon.trade.agent.SignalGenerator;
-import com.zygon.trade.agent.TradeSignal;
+import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Indication;

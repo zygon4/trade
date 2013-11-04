@@ -1,19 +1,18 @@
 package com.zygon.trade.agent;
 
+import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Identifier;
-import com.zygon.trade.strategy.TradeSummary;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
- * TBD: might remove the trade summary and execution aspects in favor of just
- * handing off actionable trade signals to a queue for processing.
+ * TBD: might turn this into its own package parallel to agent
  *
  * @author david.charubini
  */
 public class Strategy {
-    
+
     private final class StrategyThread extends Thread {
 
         private volatile boolean running = true;
@@ -31,7 +30,10 @@ public class Strategy {
                     msg = Strategy.this.messageQueue.take();
                     
                     if (this.running) {
-                        Strategy.this.process(msg);
+                        TradeSignal signal = Strategy.this.signalGenerator.getSignal(msg);
+                        if (signal != TradeSignal.DO_NOTHING) {
+                            Strategy.this.outputQueue.put(signal);
+                        }
                     }
                 } catch (InterruptedException ie) {
                     // TODO: logging
@@ -45,15 +47,11 @@ public class Strategy {
     
     // TBD: The max size should be constrained and monitored.
     private final ArrayBlockingQueue<Message> messageQueue = new ArrayBlockingQueue<Message>(10000); // 10k is arbitrary
-    
-    // TBD: An output queue? So this class doesn't have to know about executing
-    // orders. E.g. this generates orders and pushes them off.. but then it
-    // doesn't know about trade summary.
+    private final ArrayBlockingQueue<TradeSignal> outputQueue = new ArrayBlockingQueue<TradeSignal>(10000); // 10k is arbitrary
     
     private final String name;
     private final Collection<Identifier> supportedIndicators;
     private final SignalGenerator signalGenerator;
-    private final SignalHandler signalHandler;
     
     private StrategyThread runner = null;
     private boolean started = false;
@@ -61,13 +59,11 @@ public class Strategy {
     public Strategy(
             String name, 
             Collection<Identifier> supportedIndicators, 
-            SignalGenerator signalGenerator,
-            SignalHandler signalHandler) {
+            SignalGenerator signalGenerator) {
         
         this.name = name;
         this.supportedIndicators = supportedIndicators;
         this.signalGenerator = signalGenerator;
-        this.signalHandler = signalHandler;
     }
 
     public String getName() {
@@ -78,16 +74,15 @@ public class Strategy {
         return this.supportedIndicators;
     }
     
-    private void process(Message msg) {
-        
-        // Big ole questions of where / how to wire up criteria/rules/implementation.
-        // Should we have criteria or just a simple "get signal" interface?
-        // If we do have a single interface that returns a signal.. should
-        // we even process it here? or push that off to someone else?
-        TradeSignal signal = this.signalGenerator.getSignal(msg);
-        if (signal != TradeSignal.DO_NOTHING) {
-            this.signalHandler.handle(signal);
-        }
+    /**
+     * Retrieves the available trade signals.
+     * 
+     * @param tradeSignals 
+     * @param maxSignals T
+     */
+    void receive(Collection<TradeSignal> tradeSignals, int maxSignals) {
+        // This (looking at the code) doesn't appear to block - yay!
+        this.outputQueue.drainTo(tradeSignals, maxSignals);
     }
     
     public void send(Message message) {
