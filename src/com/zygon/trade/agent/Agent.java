@@ -42,12 +42,15 @@ public class Agent<T> implements EventFeed.Handler<T> {
                 try {
                     data = Agent.this.dataQueue.take();
                     if (this.running) {
+                        // 1) interpret data
                         Collection<Message> messages = Agent.this.interpretData(data);
 
+                        // 2) process information
                         if (!messages.isEmpty()) {
                             Agent.this.processInformation(messages);
                         }
                         
+                        // 3) take action
                         Agent.this.processTradeSignals();
                     }
                 } catch (InterruptedException ie) {
