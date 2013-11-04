@@ -30,9 +30,12 @@ public class Strategy {
                     msg = Strategy.this.messageQueue.take();
                     
                     if (this.running) {
-                        TradeSignal signal = Strategy.this.signalGenerator.getSignal(msg);
-                        if (signal != TradeSignal.DO_NOTHING) {
-                            Strategy.this.outputQueue.put(signal);
+                        Collection<TradeSignal> signals = Strategy.this.signalGenerator.getSignal(msg);
+                        
+                        if (!signals.isEmpty()) {
+                            for (TradeSignal signal : signals) {
+                                Strategy.this.outputQueue.put(signal);
+                            }
                         }
                     }
                 } catch (InterruptedException ie) {
