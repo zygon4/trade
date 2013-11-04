@@ -2,7 +2,6 @@ package com.zygon.trade.agent;
 
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Identifier;
-import com.zygon.trade.strategy.TradeSummary;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -84,9 +83,14 @@ public class Strategy {
         // Should we have criteria or just a simple "get signal" interface?
         // If we do have a single interface that returns a signal.. should
         // we even process it here? or push that off to someone else?
-        TradeSignal signal = this.signalGenerator.getSignal(msg);
-        if (signal != TradeSignal.DO_NOTHING) {
-            this.signalHandler.handle(signal);
+        Collection<TradeSignal> signals = this.signalGenerator.getSignal(msg);
+        
+        if (signals != null && !signals.isEmpty()) {
+            for (TradeSignal signal : signals) {
+                if (signal != TradeSignal.DO_NOTHING) {
+                    this.signalHandler.handle(signal);
+                }
+            }
         }
     }
     

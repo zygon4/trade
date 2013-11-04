@@ -8,6 +8,8 @@ import com.zygon.trade.market.model.indication.market.Direction;
 import com.zygon.trade.market.model.indication.market.Direction.MarketDirection;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -17,12 +19,30 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
 
     public MACDSignalGenerator() {
     }
+
+    @Override
+    protected void getAdditionalIndications(Collection<Indication> additional) {
+        MarketDirection marketDirection = this.getMarketDirection();
+        
+        additional.add(new Direction(Currencies.BTC, System.currentTimeMillis(), marketDirection));
+    }
     
-    // This should probably be introduced as a higher level concept as well.
-    private MarketDirection getMarketDirection(Indication indication) {
-        // TBD: tradeable BS ?
-        MACDZeroCross zeroCross = (MACDZeroCross) this.getMarketConditions().getIndication(MACDZeroCross.ID, Currencies.BTC);
-        MACDSignalCross signalCross = (MACDSignalCross) this.getMarketConditions().getIndication(MACDSignalCross.ID, Currencies.BTC);
+    private Direction getDirection() {
+        return (Direction) this.getMarketConditions().getIndication(Direction.ID, Currencies.BTC);
+    }
+    
+    private MACDZeroCross getZeroCross() {
+        return (MACDZeroCross) this.getMarketConditions().getIndication(MACDZeroCross.ID, Currencies.BTC);
+    }
+    
+    private MACDSignalCross getSignalCross() {
+        return (MACDSignalCross) this.getMarketConditions().getIndication(MACDSignalCross.ID, Currencies.BTC);
+    }
+    
+    // MarketDirection should probably be introduced as a higher level concept as well.
+    private MarketDirection getMarketDirection() {
+        MACDZeroCross zeroCross = this.getZeroCross();
+        MACDSignalCross signalCross = this.getSignalCross();
         
         MarketDirection dir = null;
         
@@ -42,35 +62,32 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
     }
 
     @Override
-    protected TradeSignal doGetSignal(Indication indication) {
-        MarketDirection marketDirection = this.getMarketDirection(indication);
-        
-        // TODO: there should be some generic market direction already happening
-        // but this specific market direction impl is also valuable. Market
-        // direction can/should be extendable by the signal processing.
-        this.getMarketConditions().putIndication(new Direction(Currencies.BTC, System.currentTimeMillis(), marketDirection), null);
-        
+    protected Collection<TradeSignal> doGetSignal(Indication indication) {
+         
+//        Signal entrySignal = meetsEntryConditions();
         // TODO: magic
         
-        return TradeSignal.DO_NOTHING;
+        return Collections.EMPTY_LIST;
     }
     
-//    private Signal meetsEntryConditions() {
-//        
-//        String entrySignal = null;
-//
-//        // play a trending market
-//        MarketDirection dir = this.getMarketDirection();
-//        if (dir == MarketDirection.UP) {
-//            entrySignal = dir.name();
-//        } else if (dir == MarketDirection.DOWN) {
-//            entrySignal = dir.name();
-//        }
-//
-//        if (entrySignal != null) {
-//            entry = new Signal(entrySignal);
-//        }
-//        
-//        return entry;
-//    }
+    private Signal meetsEntryConditions() {
+        
+        String entrySignal = null;
+
+        // play a trending market        
+        MarketDirection dir = this.getDirection().getMarketDirection();
+        
+        if (dir == MarketDirection.UP) {
+            entrySignal = dir.name();
+        } else if (dir == MarketDirection.DOWN) {
+            entrySignal = dir.name();
+        }
+        
+        Signal signal = null;
+        if (entrySignal != null) {
+            signal = new Signal(entrySignal);
+        }
+        
+        return signal;
+    }
 }
