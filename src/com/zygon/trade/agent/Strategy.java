@@ -7,7 +7,10 @@ import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
- * TBD: might turn this into its own package parallel to agent
+ * TBD: Might turn this into its own package parallel to agent
+ * TBD: This might just want to collapse and go away or merge into the signal
+ *      generator.  I'm starting to doubt that we need both a Strategy and
+ *      a Signal Generator.
  *
  * @author david.charubini
  */

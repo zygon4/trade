@@ -28,7 +28,7 @@ public abstract class SignalGeneratorImpl implements SignalGenerator {
         // do nothing
     }
     
-    protected abstract Collection<TradeSignal> doGetSignal(Indication indication);
+    protected abstract Collection<TradeSignal> getTradeSignals();
     
     @Override
     public Collection<TradeSignal> getSignal(Message message) {
@@ -47,6 +47,6 @@ public abstract class SignalGeneratorImpl implements SignalGenerator {
             }
         }
         
-        return this.doGetSignal(indication);
+        return this.getTradeSignals();
     }
 }

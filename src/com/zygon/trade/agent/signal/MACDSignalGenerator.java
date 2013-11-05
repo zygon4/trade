@@ -8,8 +8,8 @@ import com.zygon.trade.market.model.indication.market.Direction;
 import com.zygon.trade.market.model.indication.market.Direction.MarketDirection;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  *
@@ -62,12 +62,13 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
     }
 
     @Override
-    protected Collection<TradeSignal> doGetSignal(Indication indication) {
+    protected Collection<TradeSignal> getTradeSignals() {
          
-//        Signal entrySignal = meetsEntryConditions();
-        // TODO: magic
+        Collection<TradeSignal> signals = new ArrayList<>();
         
-        return Collections.EMPTY_LIST;
+        signals.add(TradeSignal.DO_NOTHING);
+        
+        return signals;
     }
     
     private Signal meetsEntryConditions() {
