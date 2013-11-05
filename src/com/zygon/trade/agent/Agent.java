@@ -50,7 +50,7 @@ public class Agent<T> implements EventFeed.Handler<T> {
                             Agent.this.processInformation(messages);
                         }
                         
-                        // 3) take action
+                        // 3) take actions (if there are any)
                         Agent.this.processTradeSignals();
                     }
                 } catch (InterruptedException ie) {
