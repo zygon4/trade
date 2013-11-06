@@ -63,7 +63,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
     }
 
     @Override
-    protected Collection<Trade> getTradeSignals() {
+    protected Collection<Trade> getTrades() {
          
         Collection<Trade> trades = new ArrayList<>();
         

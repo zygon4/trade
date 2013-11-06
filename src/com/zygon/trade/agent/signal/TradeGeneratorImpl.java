@@ -28,7 +28,7 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
         // do nothing
     }
     
-    protected abstract Collection<Trade> getTradeSignals();
+    protected abstract Collection<Trade> getTrades();
     
     @Override
     public Collection<Trade> getTrades(Message message) {
@@ -47,6 +47,6 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
             }
         }
         
-        return this.getTradeSignals();
+        return this.getTrades();
     }
 }
