@@ -14,6 +14,8 @@ public class Trade {
     private long lastStartTime = -1;
     private long lastDuration = -1;
     
+    // TODO: Order sensitivity: eg parallel execution vs in-order
+    
     public Trade(String name, TradeSignal ...tradeSignals) {
         this.name = name;
         this.tradeSignals = tradeSignals;
