@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class TradeGateway {
+public class Gateway {
 
     private final Logger log;
 
-    public TradeGateway() {
-        this.log = LoggerFactory.getLogger(TradeGateway.class);
+    public Gateway() {
+        this.log = LoggerFactory.getLogger(Gateway.class);
     }
     
-    public void process (TradeSignal signal) {
-        this.log.trace("Processing signal: " + signal);
+    public void process (Trade trade) {
+        this.log.trace("Processing trade: " + trade);
     }
 }

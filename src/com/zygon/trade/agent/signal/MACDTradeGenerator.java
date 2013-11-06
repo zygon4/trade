@@ -2,22 +2,23 @@
 package com.zygon.trade.agent.signal;
 
 import com.xeiam.xchange.currency.Currencies;
-import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.market.Direction;
 import com.zygon.trade.market.model.indication.market.Direction.MarketDirection;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
+import com.zygon.trade.trade.Trade;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
  * @author zygon
  */
-public class MACDSignalGenerator extends SignalGeneratorImpl {
+public class MACDTradeGenerator extends TradeGeneratorImpl {
 
-    public MACDSignalGenerator() {
+    public MACDTradeGenerator() {
     }
 
     @Override
@@ -62,13 +63,13 @@ public class MACDSignalGenerator extends SignalGeneratorImpl {
     }
 
     @Override
-    protected Collection<TradeSignal> getTradeSignals() {
+    protected Collection<Trade> getTradeSignals() {
          
-        Collection<TradeSignal> signals = new ArrayList<>();
+        Collection<Trade> trades = new ArrayList<>();
         
-        signals.add(TradeSignal.DO_NOTHING);
         
-        return signals;
+        
+        return Collections.EMPTY_LIST;
     }
     
     private Signal meetsEntryConditions() {

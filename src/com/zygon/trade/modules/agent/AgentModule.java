@@ -4,7 +4,7 @@ package com.zygon.trade.modules.agent;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.agent.AgentBuilder;
-import com.zygon.trade.agent.signal.MACDSignalGenerator;
+import com.zygon.trade.agent.signal.MACDTradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerMACD;
@@ -29,7 +29,7 @@ public class AgentModule extends ParentModule {
         builder.setInterpreters(getInterpreters());
         builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
         
-        builder.setSignalGenerator(new MACDSignalGenerator());
+        builder.setTradeGenerator(new MACDTradeGenerator());
         
         return builder.build();
     }

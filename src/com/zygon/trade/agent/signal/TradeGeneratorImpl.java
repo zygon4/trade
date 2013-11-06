@@ -1,18 +1,18 @@
 
 package com.zygon.trade.agent.signal;
 
-import com.zygon.trade.agent.SignalGenerator;
-import com.zygon.trade.trade.TradeSignal;
+import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Indication;
+import com.zygon.trade.trade.Trade;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * @author zygon
  */
-public abstract class SignalGeneratorImpl implements SignalGenerator {
+public abstract class TradeGeneratorImpl implements TradeGenerator {
     
     private final MarketConditions marketConditions = new MarketConditions("MtGox");
     
@@ -28,10 +28,10 @@ public abstract class SignalGeneratorImpl implements SignalGenerator {
         // do nothing
     }
     
-    protected abstract Collection<TradeSignal> getTradeSignals();
+    protected abstract Collection<Trade> getTradeSignals();
     
     @Override
-    public Collection<TradeSignal> getSignal(Message message) {
+    public Collection<Trade> getTrades(Message message) {
         
         Indication indication = (Indication) message;
         

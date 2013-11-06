@@ -1,12 +1,12 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.trade.TradeSignal;
 import com.zygon.data.EventFeed;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Indication;
-import com.zygon.trade.trade.TradeGateway;
+import com.zygon.trade.trade.Trade;
+import com.zygon.trade.trade.Gateway;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,7 +63,7 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     private final ArrayBlockingQueue<T> dataQueue = new ArrayBlockingQueue<T>(10000); // 10k is arbitrary
-    private final TradeGateway tradeGateway = new TradeGateway();
+    private final Gateway tradeGateway = new Gateway();
     
     private final String name;
     private final Logger log;
@@ -126,12 +126,12 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     private void processTradeSignals() {
-        Collection<TradeSignal> tradeSignals = new ArrayList<TradeSignal>();
+        Collection<Trade> tradeSignals = new ArrayList<Trade>();
         this.strategy.receive(tradeSignals, 50); // 50 is arbitrary
         
         if (!tradeSignals.isEmpty()) {
-            for (TradeSignal signal : tradeSignals) {
-                this.tradeGateway.process(signal);
+            for (Trade trade : tradeSignals) {
+                this.tradeGateway.process(trade);
             }
         }
     }

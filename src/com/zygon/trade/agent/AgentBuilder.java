@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Identifier;
 import java.util.Collection;
@@ -17,10 +18,10 @@ public class AgentBuilder<T> {
     
     // These are Strategy specific
     private Collection<Identifier> supportedIndicators;
-    private SignalGenerator signalGenerator;
+    private TradeGenerator tradeGenerator;
     
     public Agent<T> build() {
-        Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.signalGenerator);
+        Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.tradeGenerator);
         return new Agent<T>(this.name, this.interpreters, strategy);
     }
 
@@ -32,8 +33,8 @@ public class AgentBuilder<T> {
         this.name = name;
     }
 
-    public void setSignalGenerator(SignalGenerator signalGenerator) {
-        this.signalGenerator = signalGenerator;
+    public void setTradeGenerator(TradeGenerator signalGenerator) {
+        this.tradeGenerator = signalGenerator;
     }
 
     public void setSupportedIndicators(Collection<Identifier> supportedIndicators) {
