@@ -2,11 +2,13 @@
 package com.zygon.trade.agent;
 
 import com.zygon.data.EventFeed;
+import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Indication;
+import com.zygon.trade.strategy.TradePostMortem;
 import com.zygon.trade.trade.Trade;
-import com.zygon.trade.trade.Gateway;
+import com.zygon.trade.trade.TradeBroker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +54,15 @@ public class Agent<T> implements EventFeed.Handler<T> {
                         
                         // 3) take actions (if there are any)
                         Agent.this.processTradeSignals();
+                        
+                        // 4) give feedback to the strategy (if there is any)
+                        Agent.this.processPostTrade();
+                    }
+                } catch (ExchangeException ee) {
+                    if (this.running) {
+                        // TBD: anything else we can do? We'd probably like
+                        // to alarm/alert here.
+                        Agent.this.log.error(null, ee);
                     }
                 } catch (InterruptedException ie) {
                     if (this.running) {
@@ -63,7 +74,7 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     private final ArrayBlockingQueue<T> dataQueue = new ArrayBlockingQueue<T>(10000); // 10k is arbitrary
-    private final Gateway tradeGateway = new Gateway();
+    private final TradeBroker broker = new TradeBroker();
     
     private final String name;
     private final Logger log;
@@ -125,13 +136,21 @@ public class Agent<T> implements EventFeed.Handler<T> {
         }
     }
     
-    private void processTradeSignals() {
+    private void processPostTrade() {
+        Collection<TradePostMortem> tradePostMortems = new ArrayList<TradePostMortem>();
+        this.broker.getFinishedTrades(tradePostMortems);
+        if (!tradePostMortems.isEmpty()) {
+            this.strategy.process(tradePostMortems);
+        }
+    }
+    
+    private void processTradeSignals() throws ExchangeException {
         Collection<Trade> tradeSignals = new ArrayList<Trade>();
         this.strategy.receive(tradeSignals, 50); // 50 is arbitrary
         
         if (!tradeSignals.isEmpty()) {
             for (Trade trade : tradeSignals) {
-                this.tradeGateway.process(trade);
+                this.broker.activate(trade);
             }
         }
     }
