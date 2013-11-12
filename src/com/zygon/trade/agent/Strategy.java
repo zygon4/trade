@@ -3,6 +3,8 @@ package com.zygon.trade.agent;
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Identifier;
+import com.zygon.trade.strategy.TradePostMortem;
+import com.zygon.trade.strategy.TradeSummary;
 import com.zygon.trade.trade.Trade;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -55,7 +57,7 @@ public class Strategy {
     // TBD: The max size should be constrained and monitored.
     private final ArrayBlockingQueue<Message> messageQueue = new ArrayBlockingQueue<Message>(10000); // 10k is arbitrary
     private final ArrayBlockingQueue<Trade> outputQueue = new ArrayBlockingQueue<Trade>(10000); // 10k is arbitrary
-    
+    private final TradeSummary tradeSummary;
     private final String name;
     private final Collection<Identifier> supportedIndicators;
     private final TradeGenerator tradeGenerator;
@@ -71,6 +73,7 @@ public class Strategy {
         this.name = name;
         this.supportedIndicators = supportedIndicators;
         this.tradeGenerator = signalGenerator;
+        this.tradeSummary = new TradeSummary(name);
     }
 
     public String getName() {
@@ -79,6 +82,16 @@ public class Strategy {
     
     public Collection<Identifier> getSupportedIndicators() {
         return this.supportedIndicators;
+    }
+
+    public TradeSummary getTradeSummary() {
+        return this.tradeSummary;
+    }
+    
+    public void process(Collection<TradePostMortem> tradePostMortems) {
+        for (TradePostMortem tpm : tradePostMortems) {
+            this.tradeSummary.add(tpm.getProfit());
+        }
     }
     
     /**
