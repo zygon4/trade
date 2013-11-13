@@ -8,6 +8,8 @@ import com.zygon.trade.market.model.indication.market.Direction.MarketDirection;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
 import com.zygon.trade.trade.Trade;
+import com.zygon.trade.trade.TradeSignal;
+import com.zygon.trade.trade.TradeUrgency;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,12 +64,47 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         return dir;
     }
 
+//    protected TradeInfo createTradeInfo(MarketConditions marketConditions) {
+//        MACDZeroCross zeroCross = (MACDZeroCross) marketConditions.getIndication(MACDZeroCross.ID, this.getTradeableIdentifier());
+//        MACDSignalCross signalCross = (MACDSignalCross) marketConditions.getIndication(MACDSignalCross.ID, this.getTradeableIdentifier());
+//        
+//        double entryPoint = -1.0;
+//        double profitPoint = -1.0;
+//        double stopLossPoint = -1.0;
+//        double volume = 0.0;
+//        TradeType type = null;
+//        
+//        double currentPrice = marketConditions.getPrice(this.getTradeableIdentifier()).getValue();
+//        entryPoint = currentPrice;
+//        
+//        if (zeroCross.crossAboveZero() && signalCross.crossAboveSignal()) {
+//            type = TradeType.LONG;
+//            stopLossPoint = currentPrice - STOP_LOSS_MODIFER;
+//            profitPoint = currentPrice + PROFIT_MODIFIER;
+//        } else if (!zeroCross.crossAboveZero() && !signalCross.crossAboveSignal()) {
+//            type = TradeType.SHORT;
+//            stopLossPoint = currentPrice + STOP_LOSS_MODIFER;
+//            profitPoint = currentPrice - PROFIT_MODIFIER;
+//        } else {
+//            throw new IllegalStateException("Unable to activate in the current state");
+//        }
+//        
+//        double accntBalance = this.getController().getBalance(this.getId(), Currencies.USD);
+//        volume = getTradeVolume(accntBalance, currentPrice);
+//        
+//        return new TradeInfo(entryPoint, profitPoint, stopLossPoint, volume, type);
+//    }
+    
     @Override
     protected Collection<Trade> getTrades() {
          
         Collection<Trade> trades = new ArrayList<>();
         
-        
+        Signal entrySignal = this.meetsEntryConditions();
+        if (entrySignal != null) {
+//            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volume, null, null, TradeUrgency.MEDIUM, null)
+//            trades.add(new Trade(entrySignal.toString(), new TradeSignal));
+        }
         
         return Collections.EMPTY_LIST;
     }
