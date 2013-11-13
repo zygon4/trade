@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import java.util.Collection;
@@ -12,7 +13,7 @@ import java.util.Collection;
 @Deprecated
 public abstract class AbstractTickerAgent extends Agent<Ticker> {
 
-    public AbstractTickerAgent(String name, Collection<Interpreter<Ticker>> interpreters, Strategy strategy) {
-        super(name, interpreters, strategy);
+    public AbstractTickerAgent(String name, Collection<Interpreter<Ticker>> interpreters, Strategy strategy, Exchange exchange) {
+        super(name, interpreters, strategy, exchange);
     }
 }

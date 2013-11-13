@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Identifier;
@@ -15,6 +16,7 @@ public class AgentBuilder<T> {
     // These are Agent specific
     private String name;
     private Collection<Interpreter<T>> interpreters;
+    private Exchange exchange;
     
     // These are Strategy specific
     private Collection<Identifier> supportedIndicators;
@@ -22,7 +24,11 @@ public class AgentBuilder<T> {
     
     public Agent<T> build() {
         Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.tradeGenerator);
-        return new Agent<T>(this.name, this.interpreters, strategy);
+        return new Agent<T>(this.name, this.interpreters, strategy, this.exchange);
+    }
+
+    public void setExchange(Exchange exchange) {
+        this.exchange = exchange;
     }
 
     public void setInterpreters(Collection<Interpreter<T>> interpreters) {

@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.execution.exchange.mtgox.MtGoxExchange;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
@@ -40,7 +41,7 @@ public class AnalysisAgent extends  AbstractTickerAgent {
     }
     
     public AnalysisAgent(String name) {
-        super(name, getInterpreters(), getStrategy());
+        super(name, getInterpreters(), getStrategy(), new MtGoxExchange());
     }
 
     private static final double[] VALS = {

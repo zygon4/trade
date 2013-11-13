@@ -3,6 +3,7 @@ package com.zygon.trade.agent;
 
 import com.zygon.data.EventFeed;
 import com.zygon.trade.execution.ExchangeException;
+import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Indication;
@@ -74,19 +75,19 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     private final ArrayBlockingQueue<T> dataQueue = new ArrayBlockingQueue<T>(10000); // 10k is arbitrary
-    private final TradeBroker broker = new TradeBroker();
-    
+    private final TradeBroker broker;
     private final String name;
     private final Logger log;
     private final Collection<Interpreter<T>> interpreters;
     private final Strategy strategy;
+    private final Exchange exchange;
     
     private AgentThread runner = null;
     private boolean started = false;
     
-    public Agent(String name, Collection<Interpreter<T>> interpreters, Strategy strategy) {
+    public Agent(String name, Collection<Interpreter<T>> interpreters, Strategy strategy, Exchange exchange) {
         
-        if (name == null || interpreters == null || strategy == null) {
+        if (name == null || interpreters == null || strategy == null || exchange == null) {
             throw new IllegalArgumentException("No null arguments permitted");
         }
         
@@ -94,6 +95,8 @@ public class Agent<T> implements EventFeed.Handler<T> {
         this.log = LoggerFactory.getLogger(this.name);
         this.interpreters = interpreters;
         this.strategy = strategy;
+        this.exchange = exchange;
+        this.broker = new TradeBroker(this.exchange);
     }
     
     @Override
@@ -106,6 +109,7 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     public void initialize() {
+        this.exchange.start();
         this.strategy.start();
         this.start();
     }
@@ -175,5 +179,6 @@ public class Agent<T> implements EventFeed.Handler<T> {
     public void uninitialize() {
         this.stop();
         this.strategy.stop();
+        this.exchange.stop();
     }
 }

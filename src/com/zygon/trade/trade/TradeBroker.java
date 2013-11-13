@@ -4,9 +4,9 @@ package com.zygon.trade.trade;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.zygon.trade.execution.ExchangeException;
-import com.zygon.trade.execution.exchange2.Exchange;
-import com.zygon.trade.execution.exchange2.ExchangeEvent;
-import com.zygon.trade.execution.exchange2.ExchangeEventListener;
+import com.zygon.trade.execution.exchange.Exchange;
+import com.zygon.trade.execution.exchange.ExchangeEvent;
+import com.zygon.trade.execution.exchange.ExchangeEventListener;
 import com.zygon.trade.strategy.TradePostMortem;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,11 +38,6 @@ public class TradeBroker implements ExchangeEventListener {
         this.exchange.setListener(this);
     }
 
-    // TODO: figure out how to pass an exchange in
-    public TradeBroker() {
-        this(null);
-    }
-    
     // TODO: persistant trade id - if the broker goes down and comes back up
     // with active orders then things are all fucked up.
     private static int tradeID = 0;

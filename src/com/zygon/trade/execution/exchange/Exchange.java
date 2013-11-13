@@ -1,16 +1,14 @@
 /**
  *
  */
-package com.zygon.trade.execution.exchange2;
+package com.zygon.trade.execution.exchange;
 
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
-import com.xeiam.xchange.dto.marketdata.Trade;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
-import com.xeiam.xchange.service.streaming.ExchangeEvent;
 import com.xeiam.xchange.service.streaming.StreamingExchangeService;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
@@ -28,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public final class Exchange {
+public abstract class Exchange {
 
     private static final Logger log = LoggerFactory.getLogger(Exchange.class);
 
@@ -53,7 +51,7 @@ public final class Exchange {
 
             while (this.running) {
                 try {
-                    ExchangeEvent event = this.streamingService.getNextEvent();
+                    com.xeiam.xchange.service.streaming.ExchangeEvent event = this.streamingService.getNextEvent();
 
                     log.trace("Received event " + event);
 
@@ -68,24 +66,36 @@ public final class Exchange {
                             // to reconnect
                             log.info("Disconnected from exchange");
                             break;
+                            
+                        case ERROR:
+                            log.info("Exchange error: " + event.getData());
+                            break;
 //                    case TICKER:
 //                      Ticker ticker = (Ticker) exchangeEvent.getPayload();
 //                      System.out.println(ticker.toString());
 //                      break;
 
-                        case TRADE:
-                            Trade trade = (Trade) event.getPayload();
-                            // TODO: convert to propert exchange event
-                            com.zygon.trade.execution.exchange2.ExchangeEvent exchangeEvent = new com.zygon.trade.execution.exchange2.ExchangeEvent();
-                            this.listener.notify(exchangeEvent);
-                            break;
-
+//                        case USER_ORDER
+//                            break;
+                            
+//                        case TRADE:
+//                            Trade trade = (Trade) event.getPayload();
+//                            // TODO: convert to propert exchange event
+//                            ExchangeEvent exchangeEvent = new ExchangeEvent();
+//                            this.listener.notify(exchangeEvent);
+//                            break;
+//
+//                        case TRADE_LAG:
+//                            MtGoxTradeLag lag = (MtGoxTradeLag) event.getPayload();
+//                            break;
+                            
 //                    case DEPTH:
 //                      OrderBookUpdate orderBookUpdate = (OrderBookUpdate) exchangeEvent.getPayload();
 //                      System.out.println(orderBookUpdate.toString());
 //                      break;
 
                         default:
+                            // log?
                             break;
                     }
                 } catch (InterruptedException ex) {
@@ -98,30 +108,16 @@ public final class Exchange {
             log.debug("ExchangeEventProcessor shutting down");
         }
     }
-
-    /**
-     * This represents everything the controller needs to manipulate an order
-     * from placing it, monitoring it, canceling it, updating the proper
-     * OrderBook, handling accounting, etc.
-     */
-    public static interface Binding {
-
-        public AccountController getAccountController();
-
-        public OrderBookProvider getOrderBookProvider();
-
-        public TradeExecutor getTradeExecutor();
-
-        public OrderProvider getOrderProvider();
-    }
-    private final Binding binding;
+    
     private final StreamingExchangeService streamingService;
     private ExchangeEventListener listener;
     private ExchangeEventProcessor processor = null;
     private boolean started = false;
 
-    public Exchange(Binding binding, StreamingExchangeService streamingService) {
-        this.binding = binding;
+    public Exchange(StreamingExchangeService streamingService) {
+        if (streamingService == null) {
+            throw new IllegalArgumentException("No null arguments permitted");
+        }
         this.streamingService = streamingService;
     }
 
@@ -129,31 +125,39 @@ public final class Exchange {
         // TODO: log impl with timestamps
         log.info("{} Cancel order request for order id {}", new Date(), orderId);
 
-        this.binding.getTradeExecutor().cancel(username, orderId);
+        this.getTradeExecutor().cancel(username, orderId);
     }
+    
+    public abstract AccountController getAccountController();
+
+    public abstract  OrderBookProvider getOrderBookProvider();
+
+    public abstract TradeExecutor getTradeExecutor();
+
+    public abstract OrderProvider getOrderProvider();
 
     public void getOpenOrders(List<LimitOrder> orders) {
         // could trace
-        this.binding.getOrderBookProvider().getOpenOrders(orders);
+        this.getOrderBookProvider().getOpenOrders(orders);
     }
 
     public void getOrderBook(String username, OrderBook book, String tradeableIdentifier, String currency) {
         // could trace
-        this.binding.getOrderBookProvider().getOrderBook(username, book, tradeableIdentifier, currency);
+        this.getOrderBookProvider().getOrderBook(username, book, tradeableIdentifier, currency);
     }
 
     public LimitOrder generateLimitOrder(String id, Order.OrderType type,
             double tradableAmount, String tradableIdentifier, String transactionCurrency, double price) {
-        return this.binding.getOrderProvider().getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
+        return this.getOrderProvider().getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
     }
 
     public MarketOrder generateMarketOrder(String id, Order.OrderType type,
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return this.binding.getOrderProvider().getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        return this.getOrderProvider().getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
 
     public AccountInfo getAccountInfo(String username) {
-        return this.binding.getAccountController().getAccountInfo(username);
+        return this.getAccountController().getAccountInfo(username);
     }
 
     private Wallet getWallet(String username, String currency) {
@@ -187,7 +191,7 @@ public final class Exchange {
         log.info("{} Place order request {}", new Date(), order);
 
         // For now let the order fail if there is not enough funds, etc.
-        return this.binding.getTradeExecutor().execute(username, order);
+        return this.getTradeExecutor().execute(username, order);
 
         // TBD: post-trade operations?
     }
