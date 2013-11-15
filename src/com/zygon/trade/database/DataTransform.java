@@ -1,5 +1,5 @@
 
-package com.zygon.trade.db;
+package com.zygon.trade.database;
 
 /**
  * Responsible for translating objects into persistable items.

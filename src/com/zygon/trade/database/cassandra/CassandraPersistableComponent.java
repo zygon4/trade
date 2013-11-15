@@ -2,9 +2,9 @@
  * 
  */
 
-package com.zygon.trade.db.cassandra;
+package com.zygon.trade.database.cassandra;
 
-import com.zygon.trade.db.PersistableComponent;
+import com.zygon.trade.database.PersistableComponent;
 import me.prettyprint.hector.api.Serializer;
 
 /**

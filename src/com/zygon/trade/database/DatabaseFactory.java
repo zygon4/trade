@@ -2,9 +2,9 @@
  * 
  */
 
-package com.zygon.trade.db;
+package com.zygon.trade.database;
 
-import com.zygon.trade.db.cassandra.CassandraDatabase;
+import com.zygon.trade.database.cassandra.CassandraDatabase;
 
 /**
  *

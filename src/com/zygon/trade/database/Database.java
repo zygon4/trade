@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.db;
+package com.zygon.trade.database;
 
 import java.io.Closeable;
 

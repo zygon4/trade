@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.db.cassandra;
+package com.zygon.trade.database.cassandra;
 
 import java.util.HashMap;
 import java.util.List;

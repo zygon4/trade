@@ -5,7 +5,7 @@
 package com.zygon.trade.modules.core;
 
 import com.zygon.trade.Module;
-import com.zygon.trade.db.Database;
+import com.zygon.trade.database.Database;
 import java.io.IOException;
 
 /**

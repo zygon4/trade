@@ -1,12 +1,12 @@
 /**
  *
  */
-package com.zygon.trade.db.cassandra;
+package com.zygon.trade.database.cassandra;
 
-import com.zygon.trade.db.DataTransform;
-import com.zygon.trade.db.Persistable;
-import com.zygon.trade.db.Database;
-import com.zygon.trade.db.PersistableComponent;
+import com.zygon.trade.database.DataTransform;
+import com.zygon.trade.database.Persistable;
+import com.zygon.trade.database.Database;
+import com.zygon.trade.database.PersistableComponent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
