@@ -21,8 +21,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This needs a lot of work. The concept of a binding might go away. And this
- * thing needs to have an instances of an exchange.
+ * This needs a lot of work.
+ * 
+ * - This shouldn't have a xeiam streamingExchangeService - rather an EventProvider
+ *   which supplies our own (not xeiam's) events.  We could even have an abstract
+ *   xeiam/streaming exchange as a middle layer.
+ *
+ * - This has a single listener/handler for callbacks.. should it have specific
+ *   event handlers registered on specific event codes? Probably won't need
+ *   that detail for starters..
+ *
+ * - All of the components such as order book and account manager, etc. should
+ *   probably be pushed through the constructor from the lower levels vs 
+ *   abstract methods.
+ *
+ * - Add status for 'connected'/'disconnected'? And/or a connection manager to
+ *   keep retrying if connection is lost.
  *
  * @author zygon
  */
