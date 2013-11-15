@@ -10,6 +10,7 @@ import com.xeiam.xchange.dto.trade.OpenOrders;
 import com.xeiam.xchange.mtgox.v2.service.polling.MtGoxPollingMarketDataService;
 import com.xeiam.xchange.mtgox.v2.service.polling.MtGoxPollingTradeService;
 import com.zygon.trade.execution.OrderBookProvider;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -28,15 +29,23 @@ public class MtGoxOrderBookProvider implements OrderBookProvider {
     
     @Override
     public void getOpenOrders(List<LimitOrder> orders) {
-        OpenOrders openOrders = this.mtGoxPollingTradeService.getOpenOrders();
-        orders.addAll(openOrders.getOpenOrders());
+        try {
+            OpenOrders openOrders = this.mtGoxPollingTradeService.getOpenOrders();
+            orders.addAll(openOrders.getOpenOrders());
+        } catch (IOException io) {
+            // TBD:
+            io.printStackTrace();
+        }
     }
 
     @Override
     public void getOrderBook(String username, OrderBook orders, String tradeableIdentifer, String currency) {
-        OrderBook openOrders = this.mtGoxPollingMarketDataService.getPartialOrderBook(tradeableIdentifer, currency);
-        
-        orders.getAsks().addAll(openOrders.getAsks());
-        orders.getBids().addAll(openOrders.getBids());
+        try {
+            OrderBook openOrders = this.mtGoxPollingMarketDataService.getPartialOrderBook(tradeableIdentifer, currency);
+            orders.getAsks().addAll(openOrders.getAsks());
+            orders.getBids().addAll(openOrders.getBids());
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
     }
 }

@@ -22,7 +22,7 @@ import org.joda.money.CurrencyUnit;
 public class MtGoxExchange extends Exchange {
 
     private static MtGoxStreamingConfiguration getStreamingConfig() {
-        MtGoxStreamingConfiguration mtGoxStreamingConfiguration = new MtGoxStreamingConfiguration(10, 10000, 60000, "BTC", "USD");
+        MtGoxStreamingConfiguration mtGoxStreamingConfiguration = new MtGoxStreamingConfiguration(10, 10000, 60000, true, "TODO");
         return mtGoxStreamingConfiguration;
     }
     

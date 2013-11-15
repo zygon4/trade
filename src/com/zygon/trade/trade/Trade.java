@@ -10,11 +10,18 @@ public class Trade {
     private final String name;
     private final TradeSignal[] tradeSignals;
 
+    private State state = State.PENDING;
     private long id = -1;
     private long lastStartTime = -1;
     private long lastDuration = -1;
     
     // TODO: Order sensitivity: eg parallel execution vs in-order
+    
+    public static enum State {
+        PENDING,
+        ACTIVE,
+        CLOSED
+    }
     
     public Trade(String name, TradeSignal ...tradeSignals) {
         this.name = name;
@@ -41,21 +48,58 @@ public class Trade {
         this.id = id;
     }
     
+    /*pkg*/ void notifyState (long ts, State state) {
+        
+        switch (this.state) {
+            case ACTIVE:
+                switch (state) {
+                    case CLOSED:
+                        // TODO:
+                        break;
+                    case PENDING:
+                        throw new IllegalStateException("Unable to transition from " + this.state.name() + " to " + state.name());
+                }
+                break;
+            case CLOSED:
+                switch (state) {
+                    case ACTIVE:
+                        break;
+                    case PENDING:
+                        throw new IllegalStateException("Unable to transition from " + this.state.name() + " to " + state.name());
+                }
+                break;
+            case PENDING:
+                switch (state) {
+                    case ACTIVE:
+                        // TODO:
+                        break;
+                    case CLOSED:
+                        throw new IllegalStateException("Unable to transition from " + this.state.name() + " to " + state.name());
+                }
+                break;
+        }
+    }
+    
     /*pkg*/ void notifyClosed(long ts) {
+        if (this.state != State.ACTIVE) {
+            throw new IllegalStateException("Unable to transition from " + this.state.name() + " to " + State.ACTIVE);
+        }
         if (ts < this.lastStartTime) {
             throw new IllegalStateException("End time cannot be less than start time");
         }
         
         this.lastDuration = ts - this.lastStartTime;
         this.lastStartTime = -1;
+        this.state = State.CLOSED;
     }
     
     // Notifies the Trade's particular signal that it's open
     /*pkg*/ void notifyOpen(long ts) {
-        if (this.lastStartTime != -1) {
-            throw new IllegalStateException("");
+        if (this.state != State.CLOSED) {
+            throw new IllegalStateException("Unable to transition from " + this.state.name() + " to " + State.ACTIVE);
         }
         this.lastStartTime = ts;
         this.lastDuration = -1;
+        this.state = State.ACTIVE;
     }
 }

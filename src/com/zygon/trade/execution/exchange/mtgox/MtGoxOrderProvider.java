@@ -9,6 +9,7 @@ import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.zygon.trade.execution.OrderProvider;
 import java.math.BigDecimal;
+import java.util.Date;
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 
@@ -27,7 +28,8 @@ public class MtGoxOrderProvider implements OrderProvider {
 
     @Override
     public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
-        return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, BigMoney.of(this.currency, limitPrice));
+        // TBD: id and timestamp - is this execution restriction timestamp?
+        return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, "id", new Date(), BigMoney.of(this.currency, limitPrice));
     }
 
     @Override

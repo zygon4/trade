@@ -170,11 +170,11 @@ public abstract class Exchange {
         return this.getOrderProvider().getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
 
-    public AccountInfo getAccountInfo(String username) {
+    public AccountInfo getAccountInfo(String username) throws ExchangeException {
         return this.getAccountController().getAccountInfo(username);
     }
 
-    private Wallet getWallet(String username, String currency) {
+    private Wallet getWallet(String username, String currency) throws ExchangeException {
         AccountInfo accountInfo = this.getAccountInfo(username);
 
         // check for null account info? check for user name equality?
@@ -188,7 +188,7 @@ public abstract class Exchange {
         return null;
     }
 
-    public double getBalance(String username, String currency) {
+    public double getBalance(String username, String currency) throws ExchangeException {
         Wallet wallet = this.getWallet(username, currency);
 
         if (wallet == null) {

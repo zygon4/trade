@@ -19,6 +19,7 @@ import com.zygon.trade.execution.TradeExecutor;
 import com.zygon.trade.execution.AccountController;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +158,7 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         @Override
         public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
-            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, BigMoney.of(CurrencyUnit.USD, limitPrice));
+            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, "id", new Date(), BigMoney.of(CurrencyUnit.USD, limitPrice));
         }
 
         @Override
