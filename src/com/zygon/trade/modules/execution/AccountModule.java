@@ -3,13 +3,9 @@
  */
 package com.zygon.trade.modules.execution;
 
-import com.xeiam.xchange.dto.account.AccountInfo;
-import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Module;
 import com.zygon.trade.Request;
 import com.zygon.trade.Response;
-import com.zygon.trade.execution.ExchangeException;
-import java.util.List;
 
 /**
  *
@@ -26,26 +22,28 @@ public class AccountModule extends Module {
 	this.execModule = execModule;
     }
     
-    // TODO: account summary object?
     public void getAccountSummary(StringBuilder sb, String userName) {
-        AccountInfo accountInfo = null;
-        try {
-            accountInfo = this.execModule.getController().getAccountInfo(userName);
-            sb.append(accountInfo.getUsername());
-            List<Wallet> wallets = accountInfo.getWallets();
-
-            if (!wallets.isEmpty()) {
-                sb.append ('\n');
-            }
-
-            for (Wallet w : wallets) {
-                sb.append(w.getCurrency());
-                sb.append(" - "); // TODO: format string for spacing
-                sb.append(w.getBalance().getAmount().doubleValue());
-            }
-        } catch (ExchangeException ee) {
-            sb.append("An error occured retrieving account summary for ").append(userName);
-        }
+        
+        // TODO: reengineer this when trading comes back online
+        
+//        AccountInfo accountInfo = null;
+//        try {
+//            accountInfo = this.execModule.getController().getAccountInfo(userName);
+//            sb.append(accountInfo.getUsername());
+//            List<Wallet> wallets = accountInfo.getWallets();
+//
+//            if (!wallets.isEmpty()) {
+//                sb.append ('\n');
+//            }
+//
+//            for (Wallet w : wallets) {
+//                sb.append(w.getCurrency());
+//                sb.append(" - "); // TODO: format string for spacing
+//                sb.append(w.getBalance().getAmount().doubleValue());
+//            }
+//        } catch (ExchangeException ee) {
+//            sb.append("An error occured retrieving account summary for ").append(userName);
+//        }
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.ParentModule;
-import com.zygon.trade.market.data.DataListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -22,8 +21,6 @@ import java.util.Map;
  */
 public class DataModule extends ParentModule {
 
-    private final DataListener listener = null;
-    
     private static Schema SCHEMA = new Schema("data_schema.json");
 
     private final FeedModule[] feeds;
@@ -68,10 +65,6 @@ public class DataModule extends ParentModule {
         this.feeds = get(PAIRS);
     }
     
-    public DataListener getDataManager() {
-        return this.listener;
-    }
-    
     @Override
     public Module[] getModules() {
         return this.feeds;
@@ -109,7 +102,7 @@ public class DataModule extends ParentModule {
     
     @Override
     public void uninitialize() {
-        this.listener.unintialize();
+        
     }
     
     public void unregister (EventFeed.Handler reg) {

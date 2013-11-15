@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.TradeMonitor;
 import com.zygon.trade.execution.MarketConditions;
 import java.util.ArrayList;
 import java.util.Collection;

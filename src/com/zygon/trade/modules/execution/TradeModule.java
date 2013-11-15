@@ -46,18 +46,21 @@ public class TradeModule extends Module {
         
         if (request.isCommandRequest()) {
             if (this.isTradeSummaryRequest(request)) {
-                for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
-                    sb.append(trader.getAgentSummary()).append('\n');
-                    
-                    for (TradeSummary summary : trader.getTradeSummary()) {
-                        sb.append(" - ").append(summary).append('\n');
-                    }
-                }
+                
+                // TODO: reengineer this when the trading comes back online
+                
+//                for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
+//                    sb.append(trader.getAgentSummary()).append('\n');
+//                    
+//                    for (TradeSummary summary : trader.getTradeSummary()) {
+//                        sb.append(" - ").append(summary).append('\n');
+//                    }
+//                }
             } else if (this.isTradeStateRequest(request)) {
-                for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
-                    trader.getTradeState(sb);
-                    sb.append('\n');
-                }
+//                for (TradeAgent trader : this.execModule.getInformationModule().getAgents()) {
+//                    trader.getTradeState(sb);
+//                    sb.append('\n');
+//                }
             } else {
                 sb.append("Unknown command: ").append(request.getCommandName());
             }

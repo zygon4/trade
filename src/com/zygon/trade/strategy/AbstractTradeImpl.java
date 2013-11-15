@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.TradeMonitor;
 import com.zygon.trade.trade.TradeType;
 import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.dto.Order;
