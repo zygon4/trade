@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.strategy;
+package com.zygon.trade.trade;
 
 /**
  * Skeleton right now.. to be used to keep a watchful eye on how the active
