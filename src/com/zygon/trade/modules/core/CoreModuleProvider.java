@@ -6,8 +6,8 @@ package com.zygon.trade.modules.core;
 
 import com.zygon.trade.Module;
 import com.zygon.trade.ModuleProvider;
-import com.zygon.trade.database.Database;
-import com.zygon.trade.database.DatabaseFactory;
+import com.zygon.database.Database;
+import com.zygon.database.DatabaseFactory;
 import com.zygon.trade.modules.data.DataModule;
 
 /**

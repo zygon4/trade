@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.database;
+package com.zygon.database;
 
 /**
  * This is sort of meant to be generic but it's still in the shadow of nosql/

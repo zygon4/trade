@@ -3,7 +3,7 @@
  */
 package com.zygon.trade.market.data;
 
-import com.zygon.trade.database.Database;
+import com.zygon.database.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
