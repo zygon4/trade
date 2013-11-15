@@ -7,7 +7,6 @@ import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
 import com.zygon.trade.execution.exchange.ExchangeEventListener;
-import com.zygon.trade.strategy.TradePostMortem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

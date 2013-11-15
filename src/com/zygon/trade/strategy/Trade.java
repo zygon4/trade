@@ -4,6 +4,9 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.Signal;
+import com.zygon.trade.trade.TradeSummary;
+import com.zygon.trade.trade.TradePostMortem;
 import com.zygon.trade.trade.TradeMonitor;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.MarketConditions;

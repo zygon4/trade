@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.strategy;
+package com.zygon.trade.trade;
 
 /**
  *

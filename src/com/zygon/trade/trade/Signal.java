@@ -2,13 +2,14 @@
  * 
  */
 
-package com.zygon.trade.strategy;
+package com.zygon.trade.trade;
 
 /**
- * Represents an entry/exit signal
+ * DEPRECATED: replaced by TradeSignal for now
  *
  * @author zygon
  */
+@Deprecated
 public class Signal {
     
     private final String name;

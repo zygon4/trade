@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.Signal;
 import com.zygon.trade.trade.TradeMonitor;
 import com.zygon.trade.trade.TradeType;
 import com.xeiam.xchange.currency.Currencies;
@@ -15,10 +16,13 @@ import static com.zygon.trade.trade.TradeType.LONG;
 import static com.zygon.trade.trade.TradeType.SHORT;
 
 /**
- * Work in progress...
+ * Some of this logic might become part of the new trade/broker engine. It's only
+ * alive to prevent me from going back into the history - cause i'm lazy. It'll
+ * be removed/gutted soon.
  *
  * @author zygon
  */
+@Deprecated
 public abstract class AbstractTradeImpl implements TradeImpl {
 
     private static final double MIN_TRADE_VOLUME = 0.04;

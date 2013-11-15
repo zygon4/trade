@@ -7,7 +7,7 @@ import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Indication;
-import com.zygon.trade.strategy.TradePostMortem;
+import com.zygon.trade.trade.TradePostMortem;
 import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeBroker;
 import java.util.ArrayList;

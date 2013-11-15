@@ -6,8 +6,6 @@ package com.zygon.trade.modules.execution;
 import com.zygon.trade.Module;
 import com.zygon.trade.Request;
 import com.zygon.trade.Response;
-import com.zygon.trade.strategy.TradeAgent;
-import com.zygon.trade.strategy.TradeSummary;
 
 /**
  *

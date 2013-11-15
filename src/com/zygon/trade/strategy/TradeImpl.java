@@ -4,6 +4,7 @@
 
 package com.zygon.trade.strategy;
 
+import com.zygon.trade.trade.Signal;
 import com.zygon.trade.trade.TradeMonitor;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.MarketConditions;
@@ -12,6 +13,7 @@ import com.zygon.trade.execution.MarketConditions;
  * 
  * @author zygon
  */
+@Deprecated
 public interface TradeImpl {
     public void activate(MarketConditions marketConditions) throws ExchangeException;
     public void cancel() throws ExchangeException;
