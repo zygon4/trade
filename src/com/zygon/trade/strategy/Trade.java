@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author zygon
  * @version 1.0
  */
+@Deprecated
 public final class Trade {
 
     
