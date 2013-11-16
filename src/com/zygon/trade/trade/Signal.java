@@ -5,11 +5,10 @@
 package com.zygon.trade.trade;
 
 /**
- * DEPRECATED: replaced by TradeSignal for now
+ * This could use more thought
  *
  * @author zygon
  */
-@Deprecated
 public class Signal {
     
     private final String name;
