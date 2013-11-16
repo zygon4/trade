@@ -81,7 +81,7 @@ public class MtGoxExchange extends Exchange {
                     MtGoxOpenOrder order = (MtGoxOpenOrder) exchangeEvent.getPayload();
                     log.info("User order: " + order);
                     // TODO: this is incomplete- this will require some study.
-                    event = new TradeFillEvent(Long.parseLong(order.getOid()), TradeFillEvent.Fill.FULL, order.getAmount().getValue().doubleValue());
+                    event = new TradeFillEvent(order.getOid(), TradeFillEvent.Fill.FULL, order.getPrice().getValue().doubleValue(), order.getAmount().getValue().doubleValue());
                     break;
 
 //                    case TICKER:

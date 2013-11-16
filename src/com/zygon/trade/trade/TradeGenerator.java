@@ -9,5 +9,6 @@ import java.util.Collection;
  * @author david.charubini
  */
 public interface TradeGenerator {
-    public Collection<Trade> getTrades(Message message);
+    public void notify(Message message);
+    public Collection<Trade> getTrades();
 }

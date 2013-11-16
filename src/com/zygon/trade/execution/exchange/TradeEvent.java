@@ -7,15 +7,15 @@ package com.zygon.trade.execution.exchange;
  */
 public class TradeEvent extends ExchangeEvent {
 
-    private final long tradeID;
+    private final String tradeID;
     
-    public TradeEvent(long tradeID) {
+    public TradeEvent(String tradeID) {
         super(EventType.TRADE_FILL);
         
         this.tradeID = tradeID;
     }
 
-    public long getTradeID() {
+    public String getTradeID() {
         return this.tradeID;
     }
 }

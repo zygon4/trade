@@ -5,7 +5,7 @@ import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.agent.AgentBuilder;
 import com.zygon.trade.agent.signal.MACDTradeGenerator;
-import com.zygon.trade.execution.exchange.mtgox.MtGoxExchange;
+import com.zygon.trade.execution.simulation.SimulationBinding;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerMACD;
@@ -27,7 +27,7 @@ public class AgentModule extends ParentModule {
     private static com.zygon.trade.agent.Agent<Ticker> buildAgent(String name) {
         AgentBuilder<Ticker> builder = new AgentBuilder<Ticker>();
         builder.setName(name+"_agent");
-        builder.setExchange(new MtGoxExchange());
+        builder.setExchange(SimulationBinding.createInstance());
         builder.setInterpreters(getInterpreters());
         builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
         

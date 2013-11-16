@@ -1,7 +1,7 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.execution.exchange.mtgox.MtGoxExchange;
+import com.zygon.trade.execution.simulation.SimulationBinding;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
@@ -39,6 +39,6 @@ public class PriceAgent extends AbstractTickerAgent {
     }
     
     public PriceAgent(String name) {
-        super(name, getInterpreters(), getStrategy(),  new MtGoxExchange());
+        super(name, getInterpreters(), getStrategy(), SimulationBinding.createInstance());
     }
 }

@@ -4,41 +4,57 @@
 
 package com.zygon.trade.execution.simulation;
 
-import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
-import com.zygon.trade.execution.ExecutionController;
+import com.zygon.data.Context;
+import com.zygon.data.EventFeed;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.OrderBookProvider;
 import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
 import com.zygon.trade.execution.AccountController;
+import com.zygon.trade.execution.ExchangeException;
+import com.zygon.trade.execution.exchange.Exchange;
+import com.zygon.trade.execution.exchange.ExchangeEvent;
+import com.zygon.trade.execution.exchange.TickerEvent;
+import com.zygon.trade.market.data.Ticker;
+import com.zygon.trade.market.data.mtgox.MtGoxFeed;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
- * TODO: turn into Simulation Exchange
  *
  * @author zygon
  */
-public class SimulationBinding implements ExecutionController.Binding {
+public class SimulationBinding extends Exchange implements EventFeed.Handler<Ticker> {
+    
+    public static SimulationBinding createInstance() {
+        return new SimulationBinding("joe", 
+                new Wallet[]{
+                    new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0)),
+                    new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 1000.0))
+                }, 
+                new MarketConditions("mtgox"));
+    }
     
     private static final double EXCHANGE_FEE = 0.006; // percentage
-    
+
     private static class WalletInfo {
         private double ammount = 0.0;
         private final String currency;
@@ -171,13 +187,8 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
         
-        private final SimulationAccountController accntController;
-        private final MarketConditions marketConditions;
-        
-        public SimulationTradeExecutor(SimulationAccountController accntController, MarketConditions marketConditions) {
-            this.accntController = accntController;
-            this.marketConditions = marketConditions;
-        }
+        private SimulationAccountController accntController;
+        private BigDecimal price = null;
         
         @Override
         public void cancel(String username, String orderId) {
@@ -186,7 +197,7 @@ public class SimulationBinding implements ExecutionController.Binding {
 
         @Override
         public String execute(String username, Order order) {
-            BigDecimal marketPrice = this.marketConditions.getPrice(Currencies.BTC).value();
+            BigDecimal marketPrice = this.price;
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
             
@@ -217,41 +228,56 @@ public class SimulationBinding implements ExecutionController.Binding {
             
             return "orderid";
         }
+
+        public void setAccntController(SimulationAccountController accntController) {
+            this.accntController = accntController;
+        }
+        
+        private void setPrice(BigDecimal price) {
+            this.price = price;
+        }
     }
     
-    private final String user;
-    private final SimulationAccountController accntController;
-    private final MarketConditions marketConditions;
-    private final OrderBookProvider orderBookProvider;
-    private final OrderProvider orderProvider;
-    private final TradeExecutor tradeExecutor;
-
+    private final Properties properties = new Properties();
+    
+    {
+        properties.setProperty("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
+        properties.setProperty("tradeable", "BTC");
+        properties.setProperty("currency", "USD");
+    }
+    
+    private final MtGoxFeed tickerFeed = new MtGoxFeed(new Context(this.properties));
+    
+    private final ArrayBlockingQueue<ExchangeEvent> exchangeEvents = new ArrayBlockingQueue<ExchangeEvent>(100);
+    
     public SimulationBinding(String username, Wallet[] wallets, MarketConditions marketConditions) {
-        this.user = username;
-        this.accntController = new SimulationAccountController(this.user, wallets);
-        this.marketConditions = marketConditions;
-        this.orderBookProvider = new SimulationOrderBookProvider();
-        this.orderProvider = new SimulationOrderProvider();
-        this.tradeExecutor = new SimulationTradeExecutor(this.accntController, this.marketConditions);
+        super(new SimulationAccountController(username, wallets),
+              new SimulationOrderBookProvider(),
+              new SimulationOrderProvider(),
+              new SimulationTradeExecutor());
+        
+         SimulationTradeExecutor simTradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
+         simTradeExecutor.setAccntController((SimulationAccountController)this.getAccountController());
+         
+         this.tickerFeed.register(this);
     }
     
     @Override
-    public AccountController getAccountController() {
-        return this.accntController;
+    protected ExchangeEvent getEvent() throws ExchangeException {
+        try { 
+            return this.exchangeEvents.take(); 
+        } catch (InterruptedException ignore) {
+            // ignore
+        }
+        return null;
     }
-
+    
     @Override
-    public OrderBookProvider getOrderBookProvider() {
-        return this.orderBookProvider;
-    }
-
-    @Override
-    public OrderProvider getOrderProvider() {
-        return this.orderProvider;
-    }
-
-    @Override
-    public TradeExecutor getTradeExecutor() {
-        return this.tradeExecutor;
+    public void handle(Ticker r) {
+        SimulationTradeExecutor tradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
+        
+        tradeExecutor.setPrice(r.getAsk().plus(r.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
+        
+        try { this.exchangeEvents.put(new TickerEvent(r)); } catch (InterruptedException ignore) {}
     }
 }

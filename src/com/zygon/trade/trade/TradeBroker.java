@@ -1,12 +1,16 @@
 
 package com.zygon.trade.trade;
 
-import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
 import com.zygon.trade.execution.exchange.ExchangeEventListener;
+import com.zygon.trade.execution.exchange.TickerEvent;
+import com.zygon.trade.execution.exchange.TradeCancelEvent;
+import com.zygon.trade.execution.exchange.TradeFillEvent;
+import com.zygon.trade.market.data.Ticker;
+import com.zygon.trade.market.util.TickerUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,11 +28,14 @@ import org.slf4j.LoggerFactory;
  */
 public class TradeBroker implements ExchangeEventListener {
 
+    // A nasty coarse grain lock
     private final Object tradeLock = new Object();
     private final ArrayList<TradePostMortem> finishedTrades = new ArrayList<TradePostMortem>();
     private final Logger log;
-    private final Map<Integer, Order> exchangeByTradeId = new HashMap<Integer, Order>();
+    private final Map<String, TradeMonitor> tradeSignalByOrderId = new HashMap<String, TradeMonitor>();
     private final Exchange exchange;
+    
+    private Ticker ticker = null;
 
     public TradeBroker(Exchange exchange) {
         this.log = LoggerFactory.getLogger(TradeBroker.class);
@@ -56,10 +63,35 @@ public class TradeBroker implements ExchangeEventListener {
             
             this.exchange.placeOrder("TODO", order);
             
-            this.exchangeByTradeId.put(tradeID, order);
+            TradeMonitor monitor = new TradeMonitor();
+            monitor.setStart(System.currentTimeMillis());
+            monitor.setSignal(signal);
+            monitor.setTradeId(id);
+            monitor.setEnterPrice(this.getCurrentPrice());
+            
+            synchronized (this.tradeLock) {
+                this.tradeSignalByOrderId.put(id, monitor);
+            }
             
             tradeID ++;
         }
+    }
+    
+    private double calculateProfit (TradeType type, double entryPrice, double currentPrice, double volume) {
+        
+        double priceMargin = 0.0;
+        
+        switch (type) {
+            case LONG:
+                priceMargin = currentPrice - entryPrice;
+                break;
+            case SHORT:
+                priceMargin = entryPrice - currentPrice;
+                break;
+        }
+        
+        double profit = priceMargin * volume;
+        return profit;
     }
     
     public void cancelAll() {
@@ -67,6 +99,10 @@ public class TradeBroker implements ExchangeEventListener {
         // TODO: cancel active trades
     }
 
+    private double getCurrentPrice() {
+        return TickerUtil.getMidPrice(this.ticker);
+    }
+    
     public void getFinishedTrades(Collection<TradePostMortem> col) {
     
         if (!this.finishedTrades.isEmpty()) {
@@ -81,16 +117,130 @@ public class TradeBroker implements ExchangeEventListener {
     public void notify(ExchangeEvent event) {
         this.log.trace("Received event: " + event);
         
-        // TBD: event should have the order's id
-        
-        // TODO: look into map. update ongoing trade or remove from map
-        
         // TODO: trade history collection that shows all of the trades. 
         // Someone can come in and grab them.
         
         synchronized (this.tradeLock) {
-        // TODO: finish
-//        this.finishedTrades.add(new TradePostMortem(null, null, tradeID, tradeID));
+            
+            switch (event.getEventType()) {
+                case TICKER:
+                    TickerEvent tickerEvent = (TickerEvent) event;
+                    this.ticker = tickerEvent.getTicker();
+                    
+                    // ticker signifies a price change - we might need to close
+                    // out some trades.
+                    try {
+                        this.processOpenTrades();
+                    } catch (ExchangeException ee) {
+                        this.log.error(null, ee);
+                    }
+                    
+                    break;
+                case TRADE_CANCEL:
+                    TradeCancelEvent cancelEvent = (TradeCancelEvent) event;
+                    TradeMonitor cancelledTradeMonitor = this.tradeSignalByOrderId.get(cancelEvent.getOrderId());
+                    if (cancelledTradeMonitor != null) {
+                        this.tradeSignalByOrderId.remove(cancelEvent.getOrderId());
+                        
+                        cancelledTradeMonitor.setEnd(System.currentTimeMillis());
+                        
+                        this.finishedTrades.add(new TradePostMortem(
+                                new Signal(cancelledTradeMonitor.getSignal().getReason()), 
+                                new Signal(cancelEvent.getReason()), 
+                                cancelledTradeMonitor.getDuration(), 
+                                0.0));
+                    }
+                    break;
+                case TRADE_FILL:
+                    TradeFillEvent fillEvent = (TradeFillEvent) event;
+                    TradeMonitor filledTradeMonitor = this.tradeSignalByOrderId.get(fillEvent.getTradeID());
+                    if (filledTradeMonitor != null) {
+                        if (fillEvent.getFill() == TradeFillEvent.Fill.FULL) {
+                            this.tradeSignalByOrderId.remove(fillEvent.getTradeID());
+                            
+                            filledTradeMonitor.setEnd(System.currentTimeMillis());
+                            
+                            double profit = this.calculateProfit(
+                                    filledTradeMonitor.getSignal().getTradeType(), 
+                                    filledTradeMonitor.getEnterPrice(), 
+                                    this.getCurrentPrice(), 
+                                    filledTradeMonitor.getSignal().getVolume());
+                            
+                            this.finishedTrades.add(new TradePostMortem(
+                                    new Signal(filledTradeMonitor.getSignal().getReason()), 
+                                    new Signal("FILLED"), 
+                                    filledTradeMonitor.getDuration(), 
+                                    profit));
+                        } else {
+                            // TBD: partial fill - might need to hold onto some
+                            // additional meta data during a trade. and update
+                            // with fill ammounts.
+                        }
+                    }
+                    
+                    break;
+                case TRADE_REJECTED:
+                    break;
+            }
         }
+    }
+    
+    private void processOpenTrades() throws ExchangeException {
+        double price = this.getCurrentPrice();
+        
+        synchronized (this.tradeLock) {
+            for (String tradeKey : this.tradeSignalByOrderId.keySet()) {
+                TradeMonitor trade = this.tradeSignalByOrderId.get(tradeKey);
+                
+                PriceObjective priceObjective = trade.getSignal().getObjective();
+                Signal exitSignal = this.getExitSignal(trade, price, priceObjective);
+                if (exitSignal != null) {
+                    
+                    // We met the exit conditions - close the trade
+                    // TBD: limit order
+                    
+                    MarketOrder closeOrder = this.exchange.generateMarketOrder(trade.getTradeId(), trade.getSignal().getTradeType().getCounterOrderType(), 
+                             trade.getSignal().getVolume(), trade.getSignal().getTradeableIdentifier(), trade.getSignal().getCurrency());
+            
+                    this.exchange.placeOrder("TODO", closeOrder);
+                    
+                    this.tradeSignalByOrderId.remove(tradeKey);
+                }
+            }
+        }
+    }
+    
+    private static final String EXIT_STOP_LOSS = "STOP_LOSS";
+    private static final String EXIT_TAKE_PROFIT = "TAKE_PROFIT";
+    
+    /**
+     * Returns a signal symbolizing that the trade should be closed, null otherwise.
+     * @param monitor
+     * @param currentPrice
+     * @param priceObjective
+     * @return a signal symbolizing that the trade should be closed, null otherwise.
+     */
+    private Signal getExitSignal(TradeMonitor monitor, double currentPrice, PriceObjective priceObjective) {
+        
+        String exitSignal = null;
+        
+        switch (monitor.getSignal().getTradeType()) {
+            case LONG:
+                if (currentPrice <= priceObjective.getStopLoss()) {
+                    exitSignal = EXIT_STOP_LOSS;
+                } else if(currentPrice >= priceObjective.getTakeProfit()) {
+                    exitSignal = EXIT_TAKE_PROFIT;
+                }
+                break;
+            case SHORT:
+                if (currentPrice >= priceObjective.getStopLoss()) {
+                    exitSignal = EXIT_STOP_LOSS;
+                } else if (currentPrice <= priceObjective.getTakeProfit()) {
+                    exitSignal = EXIT_TAKE_PROFIT;
+                }
+                break;
+        }
+        
+        return exitSignal != null ? new Signal(exitSignal) : null;
     }
 }

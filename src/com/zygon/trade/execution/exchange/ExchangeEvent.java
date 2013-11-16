@@ -11,6 +11,7 @@ public class ExchangeEvent {
         CONNECTED,
         DISCONNECTED,
         ERROR,
+        TICKER,
         TRADE_CANCEL,
         TRADE_FILL,
         TRADE_LAG,

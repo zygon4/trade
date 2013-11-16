@@ -13,9 +13,10 @@ public class TradeFillEvent extends TradeEvent {
     }
     
     private final Fill fill;
+    private final double fillPrice;
     private final double fillAmmount;
     
-    public TradeFillEvent(long tradeID, Fill fill, double fillAmmount) {
+    public TradeFillEvent(String tradeID, Fill fill, double fillPrice, double fillAmmount) {
         super(tradeID);
         
         if (fillAmmount < 0.0) {
@@ -23,6 +24,7 @@ public class TradeFillEvent extends TradeEvent {
         }
         
         this.fill = fill;
+        this.fillPrice = fillPrice;
         this.fillAmmount = fillAmmount;
     }
 
@@ -32,5 +34,9 @@ public class TradeFillEvent extends TradeEvent {
 
     public double getFillAmmount() {
         return this.fillAmmount;
+    }
+
+    public double getFillPrice() {
+        return this.fillPrice;
     }
 }

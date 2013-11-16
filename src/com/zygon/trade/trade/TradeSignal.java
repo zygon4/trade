@@ -10,7 +10,7 @@ package com.zygon.trade.trade;
  */
 public class TradeSignal {
 
-    public static final TradeSignal DO_NOTHING = new TradeSignal(Decision.DO_NOTHING, 0.0, null, null, null, null);
+    public static final TradeSignal DO_NOTHING = new TradeSignal(Decision.DO_NOTHING, 0.0, null, null, null, null, null);
     
     public static enum Decision {
         BUY (TradeType.LONG),
@@ -32,14 +32,17 @@ public class TradeSignal {
     private final double volume;
     private final String tradeableIdentifier;
     private final String currency;
+    private final PriceObjective tradeObjectives;
     private final TradeUrgency tradeUrgency;
     private final String reason;
 
-    public TradeSignal(Decision decision, double volume, String tradeableIdentifier, String currency, TradeUrgency tradeUrgency, String reason) {
+    public TradeSignal(Decision decision, double volume, String tradeableIdentifier, 
+            String currency, PriceObjective objective, TradeUrgency tradeUrgency, String reason) {
         this.decision = decision;
         this.volume = volume;
         this.tradeableIdentifier = tradeableIdentifier;
         this.currency = currency;
+        this.tradeObjectives = objective;
         this.tradeUrgency = tradeUrgency;
         this.reason = reason;
     }
@@ -50,6 +53,10 @@ public class TradeSignal {
 
     public Decision getDecision() {
         return this.decision;
+    }
+
+    public PriceObjective getObjective() {
+        return this.tradeObjectives;
     }
 
     public String getReason() {

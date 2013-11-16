@@ -36,7 +36,9 @@ public class Strategy {
                     msg = Strategy.this.messageQueue.take();
                     
                     if (this.running) {
-                        Collection<Trade> trades = Strategy.this.tradeGenerator.getTrades(msg);
+                        Strategy.this.tradeGenerator.notify(msg);
+                        
+                        Collection<Trade> trades = Strategy.this.tradeGenerator.getTrades();
                         
                         if (!trades.isEmpty()) {
                             for (Trade trade : trades) {

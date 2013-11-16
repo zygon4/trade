@@ -5,7 +5,6 @@ import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Indication;
-import com.zygon.trade.trade.Trade;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,11 +27,8 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
         // do nothing
     }
     
-    protected abstract Collection<Trade> getTrades();
-    
     @Override
-    public Collection<Trade> getTrades(Message message) {
-        
+    public void notify(Message message) {
         Indication indication = (Indication) message;
         
         this.marketConditions.putIndication(indication, null);
@@ -46,7 +42,5 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
                 this.marketConditions.putIndication(additional, null);
             }
         }
-        
-        return this.getTrades();
     }
 }
