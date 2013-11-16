@@ -57,12 +57,31 @@ public abstract class Exchange {
 
             log.debug("ExchangeEventProcessor starting");
 
-            while (this.running && Exchange.this.isConnected()) {
+            while (this.running) {
                 try {
                     ExchangeEvent event = Exchange.this.getEvent();
 
                     if (event != null) {
                         log.trace("Received event " + event);
+                        
+                        switch (event.getEventType()) {
+                            case CONNECTED:
+                                if (!Exchange.this.isConnected) {
+                                    log.info("Connected to exchange");
+                                    Exchange.this.isConnected = true;
+                                    // TBD: kill any connection task
+                                }
+                                break;
+                            case DISCONNECTED:
+                                if (Exchange.this.isConnected) {
+                                    Exchange.this.isConnected = false;
+                                    log.info("Disconnected from exchange");
+                                    // TBD: connection task that keeps trying to
+                                    // to reconnect 
+                                }
+                                break;
+                        }
+                        
                         Exchange.this.listener.notify(event);
                     }
                     
@@ -80,6 +99,7 @@ public abstract class Exchange {
     private ExchangeEventListener listener;
     private ExchangeEventProcessor processor = null;
     private boolean started = false;
+    private boolean isConnected = false;
 
     private final AccountController accntController;
     private final OrderBookProvider orderBookProvider;
@@ -172,7 +192,9 @@ public abstract class Exchange {
         return wallet.getBalance().getAmount().doubleValue();
     }
 
-    public abstract boolean isConnected();
+    public boolean isConnected() {
+        return this.isConnected;
+    }
     
     public String placeOrder(String username, Order order) throws ExchangeException {
         // TODO: log impl with timestamps

@@ -8,6 +8,9 @@ public class ExchangeEvent {
     
     public static enum EventType {
         ACCOUNT_STATUS,
+        CONNECTED,
+        DISCONNECTED,
+        ERROR,
         TRADE_CANCEL,
         TRADE_FILL,
         TRADE_LAG,

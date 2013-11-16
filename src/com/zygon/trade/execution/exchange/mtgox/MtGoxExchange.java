@@ -12,7 +12,11 @@ import com.xeiam.xchange.mtgox.v2.service.streaming.MtGoxStreamingConfiguration;
 import com.xeiam.xchange.service.streaming.StreamingExchangeService;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.exchange.Exchange;
+import com.zygon.trade.execution.exchange.ExchangeError;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
+import com.zygon.trade.execution.exchange.TradeFillEvent;
+import com.zygon.trade.execution.exchange.TradeLagEvent;
+import java.util.concurrent.TimeUnit;
 import org.joda.money.CurrencyUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +48,6 @@ public class MtGoxExchange extends Exchange {
     }
     
     private final StreamingExchangeService service;
-    private boolean isConnected = false;
     
     public MtGoxExchange() {
         super (new MtGoxAcctController(new MtGoxPollingAccountService(getExchangeSpecification())),
@@ -58,39 +61,27 @@ public class MtGoxExchange extends Exchange {
     @Override
     public ExchangeEvent getEvent() throws ExchangeException {
         
-        ExchangeEvent.EventType eventType = null;
+        ExchangeEvent event = null;
         
         try {
-            com.xeiam.xchange.service.streaming.ExchangeEvent event = this.service.getNextEvent();
+            com.xeiam.xchange.service.streaming.ExchangeEvent exchangeEvent = this.service.getNextEvent();
 
-            switch (event.getEventType()) {
-
+            switch (exchangeEvent.getEventType()) {
                 case CONNECT:
-                    if (!this.isConnected) {
-                        log.info("Connected to exchange");
-                        this.isConnected = true;
-                        // TBD: kill any connection task
-                    }
+                    event = new ExchangeEvent(ExchangeEvent.EventType.CONNECTED);
                     break;
-
                 case DISCONNECT:
-                    if (this.isConnected) {
-                        this.isConnected = false;
-                        log.info("Disconnected from exchange");
-                        // TBD: connection task that keeps trying to
-                        // to reconnect 
-                    }
-
+                    event = new ExchangeEvent(ExchangeEvent.EventType.DISCONNECTED);
                     break;
-
                 case ERROR:
-                    log.info("Exchange error: " + event.getData());
+                    log.info("Exchange error: " + exchangeEvent.getData());
+                    event = new ExchangeError(exchangeEvent.getData());
                     break;
-
                 case USER_ORDER:
-                    eventType = ExchangeEvent.EventType.TRADE_FILL;
-                    MtGoxOpenOrder order = (MtGoxOpenOrder) event.getPayload();
+                    MtGoxOpenOrder order = (MtGoxOpenOrder) exchangeEvent.getPayload();
                     log.info("User order: " + order);
+                    // TODO: this is incomplete- this will require some study.
+                    event = new TradeFillEvent(Long.parseLong(order.getOid()), TradeFillEvent.Fill.FULL, order.getAmount().getValue().doubleValue());
                     break;
 
 //                    case TICKER:
@@ -109,8 +100,8 @@ public class MtGoxExchange extends Exchange {
 //                            break;
 //
                     case TRADE_LAG:
-                        MtGoxTradeLag lag = (MtGoxTradeLag) event.getPayload();
-                        //todo:
+                        MtGoxTradeLag lag = (MtGoxTradeLag) exchangeEvent.getPayload();
+                        event = new TradeLagEvent(lag.getAge(), TimeUnit.SECONDS);
                         break;
 
 //                    case DEPTH:
@@ -122,20 +113,17 @@ public class MtGoxExchange extends Exchange {
                     // log?
                     break;
             }
-
-            if (eventType != null) {
-                return new ExchangeEvent(eventType);
+            
+            if (event == null) {
+                log.debug("Unhandled exchange event: " + exchangeEvent.getEventType().name());
             }
-
+            
+            return event;
+            
         } catch (InterruptedException ie) {
             log.error(null, ie);
         }
 
         return null;
-    }
-    
-    @Override
-    public boolean isConnected() {
-        return this.isConnected;
     }
 }
