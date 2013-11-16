@@ -1,48 +1,17 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.execution.simulation.SimulationBinding;
-import com.zygon.trade.market.data.Interpreter;
-import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
-import com.zygon.trade.market.model.indication.Identifier;
-import com.zygon.trade.market.model.indication.numeric.Price;
 import com.zygon.trade.market.util.MovingAverage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
 
 /**
+ * TODO: this is just some data to be used for analysis later on.. no real use
+ * now
  *
  * @author zygon
  */
-@Deprecated
-public class AnalysisAgent extends  AbstractTickerAgent {
-
-    private static Collection<Interpreter<Ticker>> getInterpreters() {
-        Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
-        
-        interpreters.add(new TickerPriceInterpreter());
-        
-        return interpreters;
-    }
-    
-    private static Strategy getStrategy() {
-        Collection<Identifier> identifiers = new ArrayList<Identifier>(Arrays.asList(Price.ID));
-        
-        Strategy strategy = new Strategy(
-                PriceAgent.class.getName()+"_Strategy", 
-                identifiers, 
-                null);
-        
-        return strategy;
-    }
-    
-    public AnalysisAgent(String name) {
-        super(name, getInterpreters(), getStrategy(), SimulationBinding.createInstance());
-    }
+public class AnalysisAgent {
 
     private static final double[] VALS = {
         188.17255
