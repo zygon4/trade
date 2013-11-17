@@ -4,7 +4,7 @@ package com.zygon.trade.modules.execution.broker;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.execution.AccountController;
-import com.zygon.trade.execution.simulation.SimulationBinding;
+import com.zygon.trade.execution.exchange.simulation.SimulationBinding;
 import com.zygon.trade.trade.TradeBroker;
 
 /**

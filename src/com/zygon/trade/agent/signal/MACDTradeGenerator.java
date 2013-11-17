@@ -72,7 +72,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         MarketDirection marketDirection = this.getDirection().getMarketDirection();
         
-        double volume = 0.0;
+        double volume = 0.10;
         TradeType tradeType = null;
         
         if (marketDirection == MarketDirection.UP) {
@@ -84,7 +84,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         if (tradeType != null) {
             PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, 0.02, 0.01);
-            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, 0.10, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
+            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volume, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
 
             return tradeSignal;
         }

@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.execution.simulation;
+package com.zygon.trade.execution.exchange.simulation;
 
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
