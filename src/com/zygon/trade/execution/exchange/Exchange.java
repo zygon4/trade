@@ -196,12 +196,12 @@ public abstract class Exchange {
         return this.isConnected;
     }
     
-    public String placeOrder(String username, Order order) throws ExchangeException {
+    public String placeOrder(String accountId, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);
 
         // For now let the order fail if there is not enough funds, etc.
-        return this.tradeExecutor.execute(username, order);
+        return this.tradeExecutor.execute(accountId, order);
 
         // TBD: post-trade operations?
     }
