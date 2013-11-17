@@ -206,7 +206,7 @@ public abstract class Exchange {
         // TBD: post-trade operations?
     }
 
-    public void setListener(ExchangeEventListener listener) {
+    public final void setListener(ExchangeEventListener listener) {
         this.listener = listener;
     }
 
