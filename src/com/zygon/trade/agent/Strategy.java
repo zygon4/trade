@@ -90,6 +90,10 @@ public class Strategy {
         return this.tradeSummary;
     }
     
+    /**
+     * Gives feedback to the strategy.
+     * @param tradePostMortems 
+     */
     public void process(Collection<TradePostMortem> tradePostMortems) {
         for (TradePostMortem tpm : tradePostMortems) {
             this.tradeSummary.add(tpm.getProfit());
