@@ -31,15 +31,30 @@ import org.slf4j.LoggerFactory;
  */
 public class TradeBroker implements ExchangeEventListener {
 
+    // TBD: might be nice to formalize this little thing.. add setters, etc
+    public static class TradeSummary {
+        private int totalTradeCount = 0;
+        private int cancelledTradeCount = 0;
+
+        public int getCancelledTradeCount() {
+            return this.cancelledTradeCount;
+        }
+
+        public int getTotalTradeCount() {
+            return this.totalTradeCount;
+        }
+    }
+    
     // A nasty coarse grain lock
     private final Object tradeLock = new Object();
     private final ArrayList<TradePostMortem> finishedTrades = new ArrayList<TradePostMortem>();
     private final Logger log;
     private final Map<String, TradeMonitor> tradeSignalByOrderId = new HashMap<String, TradeMonitor>();
     private final Exchange exchange;
+    private final TradeSummary tradeSummary = new TradeSummary();
     
     private Ticker ticker = null;
-
+    
     public TradeBroker(Exchange exchange) {
         this.log = LoggerFactory.getLogger(TradeBroker.class);
         this.exchange = exchange;
@@ -57,6 +72,10 @@ public class TradeBroker implements ExchangeEventListener {
         // set of restrictions
         if (!this.tradeSignalByOrderId.isEmpty()) {
             return;
+        }
+        
+        if (this.ticker == null) {
+            this.log.trace("Broker is not ready. unable to activate trade: " + trade);
         }
         
         this.log.trace("Activating trade: " + trade);
@@ -110,9 +129,21 @@ public class TradeBroker implements ExchangeEventListener {
         this.log.info("Cancelling all trades");
         // TODO: cancel active trades
     }
-
+    
+    public int getActiveTradeCount() {
+        return this.tradeSignalByOrderId.size();
+    }
+    
+    public TradeSummary getTradeSummary() {
+        return this.tradeSummary;
+    }
+    
     private double getCurrentPrice() {
         return TickerUtil.getMidPrice(this.ticker);
+    }
+
+    public Exchange getExchange() {
+        return this.exchange;
     }
     
     public void getFinishedTrades(Collection<TradePostMortem> col) {
@@ -161,6 +192,8 @@ public class TradeBroker implements ExchangeEventListener {
                                 new Signal(cancelEvent.getReason()), 
                                 cancelledTradeMonitor.getDuration(), 
                                 0.0));
+                        this.tradeSummary.cancelledTradeCount ++;
+                        this.tradeSummary.totalTradeCount ++;
                     }
                     break;
                 case TRADE_FILL:
@@ -183,6 +216,8 @@ public class TradeBroker implements ExchangeEventListener {
                                     new Signal("FILLED"), 
                                     filledTradeMonitor.getDuration(), 
                                     profit));
+                            
+                            this.tradeSummary.totalTradeCount ++;
                         } else {
                             // TBD: partial fill - might need to hold onto some
                             // additional meta data during a trade. and update

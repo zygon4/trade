@@ -235,14 +235,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
             
             output = sb.toString();
         } else if (request.isStatusRequest()) {
-            if (this.hasSchema()) {
-                StringBuilder sb = new StringBuilder();
-                this.writeStatus(sb, this);
-                sb.append('\n');
-                output = sb.toString();
-            } else {
-                output = "";
-            }
+            StringBuilder sb = new StringBuilder();
+            this.writeStatus(sb);
+            sb.append('\n');
+            output = sb.toString();
         }
         
         return new Response(output);
@@ -314,9 +310,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         logger.info("Uninstallation of " + this.getDisplayname() + " complete");
     }
     
-    private void writeStatus (StringBuilder sb, Configurable configurable) {
-        Configuration config = configurable.getConfiguration();
-        ConfigurationSchema schema = config.getSchema();
+    private void writeStatus (StringBuilder sb) {
+        if (this.hasSchema()) {
+            Configuration config = getConfiguration();
+            ConfigurationSchema schema = config.getSchema();
         
         // TBD
         
@@ -331,6 +328,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
 //                sb.append('\n');
 //            }
 //        }
+        }
         
         this.doWriteStatus(sb);
     }

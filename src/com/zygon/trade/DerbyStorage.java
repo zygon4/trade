@@ -1,9 +1,10 @@
 package com.zygon.trade;
 
+import com.zygon.trade.modules.account.AccountModule;
 import com.zygon.trade.modules.agent.AgentModule;
 import com.zygon.trade.modules.core.UIModule;
 import com.zygon.trade.modules.data.DataModule;
-import com.zygon.trade.modules.data.FeedModule;
+import com.zygon.trade.modules.execution.broker.BrokerModule;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -70,6 +71,13 @@ public class DerbyStorage implements InstallableStorage {
 //        mtGoxTicker.configure(feedConfig);
 //        
 //        this.metadataById.put(mtGoxTicker.getDisplayname(), new MetaData(mtGoxTicker.getDisplayname(), "com.zygon.trade.modules.data.FeedModule", mtGoxTicker));
+        
+        BrokerModule broker = new BrokerModule();
+        this.metadataById.put(broker.getDisplayname(), new MetaData(broker.getDisplayname(), "com.zygon.trade.modules.execution.broker.BrokerModule", broker));
+        
+        AccountModule account = new AccountModule();
+        this.metadataById.put(account.getDisplayname(), new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", account));
+        
         
         this.metadataById.put("UI", new MetaData("UI", "com.zygon.trade.modules.core.UIModule", new UIModule("ui")));
     }

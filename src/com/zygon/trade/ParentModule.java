@@ -90,6 +90,8 @@ public abstract class ParentModule extends Module {
             sb.append('\n');
             
             output = sb.toString();
+        } else {
+            return super.getOutput(request);
         }
         
         return new Response(output);
