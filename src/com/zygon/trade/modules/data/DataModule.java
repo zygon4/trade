@@ -54,12 +54,12 @@ public class DataModule extends ParentModule {
     
     private static final CurrencyPair[] PAIRS = new CurrencyPair[]{
         CurrencyPair.BTC_USD,
-        CurrencyPair.BTC_GBP,
-        CurrencyPair.BTC_EUR,
-        CurrencyPair.BTC_JPY,
-        CurrencyPair.BTC_CHF,
-        CurrencyPair.BTC_AUD,
-        CurrencyPair.BTC_CAD
+//        CurrencyPair.BTC_GBP,
+//        CurrencyPair.BTC_EUR,
+//        CurrencyPair.BTC_JPY,
+//        CurrencyPair.BTC_CHF,
+//        CurrencyPair.BTC_AUD,
+//        CurrencyPair.BTC_CAD
     };
     
     public DataModule() {
