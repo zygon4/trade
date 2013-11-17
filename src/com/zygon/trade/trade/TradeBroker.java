@@ -33,6 +33,7 @@ public class TradeBroker implements ExchangeEventListener {
 
     // TBD: might be nice to formalize this little thing.. add setters, etc
     public static class TradeSummary {
+        private int totalOrdersExecuted = 0;
         private int totalTradeCount = 0;
         private int cancelledTradeCount = 0;
 
@@ -106,6 +107,8 @@ public class TradeBroker implements ExchangeEventListener {
             synchronized (this.tradeLock) {
                 this.tradeSignalByOrderId.put(id, monitor);
             }
+            
+            this.tradeSummary.totalOrdersExecuted ++;
             
             orderID ++;
         }
@@ -203,10 +206,10 @@ public class TradeBroker implements ExchangeEventListener {
                     break;
                 case TRADE_FILL:
                     TradeFillEvent fillEvent = (TradeFillEvent) event;
-                    TradeMonitor filledTradeMonitor = this.tradeSignalByOrderId.get(fillEvent.getTradeID());
+                    TradeMonitor filledTradeMonitor = this.tradeSignalByOrderId.get(fillEvent.getOrderID());
                     if (filledTradeMonitor != null) {
                         if (fillEvent.getFill() == TradeFillEvent.Fill.FULL) {
-                            this.tradeSignalByOrderId.remove(fillEvent.getTradeID());
+                            this.tradeSignalByOrderId.remove(fillEvent.getOrderID());
                             
                             filledTradeMonitor.setEnd(System.currentTimeMillis());
                             
@@ -218,7 +221,7 @@ public class TradeBroker implements ExchangeEventListener {
                             
                             this.finishedTrades.add(new TradePostMortem(
                                     new Signal(filledTradeMonitor.getSignal().getReason()), 
-                                    new Signal("FILLED"), 
+                                    new Signal(ExchangeEvent.EventType.TRADE_FILL.name()), 
                                     filledTradeMonitor.getDuration(), 
                                     profit));
                             
@@ -258,7 +261,7 @@ public class TradeBroker implements ExchangeEventListener {
             
                     this.exchange.placeOrder(this.accountId, closeOrder);
                     
-                    iter.remove();
+                    this.tradeSummary.totalOrdersExecuted ++;
                 }
             }
         }

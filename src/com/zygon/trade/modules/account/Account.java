@@ -3,6 +3,7 @@ package com.zygon.trade.modules.account;
 
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
+import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
@@ -35,6 +36,11 @@ public class Account extends Module {
     }
 
     @Override
+    public void configure(Configuration configuration) {
+        
+    }
+
+    @Override
     protected void doWriteStatus(StringBuilder sb) {
         try {
             AccountInfo accountInfo = this.accountController.getAccountInfo(this.getDisplayname());
@@ -49,7 +55,6 @@ public class Account extends Module {
             this.getLogger().error("Error getting account information for: " + this.getDisplayname(), ex);
         }
     }
-
     
     @Override
     public Module[] getModules() {

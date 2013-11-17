@@ -15,7 +15,7 @@ public class TradeEvent extends ExchangeEvent {
         this.tradeID = tradeID;
     }
 
-    public String getTradeID() {
+    public String getOrderID() {
         return this.tradeID;
     }
 }
