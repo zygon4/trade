@@ -21,6 +21,8 @@ import java.util.Map;
  */
 public class DataModule extends ParentModule {
 
+    public static final String ID = "data";
+    
     private static Schema SCHEMA = new Schema("data_schema.json");
 
     private final FeedModule[] feeds;
@@ -61,7 +63,7 @@ public class DataModule extends ParentModule {
     };
     
     public DataModule() {
-        super ("data", SCHEMA, FeedModule.class);
+        super (ID, SCHEMA, FeedModule.class);
         this.feeds = get(PAIRS);
     }
     
