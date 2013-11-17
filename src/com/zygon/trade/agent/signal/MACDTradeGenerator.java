@@ -10,6 +10,7 @@ import com.zygon.trade.market.model.indication.market.MACDZeroCross;
 import com.zygon.trade.trade.PriceObjective;
 import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeSignal;
+import com.zygon.trade.trade.TradeType;
 import com.zygon.trade.trade.TradeUrgency;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,23 +68,29 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         return dir;
     }
     
-//    private PriceObjective generatePriceObjective(double currentPrice, MACDZeroCross zeroCross, MACDSignalCross signalCross) {
-//        
-//        double profitPoint = -1.0;
-//        double stopLossPoint = -1.0;
-//        
-//        if (zeroCross.crossAboveZero() && signalCross.crossAboveSignal()) {
-//            stopLossPoint = currentPrice - STOP_LOSS_MODIFER;
-//            profitPoint = currentPrice + PROFIT_MODIFIER;
-//        } else if (!zeroCross.crossAboveZero() && !signalCross.crossAboveSignal()) {
-//            stopLossPoint = currentPrice + STOP_LOSS_MODIFER;
-//            profitPoint = currentPrice - PROFIT_MODIFIER;
-//        } else {
-//            throw new IllegalStateException("Unable to activate in the current state");
-//        }
-//        
-//        return new PriceObjective(profitPoint, stopLossPoint);
-//    }
+    private TradeSignal createTradeSignal() {
+        
+        MarketDirection marketDirection = this.getDirection().getMarketDirection();
+        
+        double volume = 0.0;
+        TradeType tradeType = null;
+        
+        if (marketDirection == MarketDirection.UP) {
+            tradeType = TradeType.LONG;
+            
+        } else if (marketDirection == MarketDirection.DOWN) {
+            tradeType = TradeType.SHORT;
+        }
+        
+        if (tradeType != null) {
+            PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, 0.02, 0.01);
+            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, 0.01, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
+
+            return tradeSignal;
+        }
+        
+        return null;
+    }
     
     static int fakeTradeId = 0;
     
@@ -92,34 +99,11 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
          
         Collection<Trade> trades = new ArrayList<>();
         
-        Signal entrySignal = this.meetsEntryConditions();
-        if (entrySignal != null) {
-            PriceObjective priceObjective = new PriceObjective(500.0, 400.0);
-            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, 1.0, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, "'cause");
+        TradeSignal tradeSignal = createTradeSignal();
+        if (tradeSignal != null) {
             trades.add(new Trade("trade"+(fakeTradeId++), tradeSignal));
         }
         
         return trades;
-    }
-    
-    private Signal meetsEntryConditions() {
-        
-        String entrySignal = null;
-
-        // play a trending market        
-        MarketDirection dir = this.getDirection().getMarketDirection();
-        
-        if (dir == MarketDirection.UP) {
-            entrySignal = dir.name();
-        } else if (dir == MarketDirection.DOWN) {
-            entrySignal = dir.name();
-        }
-        
-        Signal signal = null;
-        if (entrySignal != null) {
-            signal = new Signal(entrySignal);
-        }
-        
-        return signal;
     }
 }

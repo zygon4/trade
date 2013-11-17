@@ -109,6 +109,10 @@ public class MtGoxExchange extends Exchange {
 //                      System.out.println(orderBookUpdate.toString());
 //                      break;
 
+                    case USER_WALLET_UPDATE:
+                        //MtGoxWalletUpdate walletUpdate = (MtGoxWalletUpdate) exchangeEvent.getPayload();
+                        
+                        break;
                 default:
                     // log?
                     break;

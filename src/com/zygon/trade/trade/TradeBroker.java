@@ -14,6 +14,7 @@ import com.zygon.trade.market.util.TickerUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
  * and marshal them into individual execution actions.  Also, monitoring
  * orders which have stop losses associated but the underlying exchange
  * does not support them.
+ * 
+ * TODO: volume strategy
  *
  * @author zygon
  */
@@ -49,6 +52,13 @@ public class TradeBroker implements ExchangeEventListener {
     private static int tradeID = 0;
     
     public synchronized void activate(Trade trade) throws ExchangeException {
+        
+        // TBD: for now we just want one trade at a time.. we need a better
+        // set of restrictions
+        if (!this.tradeSignalByOrderId.isEmpty()) {
+            return;
+        }
+        
         this.log.trace("Activating trade: " + trade);
         
         String id = String.valueOf(tradeID);
@@ -57,6 +67,8 @@ public class TradeBroker implements ExchangeEventListener {
             
             // TODO: limit order
             // TBD: priority
+            
+            signal.getObjective().setPrice(this.getCurrentPrice());
             
             MarketOrder order = this.exchange.generateMarketOrder(id, signal.getDecision().getType().getOrderType(), 
                              signal.getVolume(), signal.getTradeableIdentifier(), signal.getCurrency());
@@ -77,7 +89,7 @@ public class TradeBroker implements ExchangeEventListener {
         }
     }
     
-    private double calculateProfit (TradeType type, double entryPrice, double currentPrice, double volume) {
+    private double calculateClosingProfit (TradeType type, double entryPrice, double currentPrice, double volume) {
         
         double priceMargin = 0.0;
         
@@ -117,12 +129,12 @@ public class TradeBroker implements ExchangeEventListener {
     public void notify(ExchangeEvent event) {
         this.log.trace("Received event: " + event);
         
-        // TODO: trade history collection that shows all of the trades. 
-        // Someone can come in and grab them.
-        
         synchronized (this.tradeLock) {
             
             switch (event.getEventType()) {
+                case ACCOUNT_STATUS:
+                    // TODO: get account balance for volume/risk adjustment
+                    break;
                 case TICKER:
                     TickerEvent tickerEvent = (TickerEvent) event;
                     this.ticker = tickerEvent.getTicker();
@@ -160,7 +172,7 @@ public class TradeBroker implements ExchangeEventListener {
                             
                             filledTradeMonitor.setEnd(System.currentTimeMillis());
                             
-                            double profit = this.calculateProfit(
+                            double profit = this.calculateClosingProfit(
                                     filledTradeMonitor.getSignal().getTradeType(), 
                                     filledTradeMonitor.getEnterPrice(), 
                                     this.getCurrentPrice(), 
@@ -189,13 +201,15 @@ public class TradeBroker implements ExchangeEventListener {
         double price = this.getCurrentPrice();
         
         synchronized (this.tradeLock) {
-            for (String tradeKey : this.tradeSignalByOrderId.keySet()) {
+            Iterator<String> iter = this.tradeSignalByOrderId.keySet().iterator();
+            while (iter.hasNext()) {
+                String tradeKey = iter.next();
                 TradeMonitor trade = this.tradeSignalByOrderId.get(tradeKey);
                 
                 PriceObjective priceObjective = trade.getSignal().getObjective();
                 Signal exitSignal = this.getExitSignal(trade, price, priceObjective);
                 if (exitSignal != null) {
-                    
+                    this.log.info("Closing trade " + trade.getTradeId() + " due to " + exitSignal.getName());
                     // We met the exit conditions - close the trade
                     // TBD: limit order
                     
@@ -204,7 +218,7 @@ public class TradeBroker implements ExchangeEventListener {
             
                     this.exchange.placeOrder("TODO", closeOrder);
                     
-                    this.tradeSignalByOrderId.remove(tradeKey);
+                    iter.remove();
                 }
             }
         }

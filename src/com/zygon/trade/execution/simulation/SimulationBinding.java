@@ -18,9 +18,12 @@ import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
+import com.zygon.trade.execution.exchange.AccoutWalletUpdate;
 import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
 import com.zygon.trade.execution.exchange.TickerEvent;
+import com.zygon.trade.execution.exchange.TradeCancelEvent;
+import com.zygon.trade.execution.exchange.TradeFillEvent;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.mtgox.MtGoxFeed;
 import java.math.BigDecimal;
@@ -30,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -39,6 +43,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 
+ * TODO: send account update messages to the broker so it can make volume
+ * analysis.
  *
  * @author zygon
  */
@@ -91,6 +98,7 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
     
     private static final class SimulationAccountController implements AccountController {
 
+        private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
         private Map<CurrencyUnit, WalletInfo> walletsByCurrency = new HashMap<>();
         private final String user;
         private double fees = 0.0;
@@ -112,6 +120,8 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
             
             wallet.ammount += ammount.doubleValue();
             wallet.high = Math.max(wallet.getHigh(), wallet.getAmmount());
+            
+            this.exchangeEvents.add(new AccoutWalletUpdate(user, wallet.getWallet()));
         }
         
         public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) {
@@ -119,6 +129,8 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
             
             wallet.ammount -= ammount.doubleValue();
             wallet.low = Math.min(wallet.getLow(), wallet.getAmmount());
+            
+            this.exchangeEvents.add(new AccoutWalletUpdate(user, wallet.getWallet()));
         }
         
         @Override
@@ -152,6 +164,10 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
         public double getMaxProfit(CurrencyUnit currency) {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             return wallet.getHigh();
+        }
+
+        public void setExchangeEvents(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
+            this.exchangeEvents = exchangeEvents;
         }
     }
     
@@ -187,12 +203,14 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
 
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
         
+        private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
         private SimulationAccountController accntController;
         private BigDecimal price = null;
         
         @Override
         public void cancel(String username, String orderId) {
             this.log.info("Cancelling orderId: {}", orderId);
+            this.exchangeEvents.add(new TradeCancelEvent(orderId, "unknown reason"));
         }
 
         @Override
@@ -219,6 +237,8 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
                 this.accntController.add(amount, CurrencyUnit.of(order.getTransactionCurrency()));
             }
             
+            this.exchangeEvents.add(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), amount.doubleValue()));
+            
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
                 this.log.info("Account balance {}, high {}, low {}", 
                         this.accntController.getBalance(unit), this.accntController.getMaxProfit(unit), 
@@ -229,6 +249,10 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
             return "orderid:"+order.getId();
         }
 
+        public void setExchangeEvents(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
+            this.exchangeEvents = exchangeEvents;
+        }
+        
         public void setAccntController(SimulationAccountController accntController) {
             this.accntController = accntController;
         }
@@ -258,6 +282,10 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
         
          SimulationTradeExecutor simTradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
          simTradeExecutor.setAccntController((SimulationAccountController)this.getAccountController());
+         simTradeExecutor.setExchangeEvents(this.exchangeEvents);
+         
+         SimulationAccountController simAccountController = (SimulationAccountController) this.getAccountController();
+         simAccountController.setExchangeEvents(this.exchangeEvents);
          
          this.tickerFeed.register(this);
     }
