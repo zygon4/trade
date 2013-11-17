@@ -226,7 +226,7 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
             }
             this.log.info("Total fees {}", this.accntController.getFees());
             
-            return "orderid";
+            return "orderid:"+order.getId();
         }
 
         public void setAccntController(SimulationAccountController accntController) {
