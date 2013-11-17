@@ -25,11 +25,11 @@ public class DataModule extends ParentModule {
     
     private static Schema SCHEMA = new Schema("data_schema.json");
 
-    private final FeedModule[] feeds;
+    private final DataFeed[] feeds;
     
-    private static FeedModule get(String clazz, String tradeable, String currency) {
+    private static DataFeed get(String clazz, String tradeable, String currency) {
         
-        FeedModule feed = new FeedModule(tradeable + "_" + currency);
+        DataFeed feed = new DataFeed(tradeable + "_" + currency);
         
         feed.configure(new Configuration(feed.getSchema()));
         feed.getConfiguration().setValue("class", clazz);
@@ -39,9 +39,9 @@ public class DataModule extends ParentModule {
         return feed;
     }
     
-    private static FeedModule[] get(CurrencyPair[] pairs) {
+    private static DataFeed[] get(CurrencyPair[] pairs) {
         
-        FeedModule[] feeds = new FeedModule[pairs.length];
+        DataFeed[] feeds = new DataFeed[pairs.length];
         
         int i = 0;
         
@@ -63,7 +63,7 @@ public class DataModule extends ParentModule {
     };
     
     public DataModule() {
-        super (ID, SCHEMA, FeedModule.class);
+        super (ID, SCHEMA, DataFeed.class);
         this.feeds = get(PAIRS);
     }
     
@@ -96,7 +96,7 @@ public class DataModule extends ParentModule {
     }
 
     public void register (EventFeed.Handler reg) {
-        for (FeedModule feed : this.feeds) {
+        for (DataFeed feed : this.feeds) {
             feed.register(reg);
         }
     }
@@ -108,7 +108,7 @@ public class DataModule extends ParentModule {
     }
     
     public void unregister (EventFeed.Handler reg) {
-        for (FeedModule feed : this.feeds) {
+        for (DataFeed feed : this.feeds) {
             feed.unregister(reg);
         }
     }

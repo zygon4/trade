@@ -17,7 +17,7 @@ import java.util.Properties;
  *
  * @author zygon
  */
-public class FeedModule extends Module {
+public class DataFeed extends Module {
 
     private static Properties getProps(String cls, String tradeable, String currency) {
         Properties props = new Properties();
@@ -34,7 +34,7 @@ public class FeedModule extends Module {
     private final Collection<Handler> feedRegistrations = new ArrayList<Handler>();
     private EventFeed feed = null;
     
-    public FeedModule(String name) {
+    public DataFeed(String name) {
         super(name, SCHEMA);
     }
 

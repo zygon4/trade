@@ -22,12 +22,6 @@ public class Service implements Daemon {
 
     private static final Logger log = LoggerFactory.getLogger(Service.class);
 
-    @Deprecated
-    private static Module[] findModules() {
-        ModuleFinder moduleFinder = new ModuleFinder();
-        return moduleFinder.getModules();
-    }
-    
     private final ConnectionManager connectionManager;
     private ConfigurationManager configurationManager;
     private ModuleSet moduleSet;
