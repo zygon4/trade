@@ -51,9 +51,9 @@ public class Agent extends Module {
         
         if (broker == null) {
             this.getLogger().debug("Unable to find broker: " + this.brokerName);
+        } else {
+            this.agent.setBroker(broker.getBroker());
         }
-        
-        this.agent.setBroker(broker.getBroker());
     }
 
     /*pkg*/ com.zygon.trade.agent.Agent getAgent() {
