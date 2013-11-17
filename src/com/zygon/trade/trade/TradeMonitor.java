@@ -7,6 +7,9 @@ package com.zygon.trade.trade;
 /**
  * Skeleton right now.. to be used to keep a watchful eye on how the active
  * trades are.
+ * 
+ *  TBD: should this monitor aspect merge with the actual Trade object? Why
+ * have two objects?
  *
  * @author zygon
  */
@@ -41,7 +44,7 @@ public class TradeMonitor {
     public String getTradeId() {
         return this.tradeId;
     }
-    
+
     public void setEnd(long end) {
         this.end = end;
     }

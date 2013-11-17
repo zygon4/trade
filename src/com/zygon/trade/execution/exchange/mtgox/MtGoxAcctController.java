@@ -9,6 +9,7 @@ import com.xeiam.xchange.mtgox.v2.service.polling.MtGoxPollingAccountService;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
 import java.io.IOException;
+import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -29,5 +30,20 @@ public class MtGoxAcctController implements AccountController {
         } catch (IOException io) {
             throw new ExchangeException("Error accessing information for " + username, io);
         }
+    }
+
+    @Override
+    public double getHigh(String username, CurrencyUnit currency) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getLow(String username, CurrencyUnit currency) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getMaximumDrawDown(String username, CurrencyUnit currency) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -75,11 +75,11 @@ public class Agent<T> implements EventFeed.Handler<T> {
     }
     
     private final ArrayBlockingQueue<T> dataQueue = new ArrayBlockingQueue<T>(10000); // 10k is arbitrary
-    private TradeBroker broker;
     private final String name;
     private final Logger log;
     private final Collection<Interpreter<T>> interpreters;
     private final Strategy strategy;
+    private TradeBroker broker;
     
     private AgentThread runner = null;
     private boolean started = false;

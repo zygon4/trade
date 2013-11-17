@@ -101,7 +101,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         TradeSignal tradeSignal = createTradeSignal();
         if (tradeSignal != null) {
-            trades.add(new Trade("trade"+(fakeTradeId++), tradeSignal));
+            trades.add(new Trade(tradeSignal));
         }
         
         return trades;

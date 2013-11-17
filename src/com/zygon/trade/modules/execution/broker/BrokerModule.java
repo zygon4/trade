@@ -17,7 +17,7 @@ public class BrokerModule extends ParentModule {
     
     private final Broker broker = new Broker("mtgox");
     {
-        this.broker.setBroker(new TradeBroker(SimulationBinding.createInstance()));
+        this.broker.setBroker(new TradeBroker("joe", SimulationBinding.createInstance()));
     }
     private final Broker[] brokers = {broker};
     

@@ -7,7 +7,6 @@ package com.zygon.trade.trade;
  */
 public class Trade {
     
-    private final String name;
     private final TradeSignal[] tradeSignals;
 
     private State state = State.PENDING;
@@ -23,8 +22,7 @@ public class Trade {
         CLOSED
     }
     
-    public Trade(String name, TradeSignal ...tradeSignals) {
-        this.name = name;
+    public Trade(TradeSignal ...tradeSignals) {
         this.tradeSignals = tradeSignals;
     }
 
@@ -35,10 +33,6 @@ public class Trade {
     public long getLastDuration() {
         return this.lastDuration;
     }
-
-    public String getName() {
-        return this.name;
-    }
     
     public TradeSignal[] getTradeSignals() {
         return this.tradeSignals;
@@ -47,6 +41,9 @@ public class Trade {
     /*pkg*/ final void setId(long id) {
         this.id = id;
     }
+    
+    // TBD: should this state information stay here?  Should we merge with the 
+    // TradeMonitor object?
     
     /*pkg*/ void notifyState (long ts, State state) {
         

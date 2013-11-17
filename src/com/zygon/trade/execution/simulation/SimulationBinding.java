@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -55,7 +54,7 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
         return new SimulationBinding("joe", 
                 new Wallet[]{
                     new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0)),
-                    new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 1000.0))
+                    new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 10.0))
                 }, 
                 new MarketConditions("mtgox"));
     }
@@ -155,17 +154,25 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
         public double getFees() {
             return this.fees;
         }
-        
-        public double getMaxDrawDown(CurrencyUnit currency) {
+
+        @Override
+        public double getMaximumDrawDown(String username, CurrencyUnit currency) {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
-            return wallet.getLow();
+            return wallet.getHigh() - wallet.getLow();
         }
         
-        public double getMaxProfit(CurrencyUnit currency) {
+        @Override
+        public double getHigh(String username, CurrencyUnit currency) {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             return wallet.getHigh();
         }
 
+        @Override
+        public double getLow(String username, CurrencyUnit currency) {
+            WalletInfo wallet = this.walletsByCurrency.get(currency);
+            return wallet.getLow();
+        }
+        
         public void setExchangeEvents(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
             this.exchangeEvents = exchangeEvents;
         }
@@ -214,7 +221,7 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
         }
 
         @Override
-        public String execute(String username, Order order) {
+        public String execute(String accountId, Order order) {
             BigDecimal marketPrice = this.price;
             
             this.log.info("Executing order: {} at price {}", order, marketPrice);
@@ -240,9 +247,11 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
             this.exchangeEvents.add(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), amount.doubleValue()));
             
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
-                this.log.info("Account balance {}, high {}, low {}", 
-                        this.accntController.getBalance(unit), this.accntController.getMaxProfit(unit), 
-                        this.accntController.getMaxDrawDown(unit), this.accntController.getFees());
+                this.log.info("Account balance {}, high {}, low {}, max drawdown {}", 
+                        this.accntController.getBalance(unit), 
+                        this.accntController.getHigh(accountId, unit), 
+                        this.accntController.getLow(accountId, unit),
+                        this.accntController.getMaximumDrawDown(accountId, unit));
             }
             this.log.info("Total fees {}", this.accntController.getFees());
             

@@ -50,13 +50,15 @@ public class TradeBroker implements ExchangeEventListener {
     private final ArrayList<TradePostMortem> finishedTrades = new ArrayList<TradePostMortem>();
     private final Logger log;
     private final Map<String, TradeMonitor> tradeSignalByOrderId = new HashMap<String, TradeMonitor>();
+    private final String accountId;
     private final Exchange exchange;
     private final TradeSummary tradeSummary = new TradeSummary();
     
     private Ticker ticker = null;
     
-    public TradeBroker(Exchange exchange) {
+    public TradeBroker(String accountId, Exchange exchange) {
         this.log = LoggerFactory.getLogger(TradeBroker.class);
+        this.accountId = accountId;
         this.exchange = exchange;
         
         this.exchange.setListener(this);
@@ -64,6 +66,7 @@ public class TradeBroker implements ExchangeEventListener {
 
     // TODO: persistant trade id - if the broker goes down and comes back up
     // with active orders then things are all fucked up.
+    private static int orderID = 0;
     private static int tradeID = 0;
     
     public synchronized void activate(Trade trade) throws ExchangeException {
@@ -80,7 +83,7 @@ public class TradeBroker implements ExchangeEventListener {
         
         this.log.trace("Activating trade: " + trade);
         
-        String id = String.valueOf(tradeID);
+        String id = String.valueOf(orderID);
         
         for (TradeSignal signal : trade.getTradeSignals()) {
             
@@ -92,7 +95,7 @@ public class TradeBroker implements ExchangeEventListener {
             MarketOrder order = this.exchange.generateMarketOrder(id, signal.getDecision().getType().getOrderType(), 
                              signal.getVolume(), signal.getTradeableIdentifier(), signal.getCurrency());
             
-            this.exchange.placeOrder("TODO", order);
+            this.exchange.placeOrder(this.accountId, order);
             
             TradeMonitor monitor = new TradeMonitor();
             monitor.setStart(System.currentTimeMillis());
@@ -104,8 +107,10 @@ public class TradeBroker implements ExchangeEventListener {
                 this.tradeSignalByOrderId.put(id, monitor);
             }
             
-            tradeID ++;
+            orderID ++;
         }
+        
+        trade.setId(tradeID++);
     }
     
     private double calculateClosingProfit (TradeType type, double entryPrice, double currentPrice, double volume) {
@@ -251,7 +256,7 @@ public class TradeBroker implements ExchangeEventListener {
                     MarketOrder closeOrder = this.exchange.generateMarketOrder(trade.getTradeId(), trade.getSignal().getTradeType().getCounterOrderType(), 
                              trade.getSignal().getVolume(), trade.getSignal().getTradeableIdentifier(), trade.getSignal().getCurrency());
             
-                    this.exchange.placeOrder("TODO", closeOrder);
+                    this.exchange.placeOrder(this.accountId, closeOrder);
                     
                     iter.remove();
                 }

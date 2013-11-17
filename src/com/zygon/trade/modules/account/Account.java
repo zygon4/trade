@@ -9,6 +9,7 @@ import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -40,6 +41,9 @@ public class Account extends Module {
             
             for (Wallet wallet : accountInfo.getWallets()) {
                 sb.append(wallet.getBalance()).append('\n');
+                sb.append("High: ").append(this.accountController.getHigh(this.brokerName, CurrencyUnit.of(wallet.getCurrency()))).append('\n');
+                sb.append("Low: ").append(this.accountController.getLow(this.brokerName, CurrencyUnit.of(wallet.getCurrency()))).append('\n');
+                sb.append("Maximum drawdown: ").append(this.accountController.getMaximumDrawDown(this.brokerName, CurrencyUnit.of(wallet.getCurrency()))).append('\n');
             }
         } catch (ExchangeException ex) {
             this.getLogger().error("Error getting account information for: " + this.getDisplayname(), ex);
