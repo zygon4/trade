@@ -4,7 +4,7 @@ package com.zygon.trade.modules.execution.broker;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.execution.AccountController;
-import com.zygon.trade.execution.exchange.simulation.SimulationBinding;
+import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
 import com.zygon.trade.trade.TradeBroker;
 
 /**
@@ -17,7 +17,7 @@ public class BrokerModule extends ParentModule {
     
     private final Broker broker = new Broker("mtgox");
     {
-        this.broker.setBroker(new TradeBroker("joe", SimulationBinding.createInstance()));
+        this.broker.setBroker(new TradeBroker("joe", SimulationExchange.createInstance()));
     }
     private final Broker[] brokers = {broker};
     

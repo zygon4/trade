@@ -48,10 +48,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class SimulationBinding extends Exchange implements EventFeed.Handler<Ticker> {
+public class SimulationExchange extends Exchange implements EventFeed.Handler<Ticker> {
     
-    public static SimulationBinding createInstance() {
-        return new SimulationBinding("joe", 
+    public static SimulationExchange createInstance() {
+        return new SimulationExchange("joe", 
                 new Wallet[]{
                     new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0)),
                     new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 10.0))
@@ -283,7 +283,7 @@ public class SimulationBinding extends Exchange implements EventFeed.Handler<Tic
     
     private final ArrayBlockingQueue<ExchangeEvent> exchangeEvents = new ArrayBlockingQueue<ExchangeEvent>(100);
     
-    public SimulationBinding(String username, Wallet[] wallets, MarketConditions marketConditions) {
+    public SimulationExchange(String username, Wallet[] wallets, MarketConditions marketConditions) {
         super(new SimulationAccountController(username, wallets),
               new SimulationOrderBookProvider(),
               new SimulationOrderProvider(),
