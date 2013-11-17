@@ -4,7 +4,6 @@ package com.zygon.trade;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;
 import com.zygon.command.Command;
-import com.zygon.schema.ConfigurationSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
