@@ -12,7 +12,6 @@ import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
-import com.zygon.trade.trade.TradeSummary;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
