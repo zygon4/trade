@@ -8,12 +8,12 @@ package com.zygon.trade;
 public class MetaData {
     private final String id;
     private final String clazz;
-    private final Configurable configuration;
+    private final Configurable configurable;
 
     public MetaData(String id, String clazz, Configurable configurable) {
         this.id = id;
         this.clazz = clazz;
-        this.configuration = configurable;
+        this.configurable = configurable;
     }
 
     public String getClazz() {
@@ -21,7 +21,7 @@ public class MetaData {
     }
 
     public Configurable getConfigurable() {
-        return this.configuration;
+        return this.configurable;
     }
 
     public String getId() {
