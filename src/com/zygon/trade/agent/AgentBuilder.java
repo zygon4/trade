@@ -26,9 +26,8 @@ public class AgentBuilder<T> {
         Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.tradeGenerator);
         return new Agent<T>(this.name, this.interpreters, strategy, this.broker);
     }
-
-    // TODO: rename
-    public void setExchange(TradeBroker broker) {
+    
+    public void setTradeBroker(TradeBroker broker) {
         this.broker = broker;
     }
 
