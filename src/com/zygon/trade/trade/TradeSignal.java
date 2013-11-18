@@ -10,7 +10,7 @@ package com.zygon.trade.trade;
  */
 public class TradeSignal {
 
-    public static final TradeSignal DO_NOTHING = new TradeSignal(Decision.DO_NOTHING, 0.0, null, null, null, null, null);
+    public static final TradeSignal DO_NOTHING = new TradeSignal(Decision.DO_NOTHING, new VolumeObjective(VolumeObjective.Modifier.PERCENT, 0), null, null, null, null, null);
     
     public static enum Decision {
         BUY (TradeType.LONG),
@@ -29,17 +29,17 @@ public class TradeSignal {
     }
     
     private final Decision decision;
-    private final double volume;
+    private final VolumeObjective volumeObjective;
     private final String tradeableIdentifier;
     private final String currency;
     private final PriceObjective tradeObjectives;
     private final TradeUrgency tradeUrgency;
     private final String reason;
 
-    public TradeSignal(Decision decision, double volume, String tradeableIdentifier, 
+    public TradeSignal(Decision decision, VolumeObjective volume, String tradeableIdentifier, 
             String currency, PriceObjective objective, TradeUrgency tradeUrgency, String reason) {
         this.decision = decision;
-        this.volume = volume;
+        this.volumeObjective = volume;
         this.tradeableIdentifier = tradeableIdentifier;
         this.currency = currency;
         this.tradeObjectives = objective;
@@ -55,7 +55,7 @@ public class TradeSignal {
         return this.decision;
     }
 
-    public PriceObjective getObjective() {
+    public PriceObjective getPriceObjective() {
         return this.tradeObjectives;
     }
 
@@ -75,8 +75,8 @@ public class TradeSignal {
         return this.decision.getType();
     }
 
-    public double getVolume() {
-        return this.volume;
+    public VolumeObjective getVolumeObjective() {
+        return this.volumeObjective;
     }
     
     public boolean takeAction() {
@@ -85,7 +85,7 @@ public class TradeSignal {
 
     @Override
     public String toString() {
-        return String.format("%s - %s - %s - %s - %s - %s", this.getDecision().name(), this.getVolume(), 
+        return String.format("%s - %s - %s - %s - %s - %s", this.getDecision().name(), this.getVolumeObjective(), 
                 this.getTradeableIdentifier(), this.getCurrency(), this.getTradeUrgency().name(), this.getReason());
     }
 }

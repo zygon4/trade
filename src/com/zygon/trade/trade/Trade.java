@@ -23,6 +23,9 @@ public class Trade {
     }
     
     public Trade(TradeSignal ...tradeSignals) {
+        if (tradeSignals == null || tradeSignals.length == 0) {
+            throw new IllegalStateException("Trade signals must be provided.");
+        }
         this.tradeSignals = tradeSignals;
     }
 

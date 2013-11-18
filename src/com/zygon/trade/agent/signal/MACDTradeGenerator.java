@@ -12,6 +12,7 @@ import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.trade.TradeType;
 import com.zygon.trade.trade.TradeUrgency;
+import com.zygon.trade.trade.VolumeObjective;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -72,7 +73,6 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         MarketDirection marketDirection = this.getDirection().getMarketDirection();
         
-        double volume = 0.10;
         TradeType tradeType = null;
         
         if (marketDirection == MarketDirection.UP) {
@@ -84,7 +84,8 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         if (tradeType != null) {
             PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, 0.02, 0.01);
-            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volume, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
+            VolumeObjective volumeObjective = new VolumeObjective(VolumeObjective.Modifier.PERCENT, 1);
+            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
 
             return tradeSignal;
         }
