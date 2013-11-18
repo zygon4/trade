@@ -8,7 +8,6 @@ import com.xeiam.xchange.currency.CurrencyPair;
 import com.zygon.data.EventFeed;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
-import com.zygon.trade.Schema;
 import com.zygon.trade.ParentModule;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -72,25 +71,7 @@ public class DataModule extends ParentModule {
 
     @Override
     public void initialize() {
-        // TBD: rejigger data module
-//        DBModule dbModule = (DBModule) this.getModule(DBModule.ID);
         
-//        Database db = dbModule.getDatabase();
-//        
-//        // Boo hiss. These should be removed and a cleaner way to provide 
-//        // database access should be implemented.
-//        
-//        DataLogger dataLogger = this.listener.getDataLogger();
-//        if (dataLogger != null && dataLogger instanceof PersistentDataLogger) {
-//            ((PersistentDataLogger)dataLogger).setDatabase(db);
-//        }
-//        
-//        DataProvider dataProvider = this.listener.getDataProvider();
-//        if (dataProvider != null && dataProvider instanceof AbstractDataProvider) {
-//            ((AbstractDataProvider) this.listener.getDataProvider()).setDatabase(db);
-//        }
-//        
-//        this.listener.initialize();
     }
 
     public void register (EventFeed.Handler reg) {
@@ -109,20 +90,5 @@ public class DataModule extends ParentModule {
         for (DataFeed feed : this.feeds) {
             feed.unregister(reg);
         }
-    }
-    
-    public static void main (String[] args) throws IOException, URISyntaxException {
-        
-        Map<String,Object> userData = new HashMap<String,Object>();
-        Map<String,String> nameStruct = new HashMap<String,String>();
-        nameStruct.put("first", "Joe");
-        nameStruct.put("last", "Sixpack");
-        userData.put("name", nameStruct);
-        userData.put("gender", "MALE");
-        userData.put("verified", Boolean.FALSE);
-        userData.put("userImage", "Rm9vYmFyIQ==");
-
-        
-    }
-    
+    } 
 }
