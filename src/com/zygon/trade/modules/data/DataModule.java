@@ -23,8 +23,6 @@ public class DataModule extends ParentModule {
 
     public static final String ID = "data";
     
-    private static Schema SCHEMA = new Schema("data_schema.json");
-
     private final DataFeed[] feeds;
     
     private static DataFeed get(String clazz, String tradeable, String currency) {
@@ -63,7 +61,7 @@ public class DataModule extends ParentModule {
     };
     
     public DataModule() {
-        super (ID, SCHEMA, DataFeed.class);
+        super (ID, null, DataFeed.class);
         this.feeds = get(PAIRS);
     }
     
