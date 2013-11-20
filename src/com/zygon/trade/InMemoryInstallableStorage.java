@@ -2,6 +2,7 @@
 package com.zygon.trade;
 
 import com.xeiam.xchange.currency.CurrencyPair;
+import com.zygon.trade.modules.account.Account;
 import com.zygon.trade.modules.account.AccountModule;
 import com.zygon.trade.modules.core.UIModule;
 import com.zygon.trade.modules.data.DataFeed;
@@ -47,8 +48,19 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         this.metadataById.put(broker.getDisplayname(), new MetaData(broker.getDisplayname(), "com.zygon.trade.modules.execution.broker.Broker", broker, mtgoxBrokerConfig));
         
         
-//        AccountModule account = new AccountModule();
-//        this.metadataById.put(account.getDisplayname(), new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", account, null));
+        AccountModule accountModule = new AccountModule();
+        Configuration accountModuleConfig = new Configuration(accountModule.getSchema());
+        accountModuleConfig.setValue("name", accountModule.getDisplayname());
+        this.metadataById.put(accountModule.getDisplayname(), new MetaData(accountModule.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", accountModule, accountModuleConfig));
+        
+        Account account = new Account("joe");
+        Configuration accountConfig = new Configuration(account.getSchema());
+        accountConfig.setValue("name", account.getDisplayname());
+        accountConfig.setValue("broker", "mtgox");
+        accountConfig.setValue("accountId", "joe");
+        this.metadataById.put(account.getDisplayname(), new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.Account", account, accountConfig));
+        
+        
         
 //        AgentModule agent = new AgentModule("agent");
 //        Configuration agentConfig = new Configuration(mtgoxTicker.getSchema());

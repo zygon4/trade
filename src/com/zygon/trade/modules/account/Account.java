@@ -37,7 +37,10 @@ public class Account extends Module {
 
     @Override
     public void configure(Configuration configuration) {
+        // TBD: if someone changes the id/broker.. need to reset any hooks
         
+        this.brokerName = configuration.getValue("broker");
+        this.accountID = configuration.getValue("accountId");
     }
 
     @Override
@@ -74,14 +77,5 @@ public class Account extends Module {
     @Override
     public void uninitialize() {
         
-    }
-
-    // These should come from config
-    void setBrokerName(String brokerName) {
-        this.brokerName = brokerName;
-    }
-
-    void setAccountId(String accountId) {
-        this.accountID = accountId;
     }
 }

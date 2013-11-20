@@ -34,15 +34,28 @@ public class DataFeed extends Module {
     private final Collection<Handler> feedRegistrations = new ArrayList<Handler>();
     private EventFeed feed = null;
     
+    private String clazz = null;
+    private String tradeable = null;
+    private String currency = null;
+    
     public DataFeed(String name) {
         super(name, SCHEMA);
+    }
+
+    @Override
+    public void configure(Configuration configuration) {
+        
+        // TBD: enable/disable configuration and handling already running feeds
+        
+        this.clazz = configuration.getValue("class");
+        this.tradeable = configuration.getValue("tradeable");
+        this.currency = configuration.getValue("currency");
     }
     
     @Override
     public void initialize() {
-        Configuration config = this.getConfiguration();
         
-        Context ctx = new Context(getProps(config.getValue("class"), config.getValue("tradeable"), config.getValue("currency")));
+        Context ctx = new Context(getProps(this.clazz, this.tradeable, this.currency));
         
         if (this.feed == null) {
             this.feed = (EventFeed<?>) this.feedProvider.createFeed(ctx);

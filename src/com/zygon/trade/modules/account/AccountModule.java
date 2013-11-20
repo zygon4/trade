@@ -1,7 +1,6 @@
 
 package com.zygon.trade.modules.account;
 
-import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 
 /**
@@ -11,14 +10,6 @@ import com.zygon.trade.ParentModule;
 public class AccountModule extends ParentModule {
 
     public static final String ID = "account";
-    
-    
-    private final Account mtgoxJoe = new Account("mtgox-joe");
-    {
-        mtgoxJoe.setBrokerName("mtgox");
-        mtgoxJoe.setAccountId("joe");
-    }
-    private final Account[] accounts = {mtgoxJoe};
     
     public AccountModule() {
         super(ID, Account.class);
@@ -32,10 +23,5 @@ public class AccountModule extends ParentModule {
     @Override
     public void uninitialize() {
         
-    }
-
-    @Override
-    public Module[] getModules() {
-        return this.accounts;
     }
 }
