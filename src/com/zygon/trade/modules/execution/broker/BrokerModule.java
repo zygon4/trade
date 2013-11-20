@@ -4,8 +4,8 @@ package com.zygon.trade.modules.execution.broker;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.execution.AccountController;
-import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
-import com.zygon.trade.trade.TradeBroker;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -15,19 +15,13 @@ public class BrokerModule extends ParentModule {
 
     public static final String ID = "broker";
     
-    private final Broker broker = new Broker("mtgox");
-    {
-        this.broker.setBroker(new TradeBroker("joe", SimulationExchange.createInstance()));
-    }
-    private final Broker[] brokers = {broker};
-    
     public BrokerModule() {
         super(ID, null, Broker.class);
     }
 
     @Override
     protected void doWriteStatus(StringBuilder sb) {
-        for (Broker broker : this.brokers) {
+        for (Broker broker : this.getBrokers()) {
             sb.append(broker.getDisplayname()).append('\n');
             broker.writeTradeSummary(sb);
             sb.append('\n');
@@ -46,7 +40,7 @@ public class BrokerModule extends ParentModule {
     }
 
     public Broker getBroker(String brokerName) {
-        for (Broker broker : this.brokers) {
+        for (Broker broker : this.getBrokers()) {
             if (broker.getDisplayname().equals(brokerName)) {
                 return broker;
             }
@@ -54,12 +48,17 @@ public class BrokerModule extends ParentModule {
         
         return null;
     }
-    
-    @Override
-    public Module[] getModules() {
-        return this.brokers;
-    }
 
+    private Collection<Broker>getBrokers() {
+        Collection<Broker> brokers = new ArrayList<Broker>();
+        
+        for (Module broker : this.getModules()) {
+            brokers.add((Broker) broker);
+        }
+        
+        return brokers;
+    }
+    
     @Override
     public void initialize() {
         

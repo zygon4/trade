@@ -34,11 +34,6 @@ public class Agent extends Module {
     protected void doWriteStatus(StringBuilder sb) {
         sb.append(this.agent.getStrategySummary());
     }
-    
-    @Override
-    public Module[] getModules() {
-        return null;
-    }
 
     @Override
     protected void hook() {

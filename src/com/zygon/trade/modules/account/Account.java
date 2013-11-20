@@ -57,11 +57,6 @@ public class Account extends Module {
     }
     
     @Override
-    public Module[] getModules() {
-        return null;
-    }
-    
-    @Override
     protected void hook() {
         super.hook();
         BrokerModule module = (BrokerModule) this.getModule(BrokerModule.ID);

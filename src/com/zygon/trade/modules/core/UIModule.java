@@ -23,14 +23,9 @@ public class UIModule extends Module {
     }
 
     @Override
-    public Module[] getModules() {
-        return null;
-    }
-
-    @Override
     public void initialize() {
         
-        this.controller = new UIController(this.getRoot(), this.getRoot().getModules(), null); // null for now
+        this.controller = new UIController(this.getRoot(), null); // null for now
         
         try {
             this.controller.initialize();

@@ -37,12 +37,7 @@ public class DataFeed extends Module {
     public DataFeed(String name) {
         super(name, SCHEMA);
     }
-
-    @Override
-    public Module[] getModules() {
-        return null;
-    }
-
+    
     @Override
     public void initialize() {
         Configuration config = this.getConfiguration();

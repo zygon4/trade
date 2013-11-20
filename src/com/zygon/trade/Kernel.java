@@ -13,21 +13,18 @@ package com.zygon.trade;
  */
 public class Kernel extends Module {
 
-    private final Module[] modules;
     private final String rootDirectory;
 
     public Kernel(Module[] modules) {
         super("Kernel");
-        this.modules = modules;
         
         this.rootDirectory = System.getProperty("trade.rootdir");
+        
+        for (Module module : modules) {
+            this.add(module);
+        }
     }
     
-    @Override
-    public Module[] getModules() {
-        return this.modules;
-    }
-
     public String getRootDirectory() {
         return this.rootDirectory;
     }

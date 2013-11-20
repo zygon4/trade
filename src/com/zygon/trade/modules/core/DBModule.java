@@ -30,11 +30,6 @@ public class DBModule extends Module {
     }
     
     @Override
-    public Module[] getModules() {
-        return null;
-    }
-    
-    @Override
     public void initialize() {
         // nothing to do
     }

@@ -46,7 +46,7 @@ public abstract class ParentModule extends Module {
         this(name, null, null, childClazz);
     }
     
-    /*pkg*/ void createChild(Configuration config) {
+    /*pkg*/ Module createChild(Configuration config, boolean install) {
         
         String name = config.getValue("name");
         
@@ -56,18 +56,27 @@ public abstract class ParentModule extends Module {
             instance = (Module) this.childClazz.getConstructor(String.class).newInstance(name);
         } catch (Exception e) {
             logger.error(null, e);
+            throw new RuntimeException("Error creating child " + name, e);
         }
         
-        instance.install();
+        if (install) {
+            instance.install();
+            instance.configure(config);
+            
+            try {
+                instance.doInit();
+            } catch (Throwable th) {
+                throw new RuntimeException("Error initializing module " + instance.getDisplayname(), th);
+            }
+        }
         
-        instance.configure(config);
         instance.setParent(this);
         
-        
-        
-        // TBD: how are children persisted? ?
-        
-        instance.initialize();
+        return instance;
+    }
+    
+    /*pkg*/ Class<? extends Module> getChildClazz() {
+        return this.childClazz;
     }
     
     @Override
@@ -108,7 +117,8 @@ public abstract class ParentModule extends Module {
             config.setValue("name", "foo");
             
             try {
-                this.createChild(config);
+                Module child = this.createChild(config, true);
+                this.add(child);
             } catch (Exception e) {
                 return new CommandResult(false, e.getMessage());
             }

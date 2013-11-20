@@ -9,10 +9,6 @@ import com.zygon.data.EventFeed;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -21,8 +17,6 @@ import java.util.Map;
 public class DataModule extends ParentModule {
 
     public static final String ID = "data";
-    
-    private final DataFeed[] feeds;
     
     private static DataFeed get(String clazz, String tradeable, String currency) {
         
@@ -49,37 +43,21 @@ public class DataModule extends ParentModule {
         return feeds;
     }
     
-    private static final CurrencyPair[] PAIRS = new CurrencyPair[]{
-        CurrencyPair.BTC_USD,
-//        CurrencyPair.BTC_GBP,
-//        CurrencyPair.BTC_EUR,
-//        CurrencyPair.BTC_JPY,
-//        CurrencyPair.BTC_CHF,
-//        CurrencyPair.BTC_AUD,
-//        CurrencyPair.BTC_CAD
-    };
-    
     public DataModule() {
         super (ID, null, DataFeed.class);
-        this.feeds = get(PAIRS);
     }
     
-    @Override
-    public Module[] getModules() {
-        return this.feeds;
-    }
-
     @Override
     public void initialize() {
         
     }
 
     public void register (EventFeed.Handler reg) {
-        for (DataFeed feed : this.feeds) {
+        for (Module child : this.getModules()) {
+            DataFeed feed = (DataFeed) child;
             feed.register(reg);
         }
     }
-    
     
     @Override
     public void uninitialize() {
@@ -87,7 +65,8 @@ public class DataModule extends ParentModule {
     }
     
     public void unregister (EventFeed.Handler reg) {
-        for (DataFeed feed : this.feeds) {
+        for (Module child : this.getModules()) {
+            DataFeed feed = (DataFeed) child;
             feed.unregister(reg);
         }
     } 

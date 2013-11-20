@@ -24,11 +24,6 @@ public class ConfigurationModule extends Module {
     public ConfigurationManager getConfigManager() {
         return this.configManager;
     }
-
-    @Override
-    public Module[] getModules() {
-        return null;
-    }
     
     @Override
     public void initialize() {
