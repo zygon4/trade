@@ -8,9 +8,6 @@ repositories {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
     maven {
-	url "http://kundera.googlecode.com/svn/maven2/maven-missing-resources"
-    } 
-    maven {
 	url "http://mvn.riptano.com/content/repositories/public"
     }
     maven {
