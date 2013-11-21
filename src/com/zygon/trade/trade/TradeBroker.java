@@ -128,7 +128,7 @@ public class TradeBroker implements ExchangeEventListener {
             // TODO: limit order
             // TBD: priority
             
-            String orderId = String.valueOf(orderID++);
+            String orderId = String.valueOf(orderID);
             
             signal.getPriceObjective().setPrice(currentPrice);
             
@@ -206,7 +206,7 @@ public class TradeBroker implements ExchangeEventListener {
     
     @Override
     public void notify(ExchangeEvent event) {
-        this.log.trace("Received event: " + event);
+        this.log.info("Received event: " + event.getDisplayString());
         
         synchronized (this.tradeLock) {
             

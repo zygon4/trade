@@ -196,13 +196,13 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
     private static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
-        public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
-            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, "id", new Date(), BigMoney.of(CurrencyUnit.USD, limitPrice));
+        public LimitOrder getLimitOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
+            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date(), BigMoney.of(CurrencyUnit.USD, limitPrice));
         }
 
         @Override
-        public MarketOrder getMarketOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-            return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency);
+        public MarketOrder getMarketOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
+            return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date());
         }
     }
     

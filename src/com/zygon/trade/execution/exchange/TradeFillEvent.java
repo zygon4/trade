@@ -28,6 +28,15 @@ public class TradeFillEvent extends TradeEvent {
         this.fillAmmount = fillAmmount;
     }
 
+    @Override
+    public String getDisplayString() {
+        String display = super.getDisplayString();
+        
+        display += String.format(":[%s - @%f, volume: %f", this.fill.name(), this.fillPrice, this.fillAmmount);
+        
+        return display;
+    }
+
     public Fill getFill() {
         return this.fill;
     }

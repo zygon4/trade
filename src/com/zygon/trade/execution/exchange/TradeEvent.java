@@ -15,6 +15,15 @@ public class TradeEvent extends ExchangeEvent {
         this.tradeID = tradeID;
     }
 
+    @Override
+    public String getDisplayString() {
+        String display = super.getDisplayString();
+        
+        display += (":"+this.tradeID);
+        
+        return display;
+    }
+
     public String getOrderID() {
         return this.tradeID;
     }
