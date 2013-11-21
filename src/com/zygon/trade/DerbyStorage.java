@@ -60,7 +60,7 @@ public class DerbyStorage implements InstallableStorage {
         this.metadataById.put("data", new MetaData("data", "com.zygon.trade.modules.data.DataModule", data, config));
         
         
-        AgentModule agent = new AgentModule("agent");
+        AgentModule agent = new AgentModule();
         this.metadataById.put("agent", new MetaData("agent", "com.zygon.trade.modules.agent.AgentModule", agent, null));
         
 //        FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");

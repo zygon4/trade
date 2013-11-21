@@ -1,10 +1,8 @@
 
 package com.zygon.trade.modules.execution.broker;
 
-import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 import com.zygon.trade.execution.AccountController;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -21,7 +19,9 @@ public class BrokerModule extends ParentModule {
 
     @Override
     protected void doWriteStatus(StringBuilder sb) {
-        for (Broker broker : this.getBrokers()) {
+        Collection<Broker> brokers = this.getChildrenModules();
+        
+        for (Broker broker : brokers) {
             sb.append(broker.getDisplayname()).append('\n');
             broker.writeTradeSummary(sb);
             sb.append('\n');
@@ -40,23 +40,15 @@ public class BrokerModule extends ParentModule {
     }
 
     public Broker getBroker(String brokerName) {
-        for (Broker broker : this.getBrokers()) {
+        Collection<Broker> brokers = this.getChildrenModules();
+        
+        for (Broker broker : brokers) {
             if (broker.getDisplayname().equals(brokerName)) {
                 return broker;
             }
         }
         
         return null;
-    }
-
-    private Collection<Broker>getBrokers() {
-        Collection<Broker> brokers = new ArrayList<Broker>();
-        
-        for (Module broker : this.getModules()) {
-            brokers.add((Broker) broker);
-        }
-        
-        return brokers;
     }
     
     @Override

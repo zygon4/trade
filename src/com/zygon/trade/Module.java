@@ -231,6 +231,17 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return this.getModule(root, id);
     }
     
+    protected <T extends Module> Collection<T> getChildrenModules() {
+        Collection<T> modules = new ArrayList<T>();
+        
+        for (Module mod : this.getModules()) {
+            T module = (T) mod;
+            modules.add(module);
+        }
+        
+        return modules;
+    }
+    
     public Module[] getModules() {
         return this.modules.toArray(new Module[this.modules.size()]);
     }

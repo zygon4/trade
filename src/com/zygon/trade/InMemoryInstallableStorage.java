@@ -4,6 +4,8 @@ package com.zygon.trade;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.zygon.trade.modules.account.Account;
 import com.zygon.trade.modules.account.AccountModule;
+import com.zygon.trade.modules.agent.Agent;
+import com.zygon.trade.modules.agent.AgentModule;
 import com.zygon.trade.modules.core.UIModule;
 import com.zygon.trade.modules.data.DataFeed;
 import com.zygon.trade.modules.data.DataModule;
@@ -61,14 +63,17 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         this.metadataById.put(account.getDisplayname(), new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.Account", account, accountConfig));
         
         
+        AgentModule agentModule = new AgentModule();
+        Configuration agentModuleConfig = new Configuration(agentModule.getSchema());
+        agentModuleConfig.setValue("name", agentModule.getDisplayname());
+        this.metadataById.put(agentModule.getDisplayname(), new MetaData(agentModule.getDisplayname(), "com.zygon.trade.modules.agent.AgentModule", agentModule, agentModuleConfig));
         
-//        AgentModule agent = new AgentModule("agent");
-//        Configuration agentConfig = new Configuration(mtgoxTicker.getSchema());
-//        
-//        agentConfig.setValue("name", agent.getDisplayname());
-//        // TODO: set config values and have the agent module pick them up
-//        this.metadataById.put("agent", new MetaData("agent", "com.zygon.trade.modules.agent.AgentModule", agent, agentConfig));
-        
+        Agent agent = new Agent("macd");
+        Configuration agentConfig = new Configuration(agent.getSchema());
+        agentConfig.setValue("name", agent.getDisplayname());
+        // TBD: set: interpretters, strategy, etc. For now it's hardcoded in the agent
+        agentConfig.setValue("broker", "mtgox");
+        this.metadataById.put(agent.getDisplayname(), new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agent, agentConfig));
         
         UIModule uiModule = new UIModule("ui");
         Configuration uiConfig = new Configuration(uiModule.getSchema());
