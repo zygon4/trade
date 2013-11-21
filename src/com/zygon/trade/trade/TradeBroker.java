@@ -108,7 +108,7 @@ public class TradeBroker implements ExchangeEventListener {
         for (TradeSignal signal : trade.getTradeSignals()) {
             
             BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue());
+            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
             
             if (desiredVolume > signalCurrencybalance.getAmount().doubleValue()) {
                 
@@ -133,7 +133,7 @@ public class TradeBroker implements ExchangeEventListener {
             signal.getPriceObjective().setPrice(currentPrice);
             
             BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue());
+            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
             
             String orderKey = generateOrderKey(tradeID, orderID);
             MarketOrder order = this.exchange.generateMarketOrder(orderKey, signal.getDecision().getType().getOrderType(), 
