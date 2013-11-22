@@ -83,7 +83,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         }
         
         if (tradeType != null) {
-            PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, 0.02, 0.01);
+            PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, 0.04, 0.01);
             VolumeObjective volumeObjective = new VolumeObjective(VolumeObjective.Modifier.PERCENT, 1);
             TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
 

@@ -9,6 +9,7 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 
@@ -50,14 +51,17 @@ public class JettyServer extends WebServer {
         this.server = new Server(port);
         
         ServletHandler handler = new ServletHandler();
-        handler.addServletWithMapping(DefaultServlet.class.getCanonicalName(), "/*");
+        ServletHolder holder = new ServletHolder(new DefaultServlet());
+        handler.addServlet(holder);
+        handler.addServletWithMapping(holder, "/*");
+        
         this.server.setHandler(handler);
         
         
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setSecurityHandler(basicAuth("zygon", "foobar", "admin"));
-        context.setContextPath("/");
-        server.setHandler(context);
+//        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//        context.setSecurityHandler(basicAuth("zygon", "foobar", "admin"));
+//        context.setContextPath("/");
+//        server.setHandler(context);
         
         // I think this could replace the need for a web.xml - which I'd like
 //        WebAppContext webapp = new WebAppContext();
@@ -97,5 +101,27 @@ public class JettyServer extends WebServer {
                 this.error(null, ie);
             }
         }
+    }
+
+    private String getStatus() {
+        if (this.server.isStarted()) {
+            return "Started";
+        } else if (this.server.isStarting()) {
+            return "Starting";
+        } else if (this.server.isRunning()) {
+            return "Running";
+        } else if (this.server.isStopping()) {
+            return "Stopping";
+        } else if (this.server.isStopped()) {
+            return "Stopped";
+        } else if (this.server.isFailed()) {
+            return "Failed";
+        }
+        
+        return "Unknown";
+    }
+    
+    public void writeStatus(StringBuilder sb) {
+        sb.append(this.getStatus());
     }
 }

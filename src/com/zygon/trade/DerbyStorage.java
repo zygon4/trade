@@ -2,7 +2,7 @@ package com.zygon.trade;
 
 import com.zygon.trade.modules.account.AccountModule;
 import com.zygon.trade.modules.agent.AgentModule;
-import com.zygon.trade.modules.core.UIModule;
+import com.zygon.trade.modules.ui.CLIModule;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
 import java.sql.Connection;
@@ -51,36 +51,6 @@ public class DerbyStorage implements InstallableStorage {
     // this, right here, is just some loggygagging - this needs to 
     // come from storage - and cleaner.
     private final Map<String, MetaData> metadataById = new HashMap<>();
-    
-    {
-        DataModule data = new DataModule();
-        Configuration config = new Configuration(data.getSchema());
-        
-        data.configure(config);
-        this.metadataById.put("data", new MetaData("data", "com.zygon.trade.modules.data.DataModule", data, config));
-        
-        
-        AgentModule agent = new AgentModule();
-        this.metadataById.put("agent", new MetaData("agent", "com.zygon.trade.modules.agent.AgentModule", agent, null));
-        
-//        FeedModule mtGoxTicker = new FeedModule("mtgox-ticker");
-//        Configuration feedConfig = new Configuration(mtGoxTicker.getSchema());
-//        
-//        feedConfig.setValue("name", mtGoxTicker.getDisplayname());
-//        feedConfig.setValue("class", "com.zygon.data.feed.currency.mtgox.MtGoxFeed");
-//        mtGoxTicker.configure(feedConfig);
-//        
-//        this.metadataById.put(mtGoxTicker.getDisplayname(), new MetaData(mtGoxTicker.getDisplayname(), "com.zygon.trade.modules.data.FeedModule", mtGoxTicker));
-        
-        BrokerModule broker = new BrokerModule();
-        this.metadataById.put(broker.getDisplayname(), new MetaData(broker.getDisplayname(), "com.zygon.trade.modules.execution.broker.BrokerModule", broker, null));
-        
-        AccountModule account = new AccountModule();
-        this.metadataById.put(account.getDisplayname(), new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", account, null));
-        
-        
-        this.metadataById.put("UI", new MetaData("UI", "com.zygon.trade.modules.core.UIModule", new UIModule("ui"), null));
-    }
     
     @Override
     public String[] getStoredIds() {

@@ -84,7 +84,6 @@ public class TradeBroker implements ExchangeEventListener {
     // TODO: persistant trade id - if the broker goes down and comes back up
     // with active orders then things are all fucked up.
     private static int tradeID = 0;
-    private static int orderID = 0;
     
     public synchronized void activate(Trade trade) throws ExchangeException {
         
@@ -115,12 +114,14 @@ public class TradeBroker implements ExchangeEventListener {
             }
         }
         
-        this.log.trace("Activating trade: " + trade);
+        this.log.info("Activating trade: " + trade);
         
         String tradeId = String.valueOf(tradeID);
         
         TradeMonitor monitor = new TradeMonitor();
         monitor.open(tradeId, System.currentTimeMillis(), currentPrice);
+        
+        int orderID = 0;
         
         for (TradeSignal signal : trade.getTradeSignals()) {
             // TODO: limit order

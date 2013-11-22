@@ -6,11 +6,13 @@ import com.zygon.trade.modules.account.Account;
 import com.zygon.trade.modules.account.AccountModule;
 import com.zygon.trade.modules.agent.Agent;
 import com.zygon.trade.modules.agent.AgentModule;
-import com.zygon.trade.modules.core.UIModule;
+import com.zygon.trade.modules.ui.CLIModule;
 import com.zygon.trade.modules.data.DataFeed;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.Broker;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
+import com.zygon.trade.modules.ui.UserInterfaceModule;
+import com.zygon.trade.modules.ui.WebConsole;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,10 +81,21 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         this.metadataById.put(agent.getDisplayname(), new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agent, agentConfig));
         
         
-        UIModule uiModule = new UIModule("ui");
-        Configuration uiConfig = new Configuration(uiModule.getSchema());
-        uiConfig.setValue("name", uiModule.getDisplayname());
-        this.metadataById.put("UI", new MetaData("UI", "com.zygon.trade.modules.core.UIModule", uiModule, uiConfig));
+        CLIModule cliModule = new CLIModule("cli");
+        Configuration cliConfig = new Configuration(cliModule.getSchema());
+        cliConfig.setValue("name", cliModule.getDisplayname());
+        this.metadataById.put(cliModule.getDisplayname(), new MetaData(cliModule.getDisplayname(), "com.zygon.trade.modules.ui.CLIModule", cliModule, cliConfig));
+        
+        UserInterfaceModule userInterfaceModule = new UserInterfaceModule();
+        Configuration userInterfaceModuleConfig = new Configuration(userInterfaceModule.getSchema());
+        userInterfaceModuleConfig.setValue("name", userInterfaceModule.getDisplayname());
+        this.metadataById.put(userInterfaceModule.getDisplayname(), new MetaData(userInterfaceModule.getDisplayname(), "com.zygon.trade.modules.ui.UserInterfaceModule", userInterfaceModule, userInterfaceModuleConfig));        
+        
+        WebConsole webConsole = new WebConsole("default");
+        Configuration webConsoleConfig = new Configuration(webConsole.getSchema());
+        webConsoleConfig.setValue("name", webConsole.getDisplayname());
+        webConsoleConfig.setValue("port", "8080");
+        this.metadataById.put(webConsole.getDisplayname(), new MetaData(webConsole.getDisplayname(), "com.zygon.trade.modules.ui.WebConsole", webConsole, webConsoleConfig));
     }
     
     @Override

@@ -2,23 +2,22 @@
  * 
  */
 
-package com.zygon.trade.modules.core;
+package com.zygon.trade.modules.ui;
 
 import com.zygon.trade.Module;
 import com.zygon.trade.ui.UIController;
 import java.io.IOException;
 
 /**
+ * So this CLI module is (hopefully) deprecated.
  *
  * @author zygon
- * 
- * TODO: Embedded Jetty
  */
-public class UIModule extends Module {
+public class CLIModule extends Module {
 
     private UIController controller = null;
 
-    public UIModule(String name) {
+    public CLIModule(String name) {
         super(name);
     }
 
