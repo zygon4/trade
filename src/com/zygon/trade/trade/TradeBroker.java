@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  * and marshal them into individual execution actions.  Also, monitoring
  * orders which have stop losses associated but the underlying exchange
  * does not support them.
- * 
- * TODO: volume strategy
  *
  * @author zygon
  */
