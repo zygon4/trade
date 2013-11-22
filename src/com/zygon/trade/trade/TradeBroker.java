@@ -206,7 +206,7 @@ public class TradeBroker implements ExchangeEventListener {
     
     @Override
     public void notify(ExchangeEvent event) {
-        this.log.info("Received event: " + event.getDisplayString());
+        this.log.trace("Received event: " + event.getDisplayString());
         
         synchronized (this.tradeLock) {
             
