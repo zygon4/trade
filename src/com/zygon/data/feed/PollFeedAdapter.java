@@ -33,7 +33,9 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
                         }
                     }
                 
-                    try {Thread.sleep(PollFeedAdapter.this.cacheTime);} catch (Throwable ignore) {}
+                    if (PollFeedAdapter.this.cacheTime > 0) {
+                        try {Thread.sleep(PollFeedAdapter.this.cacheTime);} catch (Throwable ignore) {}
+                    }
                 
                 } catch (Exception e) {
                     logger.error(null, e);
