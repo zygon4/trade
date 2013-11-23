@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.market.model.indication;
+package com.zygon.trade.market.util;
 
 /**
  *

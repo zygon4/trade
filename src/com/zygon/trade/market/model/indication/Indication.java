@@ -4,6 +4,7 @@
 
 package com.zygon.trade.market.model.indication;
 
+import com.zygon.trade.market.util.Classification;
 import com.zygon.trade.market.Message;
 import java.util.Date;
 

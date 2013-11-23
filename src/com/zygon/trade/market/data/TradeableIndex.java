@@ -4,6 +4,8 @@
 
 package com.zygon.trade.market.data;
 
+import java.util.Date;
+
 /**
  * This may or may not be required/good anymore
  *
@@ -12,17 +14,17 @@ package com.zygon.trade.market.data;
 public class TradeableIndex {
     
     private final String identifer;
-    private final long ts;
+    private final Date ts;
 
     private String source;
 
-    public TradeableIndex(String identifer, String source, long ts) {
+    public TradeableIndex(String identifer, String source, Date ts) {
         this.identifer = identifer;
         this.source = source;
         this.ts = ts;
     }
     
-    public TradeableIndex(String identifer, long ts) {
+    public TradeableIndex(String identifer, Date ts) {
         this(identifer, null, ts);
     }
 
@@ -34,7 +36,7 @@ public class TradeableIndex {
         return source;
     }
 
-    public long getTs() {
+    public Date getTs() {
         return this.ts;
     }
 

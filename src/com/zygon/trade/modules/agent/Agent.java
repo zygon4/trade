@@ -9,10 +9,12 @@ import com.zygon.trade.agent.signal.MACDTradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.interpret.TickerMACD;
-import com.zygon.trade.market.model.indication.Aggregation;
+import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
+import com.zygon.trade.market.util.Duration;
+import com.zygon.trade.market.util.Type;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.Broker;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
@@ -38,9 +40,9 @@ public class Agent extends Module {
     private static Collection<Interpreter<Ticker>> getInterpreters() {
         Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
         
-        Aggregation leading = new Aggregation(Aggregation.Type.AVG, Aggregation.Duration._15, TimeUnit.MINUTES);
-        Aggregation lagging = new Aggregation(Aggregation.Type.AVG, Aggregation.Duration._60, TimeUnit.MINUTES);
-        Aggregation macd = new Aggregation(Aggregation.Type.AVG, Aggregation.Duration._5, TimeUnit.MINUTES);
+        Aggregation leading = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
+        Aggregation lagging = new Aggregation(Type.AVG, Duration._60, TimeUnit.MINUTES);
+        Aggregation macd = new Aggregation(Type.AVG, Duration._5, TimeUnit.MINUTES);
         interpreters.add(new TickerMACD(leading, lagging, macd));
         
         return interpreters;

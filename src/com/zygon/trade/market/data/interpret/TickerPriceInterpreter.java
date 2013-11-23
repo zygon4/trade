@@ -31,18 +31,18 @@ public class TickerPriceInterpreter extends TickerInterpreter {
         
         if (!this.cache) {
             return new Price[] {
-                new Price (in.getTradableIdentifier(), in.getTimestamp(), 
+                new Price (in.getTradableIdentifier(), in.getTimestamp().getTime(), 
                     in.getAsk().plus(in.getBid()).dividedBy(2, RoundingMode.UP).getAmount().doubleValue(), in.getCurrency()) 
             };
         } else {
             if (this.previousPrice == null) {
 
-                this.previousPrice = new Price (in.getTradableIdentifier(), in.getTimestamp(), 
+                this.previousPrice = new Price (in.getTradableIdentifier(), in.getTimestamp().getTime(), 
                     in.getAsk().plus(in.getBid()).dividedBy(2, RoundingMode.UP).getAmount().doubleValue(), in.getCurrency());
                 return new Price[] { this.previousPrice };
 
             } else {
-                Price newPrice = new Price (in.getTradableIdentifier(), in.getTimestamp(), 
+                Price newPrice = new Price (in.getTradableIdentifier(), in.getTimestamp().getTime(), 
                     in.getAsk().plus(in.getBid()).dividedBy(2, RoundingMode.UP).getAmount().doubleValue(), in.getCurrency());
 
                 if (newPrice.getValue() != this.previousPrice.getValue()) {

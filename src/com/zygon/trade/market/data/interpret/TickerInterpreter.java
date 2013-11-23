@@ -5,7 +5,7 @@
 package com.zygon.trade.market.data.interpret;
 
 import com.zygon.trade.market.data.Interpreter;
-import com.zygon.trade.market.model.indication.Aggregation;
+import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.data.Ticker;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;

@@ -38,7 +38,7 @@ public class Ticker extends Message {
     }
     
     private static TradeableIndex create(com.xeiam.xchange.dto.marketdata.Ticker tick) {
-        TradeableIndex idx = new TradeableIndex(tick.getTradableIdentifier(), tick.getTimestamp().getTime());
+        TradeableIndex idx = new TradeableIndex(tick.getTradableIdentifier(), tick.getTimestamp());
         return idx;
     }
     
@@ -86,7 +86,7 @@ public class Ticker extends Message {
         return this.volume;
     }
 
-    public long getTimestamp() {
+    public Date getTimestamp() {
         return this.idx.getTs();
     }
 
@@ -135,7 +135,7 @@ public class Ticker extends Message {
                 this.high.getAmount().toPlainString(),
                 this.low.getAmount().toPlainString(),
                 this.volume.toPlainString(),
-                new Date(this.getTimestamp()));
+                this.getTimestamp());
         } catch (Exception e) {
             e.printStackTrace();
         }

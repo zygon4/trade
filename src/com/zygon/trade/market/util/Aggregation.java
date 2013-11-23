@@ -1,7 +1,7 @@
 /*
  *
  */
-package com.zygon.trade.market.model.indication;
+package com.zygon.trade.market.util;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,43 +10,6 @@ import java.util.concurrent.TimeUnit;
  * @author zygon
  */
 public class Aggregation {
-    
-    // better name??
-    public static enum Type {
-        HIGH("max"),
-        LOW("min"),
-        AVG("avg");
-        
-        private Type(String val) {
-            this.val = val;
-        }
-
-        public String getVal() {
-            return this.val;
-        }
-
-        private final String val;
-    }
-    
-    public static enum Duration {
-        _1 (1),
-        _4 (4),
-        _5 (5),
-        _15 (15),
-        _30 (30),
-        _60 (60),
-        _24 (24);
-        
-        private int val;
-
-        private Duration(int val) {
-            this.val = val;
-        }
-
-        public int getVal() {
-            return this.val;
-        }
-    }
     
     private final Type type;
     private final Duration duration;

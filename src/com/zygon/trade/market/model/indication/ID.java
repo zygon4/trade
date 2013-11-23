@@ -4,6 +4,8 @@
 
 package com.zygon.trade.market.model.indication;
 
+import com.zygon.trade.market.util.Classification;
+
 /**
  *
  * @author zygon

@@ -1,6 +1,5 @@
 package com.zygon.trade.market.util;
 
-import com.zygon.trade.market.model.indication.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import java.util.HashMap;

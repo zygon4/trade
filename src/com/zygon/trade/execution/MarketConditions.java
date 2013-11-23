@@ -4,7 +4,7 @@
 
 package com.zygon.trade.execution;
 
-import com.zygon.trade.market.model.indication.Aggregation;
+import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.numeric.Price;
