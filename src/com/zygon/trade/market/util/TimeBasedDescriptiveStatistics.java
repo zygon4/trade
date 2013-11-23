@@ -3,6 +3,8 @@ package com.zygon.trade.market.util;
 
 import java.util.Date;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -10,6 +12,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
  */
 public class TimeBasedDescriptiveStatistics extends DescriptiveStatistics {
 
+    private static final Logger logger = LoggerFactory.getLogger(TimeBasedDescriptiveStatistics.class);    
     private final Date start;
     private Date lastViewedDate = null;
     
@@ -30,9 +33,8 @@ public class TimeBasedDescriptiveStatistics extends DescriptiveStatistics {
                 
                 this.lastViewedDate = timestamp;
             } else {
-                // This is a bit harsh - we could probably remove this in the
-                // future.
-                throw new IllegalArgumentException("Timestamp " + timestamp + " is after the last known timestamp " + this.lastViewedDate);
+                // Turn down to debug eventually
+                logger.info("Timestamp " + timestamp + " is after the last known timestamp " + this.lastViewedDate);
             }
         }
     }
