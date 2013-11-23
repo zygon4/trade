@@ -5,7 +5,7 @@ import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
 import com.zygon.data.EventFeed.Handler;
 import com.zygon.data.FeedProvider;
-import com.zygon.data.FeedProviderImpl;
+import com.zygon.data.FeedProviderFactory;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
@@ -30,7 +30,7 @@ public class DataFeed extends Module {
     
     private static final Schema SCHEMA = new Schema("data_feed.json");
     
-    private final FeedProvider feedProvider = new FeedProviderImpl();
+    private final FeedProvider feedProviderFactory = new FeedProviderFactory();
     private final Collection<Handler> feedRegistrations = new ArrayList<Handler>();
     private EventFeed feed = null;
     
@@ -58,7 +58,7 @@ public class DataFeed extends Module {
         Context ctx = new Context(getProps(this.clazz, this.tradeable, this.currency));
         
         if (this.feed == null) {
-            this.feed = (EventFeed<?>) this.feedProvider.createFeed(ctx);
+            this.feed = (EventFeed<?>) this.feedProviderFactory.createFeed(ctx);
         }
         
         for (Handler<?> reg : this.feedRegistrations) {

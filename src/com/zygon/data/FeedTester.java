@@ -32,7 +32,7 @@ public class FeedTester {
         
         List<EventFeed<Ticker>> eventFeeds = new ArrayList<EventFeed<Ticker>>();
         
-        FeedProvider fp = new FeedProviderImpl();
+        FeedProvider fp = new FeedProviderFactory();
         
         for (String[] pair : pairs) {
             Feed feed = fp.createFeed(new Context(getProps("enterprise.db.data.feed.currency.mtgox.MtGoxFeed", pair[0], pair[1])));
