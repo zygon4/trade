@@ -85,7 +85,7 @@ public class TradeBroker implements ExchangeEventListener {
     // with active orders then things are all fucked up.
     private static int tradeID = 0;
     
-    public synchronized void activate(Trade trade) throws ExchangeException {
+    public void activate(Trade trade) throws ExchangeException {
         
         // TBD: for now we just want one trade at a time.. we need a better
         // set of restrictions
@@ -97,79 +97,61 @@ public class TradeBroker implements ExchangeEventListener {
             this.log.trace("Broker is not ready. unable to activate trade: " + trade);
         }
         
-        double currentPrice = this.getCurrentPrice();
-        
-        AccountInfo accountInfo = this.exchange.getAccountController().getAccountInfo(this.accountId);
-        
-        // TBD: perform real account/risk analsysis
-        for (TradeSignal signal : trade.getTradeSignals()) {
-            
-            BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
-            
-            if (desiredVolume > signalCurrencybalance.getAmount().doubleValue()) {
-                
-                this.log.trace("Unable to fund trade: " + trade);
-                return;
-            }
-        }
-        
-        String tradeId = String.valueOf(tradeID);
-        
-        this.log.info("Activating trade: " + trade + ", id: " + tradeId);
-        
-        TradeMonitor monitor = new TradeMonitor();
-        monitor.open(tradeId, System.currentTimeMillis(), currentPrice);
-        
-        int orderID = 0;
-        
-        for (TradeSignal signal : trade.getTradeSignals()) {
-            // TODO: limit order
-            // TBD: priority
-            
-            String orderId = String.valueOf(orderID);
-            
-            signal.getPriceObjective().setPrice(currentPrice);
-            
-            BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
-            
-            String orderKey = generateOrderKey(tradeID, orderID);
-            MarketOrder order = this.exchange.generateMarketOrder(orderKey, signal.getDecision().getType().getOrderType(), 
-                             desiredVolume, signal.getTradeableIdentifier(), signal.getCurrency());
-            
-            this.exchange.placeOrder(this.accountId, order);
-            
-            monitor.addSignal(orderId, signal, desiredVolume);
-            
-            this.tradeSummary.totalOrdersExecuted ++;
-            
-            orderID ++;
-        }
-        
         synchronized (this.tradeLock) {
+            double currentPrice = this.getCurrentPrice();
+
+            AccountInfo accountInfo = this.exchange.getAccountController().getAccountInfo(this.accountId);
+
+            // TBD: perform real account/risk analsysis
+            for (TradeSignal signal : trade.getTradeSignals()) {
+
+                BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
+                double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
+
+                if (desiredVolume > signalCurrencybalance.getAmount().doubleValue()) {
+
+                    this.log.trace("Unable to fund trade: " + trade);
+                    return;
+                }
+            }
+
+            String tradeId = String.valueOf(tradeID);
+
+            this.log.info("Activating trade: " + trade + ", id: " + tradeId);
+
+            TradeMonitor monitor = new TradeMonitor();
+            monitor.open(tradeId, System.currentTimeMillis(), currentPrice);
+
+            int orderID = 0;
+
+            for (TradeSignal signal : trade.getTradeSignals()) {
+                // TODO: limit order
+                // TBD: priority
+
+                String orderId = String.valueOf(orderID);
+
+                signal.getPriceObjective().setPrice(currentPrice);
+
+                BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
+                double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
+
+                String orderKey = generateOrderKey(tradeID, orderID);
+                MarketOrder order = this.exchange.generateMarketOrder(orderKey, signal.getDecision().getType().getOrderType(), 
+                                 desiredVolume, signal.getTradeableIdentifier(), signal.getCurrency());
+
+                this.exchange.placeOrder(this.accountId, order);
+
+                monitor.addSignal(orderId, signal, desiredVolume);
+
+                this.tradeSummary.totalOrdersExecuted ++;
+
+                orderID ++;
+            }
+            
             this.tradeSignalByTradeId.put(tradeId, monitor);
+            trade.setId(tradeID);
+            tradeID ++;
         }
-        
-        trade.setId(tradeID);
-        tradeID ++;
-    }
-    
-    private double calculateClosingProfit (TradeType type, double entryPrice, double currentPrice, double volume) {
-        
-        double priceMargin = 0.0;
-        
-        switch (type) {
-            case LONG:
-                priceMargin = currentPrice - entryPrice;
-                break;
-            case SHORT:
-                priceMargin = entryPrice - currentPrice;
-                break;
-        }
-        
-        double profit = priceMargin * volume;
-        return profit;
     }
     
     public void cancelAll() {
