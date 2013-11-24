@@ -11,7 +11,7 @@ import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
 import com.zygon.trade.market.util.ExponentialMovingAverage;
 import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.util.TickerUtil;
+import com.zygon.trade.market.data.TickerUtil;
 import com.zygon.trade.market.util.Type;
 import java.util.ArrayList;
 import java.util.List;

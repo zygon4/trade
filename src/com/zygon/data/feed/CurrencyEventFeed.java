@@ -1,8 +1,7 @@
 
-package com.zygon.data.feed.currency;
+package com.zygon.data.feed;
 
 import com.zygon.data.Context;
-import com.zygon.data.feed.PollFeedAdapter;
 
 /**
  *

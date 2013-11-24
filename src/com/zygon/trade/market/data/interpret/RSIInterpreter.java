@@ -9,7 +9,7 @@ import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.numeric.RSI;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.util.TickerUtil;
+import com.zygon.trade.market.data.TickerUtil;
 import com.zygon.trade.market.util.Type;
 import java.util.Date;
 

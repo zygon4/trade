@@ -10,7 +10,7 @@ import com.zygon.trade.market.model.indication.market.BollingerBand;
 import com.zygon.trade.market.util.ExponentialMovingAverage;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.util.TickerUtil;
+import com.zygon.trade.market.data.TickerUtil;
 import com.zygon.trade.market.util.Type;
 
 /**

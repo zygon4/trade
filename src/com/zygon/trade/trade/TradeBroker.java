@@ -10,7 +10,7 @@ import com.zygon.trade.execution.exchange.ExchangeEventListener;
 import com.zygon.trade.execution.exchange.TickerEvent;
 import com.zygon.trade.execution.exchange.TradeFillEvent;
 import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.util.TickerUtil;
+import com.zygon.trade.market.data.TickerUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -114,9 +114,9 @@ public class TradeBroker implements ExchangeEventListener {
             }
         }
         
-        this.log.info("Activating trade: " + trade);
-        
         String tradeId = String.valueOf(tradeID);
+        
+        this.log.info("Activating trade: " + trade + ", id: " + tradeId);
         
         TradeMonitor monitor = new TradeMonitor();
         monitor.open(tradeId, System.currentTimeMillis(), currentPrice);
@@ -267,6 +267,7 @@ public class TradeBroker implements ExchangeEventListener {
                         if (!filledTradeMonitor.hasOpenSignals()) {
                             
                             // close the trade
+                            this.log.info("Closing trade with id: " + tradeId);
                             filledTradeMonitor.close(System.currentTimeMillis(), this.getCurrentPrice());
                             
                             this.finishedTrades.add(new TradePostMortem(

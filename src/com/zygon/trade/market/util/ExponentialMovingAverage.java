@@ -20,14 +20,9 @@ public class ExponentialMovingAverage extends MovingAverage {
     
     public ExponentialMovingAverage (Duration duration, TimeUnit timeUnits) {
         super (duration, timeUnits);
-        this.alpha = 0.5;
+        this.alpha = 0.15;
     }
         
-    public ExponentialMovingAverage (Date start) {
-        super(start);
-        this.alpha = 0.5;
-    }
-    
     @Override
     public void add (double value, Date date) {
         double newValue = 0.0;

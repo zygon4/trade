@@ -19,15 +19,6 @@ import java.util.Properties;
  */
 public class DataFeed extends Module {
 
-    private static Properties getProps(String cls, String tradeable, String currency) {
-        Properties props = new Properties();
-        props.setProperty(Context.PROP_CLS, cls);
-        props.setProperty(Context.PROP_NAME, cls+":"+tradeable+"|"+currency);
-        props.setProperty("tradeable", tradeable);
-        props.setProperty("currency", currency);
-        return props;
-    }
-    
     private static final Schema SCHEMA = new Schema("data_feed.json");
     
     private final FeedProvider feedProviderFactory = new FeedProviderFactory();
@@ -38,8 +29,12 @@ public class DataFeed extends Module {
     private String tradeable = null;
     private String currency = null;
     
+    public DataFeed(String name, Schema schema) {
+        super (name, schema);
+    }
+    
     public DataFeed(String name) {
-        super(name, SCHEMA);
+        this (name, SCHEMA);
     }
 
     @Override
@@ -52,10 +47,19 @@ public class DataFeed extends Module {
         this.currency = configuration.getValue("currency");
     }
     
+    protected Properties getDataFeedProperties(String cls, String tradeable, String currency) {
+        Properties props = new Properties();
+        props.setProperty(Context.PROP_CLS, cls);
+        props.setProperty(Context.PROP_NAME, cls+":"+tradeable+"|"+currency);
+        props.setProperty("tradeable", tradeable);
+        props.setProperty("currency", currency);
+        return props;
+    }
+    
     @Override
     public void initialize() {
         
-        Context ctx = new Context(getProps(this.clazz, this.tradeable, this.currency));
+        Context ctx = new Context(getDataFeedProperties(this.clazz, this.tradeable, this.currency));
         
         if (this.feed == null) {
             this.feed = (EventFeed<?>) this.feedProviderFactory.createFeed(ctx);
