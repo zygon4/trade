@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * TODO: move out of util
+ * 
  * @author zygon
  */
 public final class IndicationStore {
