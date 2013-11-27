@@ -95,8 +95,6 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         return null;
     }
     
-    static int fakeTradeId = 0;
-    
     @Override
     public Collection<Trade> getTrades() {
          
