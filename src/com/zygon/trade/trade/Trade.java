@@ -10,7 +10,6 @@ public class Trade {
     private final TradeSignal[] tradeSignals;
 
     private long id = -1;
-    private long lastDuration = -1;
     
     // TODO: Order sensitivity: eg parallel execution vs in-order
     
@@ -23,10 +22,6 @@ public class Trade {
 
     public long getId() {
         return this.id;
-    }
-
-    public long getLastDuration() {
-        return this.lastDuration;
     }
     
     public TradeSignal[] getTradeSignals() {
