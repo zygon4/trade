@@ -11,7 +11,6 @@ import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.data.Context;
-import com.zygon.data.EventFeed;
 import com.zygon.data.Handler;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.OrderBookProvider;
