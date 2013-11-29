@@ -28,7 +28,7 @@ public class PriceObjective {
                     case ADD:
                         return price + takeProfit;
                     case PERCENT:
-                        return price + (price * takeProfit);
+                        return price + (price * (takeProfit / 100));
                 }
 
             case SHORT:
@@ -38,7 +38,7 @@ public class PriceObjective {
                     case ADD:
                         return price - takeProfit;
                     case PERCENT:
-                        return price - (price * takeProfit);
+                        return price - (price * (takeProfit / 100));
                 }
         }
 
@@ -54,7 +54,7 @@ public class PriceObjective {
                     case ADD:
                         return price - stopLoss;
                     case PERCENT:
-                        return price - (price * stopLoss);
+                        return price - (price * (stopLoss / 100));
                 }
 
             case SHORT:
@@ -64,7 +64,7 @@ public class PriceObjective {
                     case ADD:
                         return price + stopLoss;
                     case PERCENT:
-                        return price + (price * stopLoss);
+                        return price + (price * (stopLoss / 100));
                 }
         }
         
@@ -110,6 +110,9 @@ public class PriceObjective {
     }
 
     public final void setPrice(double price) {
+        if (this.priceSet) {
+            throw new IllegalStateException("Can only set price once");
+        }
         if (price < 0) {
             throw new IllegalArgumentException("price must be greater than or equal to zero");
         }
