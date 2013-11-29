@@ -12,6 +12,7 @@ import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
+import com.zygon.data.Handler;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.OrderBookProvider;
 import com.zygon.trade.execution.OrderProvider;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class SimulationExchange extends Exchange implements EventFeed.Handler<Ticker> {
+public class SimulationExchange extends Exchange implements Handler<Ticker> {
     
     public static SimulationExchange createInstance() {
         return new SimulationExchange("joe", 
@@ -95,7 +96,7 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
         }
     }
     
-    private static final class SimulationAccountController implements AccountController {
+    public static final class SimulationAccountController implements AccountController {
 
         private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
         private Map<CurrencyUnit, WalletInfo> walletsByCurrency = new HashMap<>();
@@ -178,7 +179,7 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
         }
     }
     
-    private static final class SimulationOrderBookProvider implements OrderBookProvider {
+    public static final class SimulationOrderBookProvider implements OrderBookProvider {
 
         private final List<LimitOrder> orders = new ArrayList<>();
         
@@ -193,7 +194,7 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
         }
     }
     
-    private static final class SimulationOrderProvider implements OrderProvider {
+    public static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
         public LimitOrder getLimitOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
@@ -206,7 +207,7 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
         }
     }
     
-    private static final class SimulationTradeExecutor implements TradeExecutor {
+    public static final class SimulationTradeExecutor implements TradeExecutor {
 
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
         
@@ -227,24 +228,24 @@ public class SimulationExchange extends Exchange implements EventFeed.Handler<Ti
             this.log.info("Executing order: {} at price {}", order, marketPrice);
             
             // Because this is a market order we're just estimating what the market price might be.
-            BigDecimal amount = order.getTradableAmount().multiply(marketPrice);
+            BigDecimal totalCost = order.getTradableAmount().multiply(marketPrice);
             
-            BigDecimal fee = amount.multiply(BigDecimal.valueOf(EXCHANGE_FEE));
+            BigDecimal fee = totalCost.multiply(BigDecimal.valueOf(EXCHANGE_FEE));
             this.accntController.addFee(fee);
             
-            amount = amount.subtract(fee);
+            totalCost = totalCost.subtract(fee);
             
             // simulate a buy by adding the tradable and subtracting the transaction currency
             if (order.getType() == Order.OrderType.BID) {
                 this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                this.accntController.subtract(amount, CurrencyUnit.of(order.getTransactionCurrency()));
+                this.accntController.subtract(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
             } else {
                 // simulate a sell by subtracting the tradable and adding the transaction currency
                 this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                this.accntController.add(amount, CurrencyUnit.of(order.getTransactionCurrency()));
+                this.accntController.add(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
             }
             
-            this.exchangeEvents.add(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), amount.doubleValue()));
+            this.exchangeEvents.add(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), order.getTradableAmount().doubleValue()));
             
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
                 this.log.info("Account balance {}, high {}, low {}, max drawdown {}", 
