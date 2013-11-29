@@ -22,8 +22,8 @@ import java.util.Collection;
  */
 public class MACDTradeGenerator extends TradeGeneratorImpl {
 
-    private static final double PROFIT_MODIFIER         = 0.04;
-    private static final double STOP_LOSS_MODIFER       = 0.01;
+    private static final double PROFIT_MODIFIER         = 4.0;
+    private static final double STOP_LOSS_MODIFER       = 1.0;
     
     private static final double VOLUME_MODIFER          = 1;
     
@@ -103,7 +103,15 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         TradeSignal tradeSignal = createTradeSignal();
         if (tradeSignal != null) {
             trades.add(new Trade(tradeSignal));
-        }
+        } 
+        // This is just for fun
+//        else {
+//            PriceObjective priceObjective = new PriceObjective(TradeSignal.Decision.BUY.getType(), PriceObjective.Modifier.PERCENT, PROFIT_MODIFIER, STOP_LOSS_MODIFER);
+//            VolumeObjective volumeObjective = new VolumeObjective(VolumeObjective.Modifier.PERCENT, VOLUME_MODIFER);
+//            tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, "test");
+//            
+//            trades.add(new Trade(tradeSignal));
+//        }
         
         return trades;
     }
