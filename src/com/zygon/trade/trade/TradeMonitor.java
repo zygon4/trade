@@ -26,7 +26,7 @@ import org.joda.money.CurrencyUnit;
  *
  * @author zygon
  */
-public class TradeMonitor_v2 {
+public class TradeMonitor {
     
     /*pkg*/ static enum State {
         INIT,
@@ -233,7 +233,7 @@ public class TradeMonitor_v2 {
     private String tradeId;
     private TradePostMortem postMortem = null;
     
-    /*pkg*/ TradeMonitor_v2(Trade trade, AccountInfo accountInfo, OrderProvider orderProvider) {
+    /*pkg*/ TradeMonitor(Trade trade, AccountInfo accountInfo, OrderProvider orderProvider) {
         this.trade = trade;
         this.accountInfo = accountInfo;
         this.orderProvider = orderProvider;

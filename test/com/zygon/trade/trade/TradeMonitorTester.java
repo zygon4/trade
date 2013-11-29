@@ -7,7 +7,7 @@ import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
-import com.zygon.trade.trade.TradeMonitor_v2.TradeState;
+import com.zygon.trade.trade.TradeMonitor.TradeState;
 import java.util.Arrays;
 import java.util.Collection;
 import org.joda.money.BigMoney;
@@ -28,22 +28,22 @@ public class TradeMonitorTester {
         VolumeObjective volumeObjective = new VolumeObjective(VolumeObjective.Modifier.PERCENT, 50.0);
         TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, "test");
         
-        TradeState state = new TradeMonitor_v2.TradeState(tradeSignal, volumeObjective.getVolume(100.0, 1.0));
+        TradeState state = new TradeMonitor.TradeState(tradeSignal, volumeObjective.getVolume(100.0, 1.0));
         
-        Assert.assertTrue(state.getState() == TradeMonitor_v2.State.INIT);
+        Assert.assertTrue(state.getState() == TradeMonitor.State.INIT);
         Assert.assertEquals(50.0, state.getRequiredFillVolume(), 0.0);
         Assert.assertEquals(0.0, state.getCurrentFill(), 0.0);
         
         // Declare we want to start the trade
         tradeSignal.getPriceObjective().setPrice(1.0);
-        state.setState(TradeMonitor_v2.State.OPEN_FILLING);
+        state.setState(TradeMonitor.State.OPEN_FILLING);
         
-        Assert.assertTrue(state.getState() == TradeMonitor_v2.State.OPEN_FILLING);
+        Assert.assertTrue(state.getState() == TradeMonitor.State.OPEN_FILLING);
         
         // Fill one side of the trade
         state.notifyFill(1.0, 50.0);
         
-        Assert.assertTrue(state.getState() == TradeMonitor_v2.State.OPEN);
+        Assert.assertTrue(state.getState() == TradeMonitor.State.OPEN);
         Assert.assertEquals(50.0, state.getCurrentFill(), 0.0);
         
         // Test profit: this trade requires 10% higher, so 1.1
@@ -57,12 +57,12 @@ public class TradeMonitorTester {
         Assert.assertNotNull(stopLossExitSignal);
         
         // Declare we want to start the second half of the trade
-        state.setState(TradeMonitor_v2.State.CLOSED_FILLING);
-        Assert.assertTrue(state.getState() == TradeMonitor_v2.State.CLOSED_FILLING);
+        state.setState(TradeMonitor.State.CLOSED_FILLING);
+        Assert.assertTrue(state.getState() == TradeMonitor.State.CLOSED_FILLING);
         
         state.notifyFill(2.0, 50.0);
         
-        Assert.assertTrue(state.getState() == TradeMonitor_v2.State.CLOSED);
+        Assert.assertTrue(state.getState() == TradeMonitor.State.CLOSED);
         Assert.assertEquals(50.0, state.getCurrentFill(), 0.0);
         
         double profit = state.calculateClosingProfit();
@@ -86,7 +86,7 @@ public class TradeMonitorTester {
         AccountInfo testAccountInfo = new AccountInfo("joe", Arrays.asList(testWallet));
         OrderProvider testOrderProvider = new SimulationExchange.SimulationOrderProvider();
         
-        TradeMonitor_v2 monitor = new TradeMonitor_v2(trade, testAccountInfo, testOrderProvider);
+        TradeMonitor monitor = new TradeMonitor(trade, testAccountInfo, testOrderProvider);
         
         Collection<Order> openOrders = monitor.open(new Signal("testing"), "0", 1.0);
         Assert.assertFalse(monitor.isClosed());
@@ -141,7 +141,7 @@ public class TradeMonitorTester {
         AccountInfo testAccountInfo = new AccountInfo("joe", Arrays.asList(testWallet));
         OrderProvider testOrderProvider = new SimulationExchange.SimulationOrderProvider();
         
-        TradeMonitor_v2 monitor = new TradeMonitor_v2(trade, testAccountInfo, testOrderProvider);
+        TradeMonitor monitor = new TradeMonitor(trade, testAccountInfo, testOrderProvider);
         
         Collection<Order> openOrders = monitor.open(new Signal("testing"), "0", 1.0);
         Assert.assertFalse(monitor.isClosed());

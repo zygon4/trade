@@ -48,7 +48,7 @@ public class TradeBroker implements ExchangeEventListener {
     
     private final ArrayList<TradePostMortem> finishedTrades = new ArrayList<TradePostMortem>();
     private final Logger log;
-    private final Map<String, TradeMonitor_v2> tradeMonitorsByTradeId = new HashMap<String, TradeMonitor_v2>();
+    private final Map<String, TradeMonitor> tradeMonitorsByTradeId = new HashMap<String, TradeMonitor>();
     private final String accountId;
     private final Exchange exchange;
     private final TradeSummary tradeSummary = new TradeSummary();
@@ -100,7 +100,7 @@ public class TradeBroker implements ExchangeEventListener {
 
         this.log.info("Activating trade: " + trade + ", id: " + tradeId);
         
-        TradeMonitor_v2 monitor_v2 = new TradeMonitor_v2(trade, accountInfo, this.exchange.getOrderProvider());
+        TradeMonitor monitor_v2 = new TradeMonitor(trade, accountInfo, this.exchange.getOrderProvider());
         
         Collection<Order> openingOrders = monitor_v2.open(new Signal("TODO:entry-signal"), tradeId, currentPrice);
         
@@ -171,11 +171,11 @@ public class TradeBroker implements ExchangeEventListener {
                 throw new UnsupportedOperationException();
             case TRADE_FILL:
                 TradeFillEvent fillEvent = (TradeFillEvent) event;
-                String tradeId = TradeMonitor_v2.getTradeId(fillEvent.getOrderID());
-                String orderId = TradeMonitor_v2.getOrderId(fillEvent.getOrderID());
+                String tradeId = TradeMonitor.getTradeId(fillEvent.getOrderID());
+                String orderId = TradeMonitor.getOrderId(fillEvent.getOrderID());
                 
                 synchronized (this.tradeMonitorsByTradeId) {
-                    TradeMonitor_v2 filledTradeMonitor = this.tradeMonitorsByTradeId.get(tradeId);
+                    TradeMonitor filledTradeMonitor = this.tradeMonitorsByTradeId.get(tradeId);
                     
                     if (filledTradeMonitor != null) {
                         filledTradeMonitor.notifyOrderFill(fillEvent.getOrderID(), fillEvent.getFillPrice(), fillEvent.getFillAmmount());
@@ -207,7 +207,7 @@ public class TradeBroker implements ExchangeEventListener {
             while (iter.hasNext()) {
                 
                 String tradeId = iter.next();
-                TradeMonitor_v2 monitor = this.tradeMonitorsByTradeId.get(tradeId);
+                TradeMonitor monitor = this.tradeMonitorsByTradeId.get(tradeId);
                 
                 // These will only be for closing orders until limit orders are in place
                 Collection<Order> orders = monitor.notifyPriceUpdate(price);
