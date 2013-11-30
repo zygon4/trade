@@ -1,7 +1,6 @@
 
 package com.zygon.trade.modules.core;
 
-import com.zygon.trade.Configuration;
 import com.zygon.trade.ConfigurationManager;
 import com.zygon.trade.Module;
 
@@ -32,12 +31,6 @@ public class ConfigurationModule extends Module {
 
     @Override
     public void uninitialize() {
-        // nothing to do
-    }
-
-    
-    @Override
-    public void configure(Configuration configuration) {
         // nothing to do
     }
 }
