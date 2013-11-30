@@ -18,8 +18,8 @@ public abstract class CurrencyEventFeed<T> extends PollFeedAdapter<T> {
     public CurrencyEventFeed(Context ctx, long cacheTime) {
         super(ctx, cacheTime);
         
-        this.tradeable = ctx.getProperties().getProperty(TRADEABLE);
-        this.currency = ctx.getProperties().getProperty(CURRENCY);
+        this.tradeable = ctx.getProperty(TRADEABLE);
+        this.currency = ctx.getProperty(CURRENCY);
     }
 
     public final String getCurrency() {

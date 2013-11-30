@@ -41,7 +41,7 @@ public class Configuration {
         
         if (val == null) {
             Property prop = this.propertiesByName.get(name);
-            if (prop.hasDefault()) {
+            if (prop != null && prop.hasDefault()) {
                 val = prop.getDefaultValue();
             }
         }

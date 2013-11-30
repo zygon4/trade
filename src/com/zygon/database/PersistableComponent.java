@@ -12,16 +12,11 @@ public class PersistableComponent<T> {
 
     public final T component;
     
-    public PersistableComponent(T key) {
-        this.component = key;
+    public PersistableComponent(T component) {
+        this.component = component;
     }
 
     public T getComponent() {
-        return component;
+        return this.component;
     }
 }
-
-
-
-
-

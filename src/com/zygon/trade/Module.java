@@ -96,14 +96,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         
         this.logger.info("Hooking module {}", this.name);
         
-        Module[] modules = this.getModules();
-        
-        if (modules != null) {
-            for (Module child : this.getModules()) {
-                child.setParent(this);
-            }
-        }
-        
         if (modules != null) {
             for (Module child : this.getModules()) {
                 child.doHook();
@@ -339,6 +331,16 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     @Override
     public CommandResult process(Command command) {
         return CommandResult.SUCCESS;
+    }
+    
+    /*pkg*/ void setParents () {
+        Module[] modules = this.getModules();
+        
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.setParent(this);
+            }
+        }
     }
     
     /*pkg*/ void setParent(Module parent) {

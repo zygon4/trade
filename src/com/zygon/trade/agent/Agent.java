@@ -1,7 +1,7 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.data.EventFeed;
+import com.zygon.data.Handler;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class Agent<T> implements EventFeed.Handler<T> {
+public class Agent<T> implements Handler<T> {
 
     private final class AgentThread extends Thread {
 
@@ -103,10 +103,14 @@ public class Agent<T> implements EventFeed.Handler<T> {
     
     @Override
     public void handle(T t) {
-        try {
-            this.dataQueue.put(t);
-        } catch (InterruptedException ie) {
-            this.log.error(null, ie);
+        if (t != null) {
+            try {
+                this.dataQueue.put(t);
+            } catch (InterruptedException ie) {
+                this.log.error(null, ie);
+            }
+        } else {
+            this.log.debug("Received null data");
         }
     }
     

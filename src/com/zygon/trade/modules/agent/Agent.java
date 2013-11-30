@@ -40,9 +40,9 @@ public class Agent extends Module {
     private static Collection<Interpreter<Ticker>> getInterpreters() {
         Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
         
-        Aggregation leading = new Aggregation(Type.AVG, Duration._1, TimeUnit.MINUTES);
-        Aggregation lagging = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
-        Aggregation macd = new Aggregation(Type.AVG, Duration._15, TimeUnit.SECONDS);
+        Aggregation leading = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
+        Aggregation lagging = new Aggregation(Type.AVG, Duration._60, TimeUnit.MINUTES);
+        Aggregation macd = new Aggregation(Type.AVG, Duration._5, TimeUnit.MINUTES);
         interpreters.add(new TickerMACD(leading, lagging, macd));
         
         return interpreters;

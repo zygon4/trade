@@ -4,7 +4,7 @@
 
 package com.zygon.trade.modules.data;
 
-import com.zygon.data.EventFeed;
+import com.zygon.data.Handler;
 import com.zygon.trade.Module;
 import com.zygon.trade.ParentModule;
 
@@ -25,9 +25,9 @@ public class DataModule extends ParentModule {
         
     }
 
-    public void register (EventFeed.Handler reg) {
+    public <T> void register (Handler<T> reg) {
         for (Module child : this.getModules()) {
-            DataFeed feed = (DataFeed) child;
+            DataFeed<T> feed = (DataFeed) child;
             feed.register(reg);
         }
     }
@@ -37,9 +37,9 @@ public class DataModule extends ParentModule {
         
     }
     
-    public void unregister (EventFeed.Handler reg) {
+    public <T> void unregister (Handler<T> reg) {
         for (Module child : this.getModules()) {
-            DataFeed feed = (DataFeed) child;
+            DataFeed<T> feed = (DataFeed<T>) child;
             feed.unregister(reg);
         }
     } 

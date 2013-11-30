@@ -50,10 +50,11 @@ public class Service implements Daemon {
         this.moduleSet = new ModuleSet(this.configurationManager.getStorage());
         
         Module[] modules = this.moduleSet.getModules();
-        this.moduleSet.configure();
         
         this.kernel = new Kernel(modules);
         
+        this.kernel.setParents();
+        this.moduleSet.configure();
         this.kernel.doHook();
     }
 

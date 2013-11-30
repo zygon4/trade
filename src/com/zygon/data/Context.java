@@ -12,18 +12,26 @@ public class Context {
     public static final String PROP_CLS = "class";
     public static final String PROP_NAME = "name";
 
-    private final Properties properties;
+    private final Properties properties = new Properties();
 
     public Context(Properties properties) {
-        this.properties = properties;
+        // Copy in the properties.  If it had defaults... well.. we shouldn't 
+        // be using
+        for (String key : properties.stringPropertyNames()) {
+            this.properties.setProperty(key, properties.getProperty(key));
+        }
         
         if (this.getClazz() == null) {
             throw new IllegalArgumentException("property 'class' is required");
         }
     }
 
-    public Properties getProperties() {
-        return this.properties;
+    public String getProperty(String propertyName, String defaultValue) {
+        return this.properties.getProperty(propertyName, defaultValue);
+    }
+    
+    public String getProperty(String propertyName) {
+        return this.properties.getProperty(propertyName);
     }
     
     /*pkg*/ final String getClazz () {

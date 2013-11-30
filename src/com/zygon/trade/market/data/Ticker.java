@@ -25,9 +25,19 @@ public class Ticker {
     private BigMoney low;
     private BigDecimal volume;
     
-    public Ticker(String identifer, Date ts, String source, String currency, BigMoney last, BigMoney bid, 
+    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigMoney last, BigMoney bid, 
             BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
-        this.tradeableIdentifer = identifer;
+        // TODO: uncomment this and restrict inputs
+//        if (tradeableIdentifer == null) {
+//            throw new IllegalArgumentException("tradeableIdentifer cannot be null");
+//        }
+//        if (currency == null) {
+//            throw new IllegalArgumentException("currency cannot be null");
+//        }
+//        if (source == null) {
+//            throw new IllegalArgumentException("source cannot be null");
+//        }
+        this.tradeableIdentifer = tradeableIdentifer;
         this.timestamp = ts;
         this.source = source;
         this.currency = currency;
@@ -46,9 +56,6 @@ public class Ticker {
     public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String currency) {
         this (tick.getTradableIdentifier(), getAdjustedDate(tick.getTimestamp()), "", currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
                 tick.getHigh(), tick.getLow(), tick.getVolume());
-    }
-
-    public Ticker() {
     }
 
     public BigMoney getAsk() {
@@ -135,9 +142,10 @@ public class Ticker {
     public String toString() {
         String toString = null;
         try {
-            toString = String.format("%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
+            toString = String.format("%s/%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
                 this.getTradableIdentifier(),
                 this.getCurrency(),
+                this.getSource(),
                 this.last.getAmount().toPlainString(),
                 this.bid.getAmount().toPlainString(),
                 this.ask.getAmount().toPlainString(),
