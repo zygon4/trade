@@ -13,10 +13,12 @@ package com.zygon.trade;
  */
 public class Kernel extends Module {
 
+    public static final String ID = "kernel";
+    
     private final String rootDirectory;
 
     public Kernel(Module[] modules) {
-        super("Kernel");
+        super(ID);
         
         this.rootDirectory = System.getProperty("trade.rootdir");
         
