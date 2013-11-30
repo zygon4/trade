@@ -40,9 +40,9 @@ public class Agent extends Module {
     private static Collection<Interpreter<Ticker>> getInterpreters() {
         Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
         
-        Aggregation leading = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
-        Aggregation lagging = new Aggregation(Type.AVG, Duration._60, TimeUnit.MINUTES);
-        Aggregation macd = new Aggregation(Type.AVG, Duration._5, TimeUnit.MINUTES);
+        Aggregation leading = new Aggregation(Type.AVG, Duration._1, TimeUnit.MINUTES);
+        Aggregation lagging = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
+        Aggregation macd = new Aggregation(Type.AVG, Duration._15, TimeUnit.SECONDS);
         interpreters.add(new TickerMACD(leading, lagging, macd));
         
         return interpreters;
@@ -68,6 +68,7 @@ public class Agent extends Module {
     
     @Override
     public void configure(Configuration configuration) {
+        super.configure(configuration);
         // TBD: if the broker name changes.
         this.brokerName = configuration.getValue("broker");
         this.agent = buildAgent(configuration.getValue("name"));
