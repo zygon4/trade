@@ -21,6 +21,7 @@ public class WebConsole extends Module {
 
     @Override
     public void configure(Configuration configuration) {
+        super.configure(configuration);
         int port = Integer.parseInt(configuration.getValue("port"));
         
         if (this.server == null) {
