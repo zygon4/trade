@@ -37,6 +37,7 @@ public class Account extends Module {
 
     @Override
     public void configure(Configuration configuration) {
+        super.configure(configuration);
         // TBD: if someone changes the id/broker.. need to reset any hooks
         
         this.brokerName = configuration.getValue("broker");
