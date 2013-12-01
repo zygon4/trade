@@ -283,7 +283,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         } else if (request.isStatusRequest()) {
             StringBuilder sb = new StringBuilder();
             this.writeStatus(sb);
-            sb.append('\n');
             output = sb.toString();
         }
         
