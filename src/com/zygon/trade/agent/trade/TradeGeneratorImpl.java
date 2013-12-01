@@ -1,5 +1,5 @@
 
-package com.zygon.trade.agent.signal;
+package com.zygon.trade.agent.trade;
 
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.execution.MarketConditions;

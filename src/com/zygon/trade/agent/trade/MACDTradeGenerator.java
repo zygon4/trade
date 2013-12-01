@@ -1,5 +1,5 @@
 
-package com.zygon.trade.agent.signal;
+package com.zygon.trade.agent.trade;
 
 import com.xeiam.xchange.currency.Currencies;
 import com.zygon.trade.market.model.indication.Indication;
