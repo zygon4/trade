@@ -22,7 +22,7 @@ import java.util.Collection;
  */
 public class MACDTradeGenerator extends TradeGeneratorImpl {
 
-    private static final double PROFIT_MODIFIER         = 4.0;
+    private static final double PROFIT_MODIFIER         = 3.0;
     private static final double STOP_LOSS_MODIFER       = 1.0;
     
     private static final double VOLUME_MODIFER          = 1;
