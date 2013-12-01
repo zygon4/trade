@@ -313,8 +313,9 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
     public void handle(Ticker r) {
         SimulationTradeExecutor tradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
         
-        tradeExecutor.setPrice(r.getAsk().plus(r.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
-        
-        try { this.exchangeEvents.put(new TickerEvent(r)); } catch (InterruptedException ignore) {}
+        if (r != null) {
+            tradeExecutor.setPrice(r.getAsk().plus(r.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
+            try { this.exchangeEvents.put(new TickerEvent(r)); } catch (InterruptedException ignore) {}
+        }
     }
 }
