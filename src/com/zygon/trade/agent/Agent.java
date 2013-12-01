@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
  * processing the signals by translating them into orders.
  *
  * @author zygon
+ * 
+ * TODO: heterogeneous data 
  */
 public class Agent<T> implements Handler<T> {
 
