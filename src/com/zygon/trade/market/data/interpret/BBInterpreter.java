@@ -42,8 +42,11 @@ public class BBInterpreter extends TickerInterpreter {
         double ma = this.ema.getMean();
         double std = this.ema.getStd();
         
-        Message bb = new BollingerBand(data.getTradableIdentifier(), data.getTimestamp().getTime(), ma, std, this.kstd, price);
-        
-        return new Message[]{bb};
+        if (!Double.isNaN(ma) && !Double.isNaN(std)) {
+            Message bb = new BollingerBand(data.getTradableIdentifier(), data.getTimestamp().getTime(), ma, std, this.kstd, price);
+            return new Message[]{bb};
+        } else {
+            return null;
+        }
     }
 }
