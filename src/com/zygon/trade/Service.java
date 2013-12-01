@@ -41,8 +41,8 @@ public class Service implements Daemon {
         }
         
         // TODO: pass in root dir
-        System.setProperty("trade.rootdir", File.pathSeparator + "home" + File.pathSeparator + 
-                "zygon" + File.pathSeparator + "opt" + File.pathSeparator + "trade");
+        System.setProperty("trade.rootdir", File.separator + "home" + File.separator + 
+                "zygon" + File.separator + "opt" + File.separator + "trade");
         
         // ConfigurationManager is a bump on a log right now.
         this.configurationManager = new ConfigurationManager(new InMemoryInstallableStorage());
