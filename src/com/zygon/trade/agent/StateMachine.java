@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * TBD:
+ * Proposed meta language for trade strategy from a user's perspective:
+ * 
+ * BollingerBand bb = BollingerBand(Aggregation(AVG, 15, MINUTES), 2)
+ * MACD macd = MACD(Aggregation(AVG, 5, DAYS), Aggregation(AVG, 35, DAYS), Aggregation(AVG, 5, DAYS))
+ * 
  *
  * @author zygon
  */
