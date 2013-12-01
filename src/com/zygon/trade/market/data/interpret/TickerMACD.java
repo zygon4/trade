@@ -62,53 +62,53 @@ public class TickerMACD extends TickerInterpreter {
         double leadingPrice = this.leadingMA.getMean();
         double laggingPrice = this.laggingMA.getMean();
         
-        double macdLine = leadingPrice - laggingPrice;
-        
-        this.macdMA.add(macdLine, in.getTimestamp());
-        
-        double signalLine = this.macdMA.getMean();
-        
         List<MACD> macds = new ArrayList<>();
         
-        if (this.firstValue) {
-            // First calc zero cross
-            this.aboveZero = macdLine > 0.0;
+        if (!Double.isNaN(leadingPrice) && !Double.isNaN(laggingPrice)) {
             
-            // Now calc signal cross
-            this.aboveSignal = signalLine > macdLine;
+            double macdLine = leadingPrice - laggingPrice;
+
+            this.macdMA.add(macdLine, in.getTimestamp());
+
+            double signalLine = this.macdMA.getMean();
             
-            this.firstValue = false;
-        } else {
-            if (this.aboveZero) {
-                if (macdLine < 0.0) {
-                    this.aboveZero = false;
-                    macds.add(new MACDZeroCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveZero));
-                }
-            } else {
-                if (macdLine > 0.0) {
-                    this.aboveZero = true;
-                    macds.add(new MACDZeroCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveZero));
-                }
-            }
-            
-            if (this.aboveSignal) {
-                if (signalLine < macdLine) {
-                    this.aboveSignal = false;
-                    macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
-                }
-            } else {
-                if (signalLine > macdLine) {
-                    this.aboveSignal = true;
-                    macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
+            if (!Double.isNaN(signalLine)) {
+                
+                if (this.firstValue) {
+                    // First calc zero cross
+                    this.aboveZero = macdLine > 0.0;
+
+                    // Now calc signal cross
+                    this.aboveSignal = signalLine > macdLine;
+
+                    this.firstValue = false;
+                } else {
+                    if (this.aboveZero) {
+                        if (macdLine < 0.0) {
+                            this.aboveZero = false;
+                            macds.add(new MACDZeroCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveZero));
+                        }
+                    } else {
+                        if (macdLine > 0.0) {
+                            this.aboveZero = true;
+                            macds.add(new MACDZeroCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveZero));
+                        }
+                    }
+
+                    if (this.aboveSignal) {
+                        if (signalLine < macdLine) {
+                            this.aboveSignal = false;
+                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
+                        }
+                    } else {
+                        if (signalLine > macdLine) {
+                            this.aboveSignal = true;
+                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
+                        }
+                    }
                 }
             }
         }
-        
-//        // TODO: need to not generate signal unless there is a cross
-//        MACD macdZeroCross = new MACDZeroCross(in.getTradableIdentifier(), in.getTimestamp(), this.aboveZero);
-//        
-//        // TODO: need to not generate signal unless there is a cross
-//        MACD macdSignalCross = new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp(), this.aboveSignal);
         
         return macds.toArray(new MACD[macds.size()]);
     }
