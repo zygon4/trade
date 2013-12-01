@@ -2,6 +2,7 @@
 package com.zygon.trade.agent;
 
 import com.zygon.data.Handler;
+import com.zygon.data.RawDataWriter;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
@@ -10,6 +11,7 @@ import com.zygon.trade.trade.TradePostMortem;
 import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeBroker;
 import com.zygon.trade.trade.TradeSummary;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,6 +46,19 @@ public class Agent<T> implements Handler<T> {
                 
                 try {
                     data = Agent.this.dataQueue.take();
+                    
+                    if (Agent.this.dataWriter != null) {
+                        try {
+                            Agent.this.dataWriter.log(data);
+                        } catch (IOException io) {
+                            if (this.running) {
+                                // TBD: anything else we can do? We'd probably like
+                                // to alarm/alert here.
+                                Agent.this.log.error(null, io);
+                            }
+                        }
+                    }
+                    
                     if (this.running) {
                         // 1) interpret data
                         Collection<Message> messages = Agent.this.interpretData(data);
@@ -79,10 +94,11 @@ public class Agent<T> implements Handler<T> {
     private final Logger log;
     private final Collection<Interpreter<T>> interpreters;
     private final Strategy strategy;
-    private TradeBroker broker;
     
+    private TradeBroker broker;
     private AgentThread runner = null;
     private boolean started = false;
+    private RawDataWriter<T> dataWriter = null;
     
     public Agent(String name, Collection<Interpreter<T>> interpreters, Strategy strategy, TradeBroker broker) {
         
@@ -177,6 +193,10 @@ public class Agent<T> implements Handler<T> {
             throw new IllegalArgumentException("broker cannot be null");
         }
         this.broker = broker;
+    }
+
+    public void setDataWriter(RawDataWriter<T> dataWriter) {
+        this.dataWriter = dataWriter;
     }
     
     public void start() {

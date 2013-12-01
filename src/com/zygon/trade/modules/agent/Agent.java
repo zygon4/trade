@@ -2,12 +2,14 @@
 package com.zygon.trade.modules.agent;
 
 import com.zygon.trade.Configuration;
+import com.zygon.trade.Kernel;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.agent.AgentBuilder;
 import com.zygon.trade.agent.signal.MACDTradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
+import com.zygon.trade.market.data.TickerWriter;
 import com.zygon.trade.market.data.interpret.TickerMACD;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
@@ -18,6 +20,7 @@ import com.zygon.trade.market.util.Type;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.Broker;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,11 +51,19 @@ public class Agent extends Module {
         return interpreters;
     }
     
-    private static com.zygon.trade.agent.Agent<Ticker> buildAgent(String name) {
+    private String getAgentDir(String agentName) {
+        Kernel kernel = (Kernel) this.getModule(Kernel.ID);
+        return kernel.getRootDirectory() + File.separator + "system" + File.separator + "data" + File.separator + "agent" + File.separator + agentName;
+    }
+    
+    private static com.zygon.trade.agent.Agent<Ticker> buildAgent(String name, TickerWriter writer) {
         AgentBuilder<Ticker> builder = new AgentBuilder<Ticker>();
         builder.setName(name+"_agent");
         builder.setInterpreters(getInterpreters());
         builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
+        if (writer != null) {
+            builder.setDataWriter(writer);
+        }
         
         builder.setTradeGenerator(new MACDTradeGenerator());
         
@@ -71,7 +82,26 @@ public class Agent extends Module {
         super.configure(configuration);
         // TBD: if the broker name changes.
         this.brokerName = configuration.getValue("broker");
-        this.agent = buildAgent(configuration.getValue("name"));
+        
+        String agentName = configuration.getValue("name");
+        String agentDataDirPath = this.getAgentDir(agentName);
+        File agentDataDir = new File(agentDataDirPath);
+        
+        boolean directoryExists = agentDataDir.exists();
+        
+        if (!directoryExists) {
+            directoryExists = agentDataDir.mkdirs();
+        }
+        
+        TickerWriter writer = null;
+        
+        if (directoryExists) {
+            writer = new TickerWriter(agentDataDirPath + File.separator + (agentName+ "_ticker.txt"));
+        } else {
+            this.getLogger().error("Error creating data dir " + agentDataDir.getAbsolutePath());
+        }
+        
+        this.agent = buildAgent(agentName, writer);
     }
     
     @Override

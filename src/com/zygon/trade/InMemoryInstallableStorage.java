@@ -38,7 +38,7 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         DataSet mtgoxTickerDataSet = new DataSet("mtgox-ticker-data");
         Configuration mtgoxTickerDataSetConfig = new Configuration(mtgoxTickerDataSet.getSchema());
         mtgoxTickerDataSetConfig.setValue("name", mtgoxTickerDataSet.getDisplayname());
-        mtgoxTickerDataSetConfig.setValue("data-uri", "file:///tmp/mtgox-tick.txt");
+        mtgoxTickerDataSetConfig.setValue("data-uri", "file:///home/zygon/opt/trade/system/data/agent/macd/macd_ticker.txt");
         this.metadataById.put(mtgoxTickerDataSet.getDisplayname(), 
                 new MetaData(mtgoxTickerDataSet.getDisplayname(), "com.zygon.trade.modules.data.DataSet", mtgoxTickerDataSet, mtgoxTickerDataSetConfig));
         
