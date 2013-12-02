@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class SimulationExchange extends Exchange implements Handler<Ticker> {
+public class SimulationExchange<T> extends Exchange implements Handler<T> {
     
     public static SimulationExchange createInstance() {
         return new SimulationExchange("joe", 
@@ -114,22 +114,22 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
             this.fees += fee.doubleValue();
         }
         
-        public synchronized void add(BigDecimal ammount, CurrencyUnit currency) {
+        public synchronized void add(BigDecimal ammount, CurrencyUnit currency) throws InterruptedException {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             
             wallet.ammount += ammount.doubleValue();
             wallet.high = Math.max(wallet.getHigh(), wallet.getAmmount());
             
-            this.exchangeEvents.add(new AccoutWalletUpdate(user, wallet.getWallet()));
+            this.exchangeEvents.put(new AccoutWalletUpdate(user, wallet.getWallet()));
         }
         
-        public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) {
+        public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) throws InterruptedException {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             
             wallet.ammount -= ammount.doubleValue();
             wallet.low = Math.min(wallet.getLow(), wallet.getAmmount());
             
-            this.exchangeEvents.add(new AccoutWalletUpdate(user, wallet.getWallet()));
+            this.exchangeEvents.put(new AccoutWalletUpdate(user, wallet.getWallet()));
         }
         
         @Override
@@ -217,7 +217,11 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
         @Override
         public void cancel(String username, String orderId) {
             this.log.info("Cancelling orderId: {}", orderId);
-            this.exchangeEvents.add(new TradeCancelEvent(orderId, "unknown reason"));
+            try {
+                this.exchangeEvents.put(new TradeCancelEvent(orderId, "unknown reason"));
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
         }
 
         @Override
@@ -234,17 +238,25 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
             
             totalCost = totalCost.subtract(fee);
             
-            // simulate a buy by adding the tradable and subtracting the transaction currency
-            if (order.getType() == Order.OrderType.BID) {
-                this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                this.accntController.subtract(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
-            } else {
-                // simulate a sell by subtracting the tradable and adding the transaction currency
-                this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                this.accntController.add(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
+            try {
+                // simulate a buy by adding the tradable and subtracting the transaction currency
+                if (order.getType() == Order.OrderType.BID) {
+                    this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
+                    this.accntController.subtract(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
+                } else {
+                    // simulate a sell by subtracting the tradable and adding the transaction currency
+                    this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
+                    this.accntController.add(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
+                }
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
             }
             
-            this.exchangeEvents.add(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), order.getTradableAmount().doubleValue()));
+            try {
+                this.exchangeEvents.put(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), order.getTradableAmount().doubleValue()));
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
             
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
                 this.log.info("Account balance {}, high {}, low {}, max drawdown {}", 
@@ -295,8 +307,6 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
          
          SimulationAccountController simAccountController = (SimulationAccountController) this.getAccountController();
          simAccountController.setExchangeEvents(this.exchangeEvents);
-         
-         this.tickerFeed.register(this);
     }
     
     @Override
@@ -310,12 +320,29 @@ public class SimulationExchange extends Exchange implements Handler<Ticker> {
     }
     
     @Override
-    public void handle(Ticker r) {
+    public void handle(T r) {
         SimulationTradeExecutor tradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
         
         if (r != null) {
-            tradeExecutor.setPrice(r.getAsk().plus(r.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
-            try { this.exchangeEvents.put(new TickerEvent(r)); } catch (InterruptedException ignore) {}
+            Ticker data = (Ticker) r;
+            tradeExecutor.setPrice(data.getAsk().plus(data.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
+            try { this.exchangeEvents.put(new TickerEvent(data)); } catch (InterruptedException ignore) {}
         }
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        
+        Handler<Ticker> tickerHandler = (Handler<Ticker>) this;
+        this.tickerFeed.register(tickerHandler);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        
+        Handler<Ticker> tickerHandler = (Handler<Ticker>) this;
+        this.tickerFeed.unregister(tickerHandler);
     }
 }
