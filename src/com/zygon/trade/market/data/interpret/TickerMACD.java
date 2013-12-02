@@ -9,7 +9,6 @@ import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.market.MACD;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
-import com.zygon.trade.market.util.ExponentialMovingAverage;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
 import com.zygon.trade.market.util.Type;
@@ -22,29 +21,25 @@ import java.util.List;
  */
 public class TickerMACD extends TickerInterpreter {
     
-    private final Aggregation leading;
-    private final Aggregation lagging;
-    private final Aggregation macd;
-    
     private final MovingAverage leadingMA;
     private final MovingAverage laggingMA;
     private final MovingAverage macdMA;
+
+    public TickerMACD(MovingAverage leadingMA, MovingAverage laggingMA, MovingAverage macdMA) {
+        super();
+        this.leadingMA = leadingMA;
+        this.laggingMA = laggingMA;
+        this.macdMA = macdMA;
+    }
     
     public TickerMACD(Aggregation leading, Aggregation lagging, Aggregation macd) {
-        super();
+        this(new MovingAverage(leading.getDuration(), leading.getUnits(), new MovingAverage.ExponentialValueFn()),
+             new MovingAverage(lagging.getDuration(), lagging.getUnits(), new MovingAverage.ExponentialValueFn()),
+             new MovingAverage(macd.getDuration(), macd.getUnits(), new MovingAverage.ExponentialValueFn()));
         
         if (leading.getType() != Type.AVG || lagging.getType() != Type.AVG || macd.getType() != Type.AVG) {
             throw new IllegalArgumentException("Aggregations must be based on average");
         }
-        
-        this.leading = leading;
-        this.lagging = lagging;
-        this.macd = macd;
-        
-        this.leadingMA = new ExponentialMovingAverage(this.leading.getDuration(), this.leading.getUnits());
-        this.laggingMA = new ExponentialMovingAverage(this.lagging.getDuration(), this.lagging.getUnits());
-        
-        this.macdMA = new ExponentialMovingAverage(this.macd.getDuration(), this.macd.getUnits());
     }
     
     private boolean firstValue = true;
