@@ -48,7 +48,7 @@ public abstract class Exchange {
         private volatile boolean running = true;
 
         public ExchangeEventProcessor() {
-            super();
+            super(ExchangeEventProcessor.class.getCanonicalName());
             super.setDaemon(true);
         }
 
