@@ -144,7 +144,7 @@ public class Agent<T> implements Handler<T> {
 
         for (Interpreter<T> trans : this.interpreters) {
             Message[] translated = trans.interpret(t);
-            if (translated != null) {
+            if (translated != null && translated.length != 0) {
                 messages.addAll(Arrays.asList(translated));
             }
         }
@@ -201,7 +201,7 @@ public class Agent<T> implements Handler<T> {
         this.dataWriter = dataWriter;
     }
     
-    public void start() {
+    private void start() {
         if (!this.started) {
             this.runner = new AgentThread();
             this.runner.start();
@@ -209,8 +209,15 @@ public class Agent<T> implements Handler<T> {
         }
     }
     
-    public void stop() {
+    private void stop() {
         if (this.started) {
+            
+            try {
+                this.broker.cancelAll();
+            } catch (ExchangeException ee) {
+                this.log.error(null, ee);
+            }
+            
             this.runner.running = false;
             this.runner.interrupt();
             this.runner = null;
