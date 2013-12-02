@@ -10,7 +10,7 @@ import com.zygon.trade.market.model.indication.market.MACDZeroCross;
 import com.zygon.trade.trade.PriceObjective;
 import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeSignal;
-import com.zygon.trade.trade.TradeType;
+import com.zygon.trade.trade.TradeSignal.Decision;
 import com.zygon.trade.trade.TradeUrgency;
 import com.zygon.trade.trade.VolumeObjective;
 import java.util.ArrayList;
@@ -22,10 +22,14 @@ import java.util.Collection;
  */
 public class MACDTradeGenerator extends TradeGeneratorImpl {
 
-    private static final double PROFIT_MODIFIER         = 3.0;
-    private static final double STOP_LOSS_MODIFER       = 1.0;
+//    private static final double PROFIT_MODIFIER         = 7.5;
+//    private static final double STOP_LOSS_MODIFER       = 0.5;
     
-    private static final double VOLUME_MODIFER          = 1;
+    private static final double PROFIT_MODIFIER         = 1600;
+    private static final double STOP_LOSS_MODIFER       = 40;
+    
+    
+    private static final double VOLUME_MODIFER          = 2;
     
     public MACDTradeGenerator() {
     }
@@ -75,19 +79,18 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         
         MarketDirection marketDirection = this.getDirection().getMarketDirection();
         
-        TradeType tradeType = null;
+        Decision decision = null;
         
         if (marketDirection == MarketDirection.UP) {
-            tradeType = TradeType.LONG;
-            
+            decision = Decision.SELL;
         } else if (marketDirection == MarketDirection.DOWN) {
-            tradeType = TradeType.SHORT;
+            decision = Decision.BUY;
         }
         
-        if (tradeType != null) {
-            PriceObjective priceObjective = new PriceObjective(tradeType, PriceObjective.Modifier.PERCENT, PROFIT_MODIFIER, STOP_LOSS_MODIFER);
+        if (decision != null) {
+            PriceObjective priceObjective = new PriceObjective(decision.getType(), PriceObjective.Modifier.PIP, PROFIT_MODIFIER, STOP_LOSS_MODIFER);
             VolumeObjective volumeObjective = new VolumeObjective(VolumeObjective.Modifier.PERCENT, VOLUME_MODIFER);
-            TradeSignal tradeSignal = new TradeSignal(TradeSignal.Decision.BUY, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
+            TradeSignal tradeSignal = new TradeSignal(decision, volumeObjective, "BTC", "USD", priceObjective, TradeUrgency.MEDIUM, marketDirection.name());
 
             return tradeSignal;
         }
