@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.slf4j.Logger;
@@ -52,7 +53,10 @@ public class TradeBroker implements ExchangeEventListener {
     private final String accountId;
     private final Exchange exchange;
     private final TradeSummary tradeSummary = new TradeSummary();
+    private final ArrayBlockingQueue<ExchangeEvent> exchangeEventQueue = new ArrayBlockingQueue<ExchangeEvent>(10000);
+    private final Object lock = new Object();
     
+    private Runnable eventHandler = null;
     private Ticker ticker = null;
     
     public TradeBroker(String accountId, Exchange exchange) {
@@ -116,9 +120,24 @@ public class TradeBroker implements ExchangeEventListener {
         tradeID ++;
     }
     
-    public void cancelAll() {
+    public void cancelAll() throws ExchangeException {
         this.log.info("Cancelling all trades");
-        // TODO: cancel active trades
+        
+        synchronized (this.tradeMonitorsByTradeId) {
+            Iterator<String> iter = this.tradeMonitorsByTradeId.keySet().iterator();
+            while (iter.hasNext()) {
+                
+                String tradeId = iter.next();
+                TradeMonitor monitor = this.tradeMonitorsByTradeId.get(tradeId);
+                
+                // These will only be for closing orders until limit orders are in place
+                Collection<Order> orders = monitor.cancel();
+                for (Order order : orders) {
+                    this.exchange.placeOrder(this.accountId, order);
+                    this.tradeSummary.totalOrdersExecuted ++;
+                }
+            }
+        }
     }
     
     public int getActiveTradeCount() {
@@ -150,6 +169,38 @@ public class TradeBroker implements ExchangeEventListener {
     public void notify(ExchangeEvent event) {
         this.log.trace("Received event: " + event.getDisplayString());
         
+        try {
+            this.exchangeEventQueue.put(event);
+        } catch (InterruptedException intr) {
+            this.log.debug(null, intr);
+        }
+        
+        synchronized (this.lock) {
+            if (this.eventHandler == null) {
+                this.eventHandler = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        
+                        while (!exchangeEventQueue.isEmpty()) {
+                            ExchangeEvent event = exchangeEventQueue.poll();
+                            if (event != null) {
+                                handleEvent(event);
+                            }
+                        }
+                        
+                        synchronized (lock) {
+                            eventHandler = null;
+                        }
+                    }
+                };
+                
+                new Thread(this.eventHandler).start();
+            }
+        }
+    }
+    
+    private void handleEvent(ExchangeEvent event) {
         switch (event.getEventType()) {
             case ACCOUNT_STATUS:
                 // TODO: get account balance for volume/risk adjustment
@@ -212,8 +263,6 @@ public class TradeBroker implements ExchangeEventListener {
                 // These will only be for closing orders until limit orders are in place
                 Collection<Order> orders = monitor.notifyPriceUpdate(price);
                 for (Order order : orders) {
-//                    this.log.info("Closing order " + orderId + " of trade " + monitor.getTradeId() + " due to " + exitSignal.getName());
-                    
                     this.exchange.placeOrder(this.accountId, order);
                     this.tradeSummary.totalOrdersExecuted ++;
                 }
