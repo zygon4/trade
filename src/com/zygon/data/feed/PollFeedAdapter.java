@@ -70,6 +70,7 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
         
         if (getHandlers().isEmpty()) {
             this.runner.running = false;
+            this.runner.interrupt();
             this.runner = null;
             this.started = false;
         }
