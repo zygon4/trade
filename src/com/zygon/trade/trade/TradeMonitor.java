@@ -239,6 +239,38 @@ public class TradeMonitor {
         this.orderProvider = orderProvider;
     }
     
+    /*pkg*/ synchronized Collection<Order> cancel() {
+        if (this.isClosed()) {
+            throw new IllegalStateException("closed");
+        }
+        
+        Collection<Order> orders = new ArrayList<Order>();
+        
+        for (Entry<TradeSignal, TradeState> entry : this.stateBySignal.entrySet()) {
+            TradeSignal signal = entry.getKey();
+            TradeState state = entry.getValue();
+            
+            // TBD: deal with half-open states such as OPEN_FILLING, CLOSED_FILLING
+            if (state.getState() == State.OPEN) {
+                
+                String orderKey = generateOrderKey(this.tradeId, String.valueOf(orderId++));
+
+                MarketOrder closeOrder = this.orderProvider.getMarketOrder(orderKey, state.signal.getTradeType().getCounterOrderType(), 
+                        state.getRequiredFillVolume(), state.signal.getTradeableIdentifier(), state.signal.getCurrency());
+
+                orders.add(closeOrder);
+
+                state.setState(State.CLOSED_FILLING);
+
+                synchronized (this.signalsByOrderId) {
+                    this.signalsByOrderId.put(orderKey, signal);
+                }
+            }
+        }
+        
+        return orders;
+    }
+    
     private void close(Signal exitReason) {
         
         if (this.postMortem == null) {
