@@ -6,7 +6,7 @@ import com.zygon.trade.Kernel;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.agent.AgentBuilder;
-import com.zygon.trade.agent.signal.MACDTradeGenerator;
+import com.zygon.trade.agent.trade.MACDTradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerWriter;

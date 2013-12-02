@@ -7,7 +7,6 @@ package com.zygon.trade.market.data.interpret;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.market.BollingerBand;
-import com.zygon.trade.market.util.ExponentialMovingAverage;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
@@ -28,7 +27,7 @@ public class BBInterpreter extends TickerInterpreter {
             throw new IllegalArgumentException("Aggregations must be based on average");
         }
         
-        this.ema = new ExponentialMovingAverage(ma.getDuration(), ma.getUnits());
+        this.ema = new MovingAverage(ma.getDuration(), ma.getUnits(), new MovingAverage.ExponentialValueFn());
         this.kstd = kstd;
     }
     

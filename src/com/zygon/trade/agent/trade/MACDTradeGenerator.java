@@ -22,12 +22,13 @@ import java.util.Collection;
  */
 public class MACDTradeGenerator extends TradeGeneratorImpl {
 
+    private static final boolean INVERTED               = true;
+    
 //    private static final double PROFIT_MODIFIER         = 7.5;
 //    private static final double STOP_LOSS_MODIFER       = 0.5;
     
     private static final double PROFIT_MODIFIER         = 1600;
-    private static final double STOP_LOSS_MODIFER       = 40;
-    
+    private static final double STOP_LOSS_MODIFER       = 80;
     
     private static final double VOLUME_MODIFER          = 2;
     
@@ -82,9 +83,9 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
         Decision decision = null;
         
         if (marketDirection == MarketDirection.UP) {
-            decision = Decision.SELL;
+            decision = INVERTED ? Decision.SELL : Decision.BUY;
         } else if (marketDirection == MarketDirection.DOWN) {
-            decision = Decision.BUY;
+            decision = INVERTED ? Decision.BUY : Decision.SELL;
         }
         
         if (decision != null) {
