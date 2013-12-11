@@ -116,7 +116,6 @@ public class Strategy {
             this.messageQueue.put(message);
         } catch (InterruptedException ie) {
             // TODO: logging
-            ie.printStackTrace();
         }
     }
     
