@@ -10,13 +10,17 @@ package com.zygon.trade.market.util;
  */
 public enum Duration {
     _1(1), 
+    _2(2),
+    _3(3),
     _4(4), 
-    _5(5), 
+    _5(5),
+    _9(9),
     _12(12),
-    _15(15), 
+    _15(15),
+    _24(24),
+    _26(26),
     _30(30), 
-    _60(60), 
-    _24(24);
+    _60(60);
     
     private final int val;
 
