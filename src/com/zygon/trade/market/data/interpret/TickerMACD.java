@@ -44,7 +44,7 @@ public class TickerMACD extends TickerInterpreter {
     
     private boolean firstValue = true;
     private boolean aboveZero = false;
-    private boolean aboveSignal = false;
+    private boolean macdAboveSignal = false;
     
     @Override
     public MACD[] interpret(Ticker in) {
@@ -74,7 +74,7 @@ public class TickerMACD extends TickerInterpreter {
                     this.aboveZero = macdLine > 0.0;
 
                     // Now calc signal cross
-                    this.aboveSignal = signalLine > macdLine;
+                    this.macdAboveSignal = macdLine > signalLine;
 
                     this.firstValue = false;
                 } else {
@@ -90,15 +90,15 @@ public class TickerMACD extends TickerInterpreter {
                         }
                     }
 
-                    if (this.aboveSignal) {
-                        if (signalLine < macdLine) {
-                            this.aboveSignal = false;
-                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
+                    if (this.macdAboveSignal) {
+                        if (macdLine < signalLine) {
+                            this.macdAboveSignal = false;
+                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.macdAboveSignal));
                         }
                     } else {
-                        if (signalLine > macdLine) {
-                            this.aboveSignal = true;
-                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.aboveSignal));
+                        if (macdLine > signalLine) {
+                            this.macdAboveSignal = true;
+                            macds.add(new MACDSignalCross(in.getTradableIdentifier(), in.getTimestamp().getTime(), this.macdAboveSignal));
                         }
                     }
                 }
