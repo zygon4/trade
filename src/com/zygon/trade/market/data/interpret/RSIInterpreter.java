@@ -21,27 +21,33 @@ public class RSIInterpreter extends TickerInterpreter {
 
     private final MovingAverage gains;
     private final MovingAverage losses;
+
+    public RSIInterpreter(MovingAverage gains, MovingAverage losses) {
+        super();
+        this.gains = gains;
+        this.losses = losses;
+    }
     
     public RSIInterpreter(Aggregation aggregation) {
-        super();
+        this(new MovingAverage(aggregation.getDuration(), aggregation.getUnits()), 
+             new MovingAverage(aggregation.getDuration(), aggregation.getUnits()));
         
         if (aggregation.getType() != Type.AVG) {
             throw new IllegalArgumentException("Aggregations must be based on average");
         }
-        
-        this.gains = new MovingAverage(aggregation.getDuration(), aggregation.getUnits());
-        this.losses = new MovingAverage(aggregation.getDuration(), aggregation.getUnits());
-        
-        this.gains.add(0.001, new Date());
-        this.losses.add(0.001, new Date());
     }
 
-    private double lastValue = 0.0;
+    private double lastValue = -1.0;
     
     @Override
     public Message[] interpret(Ticker data) {
         
         double price = TickerUtil.getMidPrice(data);
+        
+        if (this.lastValue == -1.0) {
+            this.lastValue = price;
+        }
+        
         boolean change = false;
         
         if (price > this.lastValue) {
@@ -55,15 +61,20 @@ public class RSIInterpreter extends TickerInterpreter {
         if (change) {
             this.lastValue = price;
 
-            double rs = this.gains.getMean() / this.losses.getMean();
+            double gainsAvg = this.gains.getMean();
+            double lossesAvg = this.losses.getMean();
+            if (!Double.isNaN(gainsAvg) && !Double.isNaN(lossesAvg)) {
+                
+                double rs = gainsAvg / lossesAvg;
 
-            double rsi = 100 - (100 / (1 + rs));
+                double rsi = 100 - (100 / (1 + rs));
 
-            return new Message[] {
-                new RSI(data.getTradableIdentifier(), data.getTimestamp().getTime(), rsi)
-            };
-        } else {
-            return null;
+                return new Message[] {
+                    new RSI(data.getTradableIdentifier(), data.getTimestamp().getTime(), rsi)
+                };
+            }
         }
+        
+        return null;
     }
 }
