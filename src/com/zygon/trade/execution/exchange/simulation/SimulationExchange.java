@@ -236,26 +236,26 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             BigDecimal fee = totalCost.multiply(BigDecimal.valueOf(EXCHANGE_FEE));
             this.accntController.addFee(fee);
             
-            totalCost = totalCost.subtract(fee);
-            
             try {
                 // simulate a buy by adding the tradable and subtracting the transaction currency
                 if (order.getType() == Order.OrderType.BID) {
+                    totalCost = totalCost.add(fee);
                     this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
                     this.accntController.subtract(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
                 } else {
                     // simulate a sell by subtracting the tradable and adding the transaction currency
+                    totalCost = totalCost.subtract(fee);
                     this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
                     this.accntController.add(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
                 }
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+//                ie.printStackTrace();
             }
             
             try {
                 this.exchangeEvents.put(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), order.getTradableAmount().doubleValue()));
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+//                ie.printStackTrace();
             }
             
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
