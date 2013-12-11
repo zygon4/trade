@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * 
@@ -15,7 +16,7 @@ import java.util.Map.Entry;
 
     private final Map<Class<? extends Module>, Module> parentByChildClass = new HashMap<Class<? extends Module>, Module>();
     private final Map<String, Module> modulesById = new HashMap<>();
-    private final Map<String, Module> topLevelModulesById = new HashMap<>();
+    private final Map<String, Module> topLevelModulesById = new TreeMap<>();
     private final InstallableStorage installableStorage;
 
     public ModuleSet(InstallableStorage installableStorage) {
