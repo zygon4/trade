@@ -83,10 +83,7 @@ public class DataFeed<T> extends Module {
             this.dataFeed = (EventFeed<T>) this.feedProviderFactory.createFeed(ctx);
         }
         
-        for (Handler<T> reg : this.feedRegistrations) {
-            this.dataFeed.register(reg);
-        }
-        
+        // load any seed data first
         if (this.dataSetModule != null) {
             com.zygon.data.set.DataSet<T> dataSet = (com.zygon.data.set.DataSet<T>) dataSetModule.getDataSet();
             for (Handler<T> reg : this.feedRegistrations) {
@@ -97,6 +94,10 @@ public class DataFeed<T> extends Module {
                     // TODO: alarm of some kind?
                 }
             }
+        }
+        
+        for (Handler<T> reg : this.feedRegistrations) {
+            this.dataFeed.register(reg);
         }
     }
     
