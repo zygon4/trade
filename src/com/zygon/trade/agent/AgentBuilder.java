@@ -25,8 +25,7 @@ public class AgentBuilder<T> {
     private TradeGenerator tradeGenerator;
     
     public Agent<T> build() {
-        Strategy strategy = new Strategy(this.name+"_strategy", this.supportedIndicators, this.tradeGenerator);
-        Agent<T> agent = new Agent<T>(this.name, this.interpreters, strategy, this.broker);
+        Agent<T> agent = new Agent<T>(this.name, this.interpreters, this.supportedIndicators, this.tradeGenerator, this.broker);
         if (this.dataWriter != null) {
             agent.setDataWriter(this.dataWriter);
         }
