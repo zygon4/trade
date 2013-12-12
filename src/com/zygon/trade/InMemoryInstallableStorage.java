@@ -28,6 +28,21 @@ public class InMemoryInstallableStorage implements InstallableStorage {
     private final Map<String, MetaData> metadataById = new HashMap<>();
     
     {
+        AgentModule agentModule = new AgentModule();
+        Configuration agentModuleConfig = new Configuration(agentModule.getSchema());
+        agentModuleConfig.setValue("name", agentModule.getDisplayname());
+        this.metadataById.put(agentModule.getDisplayname(), 
+                new MetaData(agentModule.getDisplayname(), "com.zygon.trade.modules.agent.AgentModule", agentModule, agentModuleConfig));
+        
+        
+        Agent agent = new Agent("macd");
+        Configuration agentConfig = new Configuration(agent.getSchema());
+        agentConfig.setValue("name", agent.getDisplayname());
+        // TBD: set: interpretters, strategy, etc. For now it's hardcoded in the agent
+        agentConfig.setValue("broker", "mtgox");
+        this.metadataById.put(agent.getDisplayname(), 
+                new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agent, agentConfig));
+        
         DataSetModule dataSetModule = new DataSetModule();
         Configuration dataSetModuleConfig = new Configuration(dataSetModule.getSchema());
         dataSetModuleConfig.setValue("name", dataSetModule.getDisplayname());
@@ -56,7 +71,7 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         mtgoxConfig.setValue("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
         mtgoxConfig.setValue("tradeable", CurrencyPair.BTC_USD.baseCurrency);
         mtgoxConfig.setValue("currency", CurrencyPair.BTC_USD.counterCurrency);
-        mtgoxConfig.setValue("data-set-identifier", mtgoxTickerDataSet.getDisplayname());
+//        mtgoxConfig.setValue("data-set-identifier", mtgoxTickerDataSet.getDisplayname());
         this.metadataById.put(mtgoxTicker.getDisplayname(), 
                 new MetaData(mtgoxTicker.getDisplayname(), "com.zygon.trade.modules.data.DataFeed", mtgoxTicker, mtgoxConfig));
         
@@ -90,23 +105,6 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         accountConfig.setValue("accountId", "joe");
         this.metadataById.put(account.getDisplayname(), 
                 new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.Account", account, accountConfig));
-        
-        
-        AgentModule agentModule = new AgentModule();
-        Configuration agentModuleConfig = new Configuration(agentModule.getSchema());
-        agentModuleConfig.setValue("name", agentModule.getDisplayname());
-        this.metadataById.put(agentModule.getDisplayname(), 
-                new MetaData(agentModule.getDisplayname(), "com.zygon.trade.modules.agent.AgentModule", agentModule, agentModuleConfig));
-        
-        
-        Agent agent = new Agent("macd");
-        Configuration agentConfig = new Configuration(agent.getSchema());
-        agentConfig.setValue("name", agent.getDisplayname());
-        // TBD: set: interpretters, strategy, etc. For now it's hardcoded in the agent
-        agentConfig.setValue("broker", "mtgox");
-        this.metadataById.put(agent.getDisplayname(), 
-                new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agent, agentConfig));
-        
         
         CLIModule cliModule = new CLIModule("cli");
         Configuration cliConfig = new Configuration(cliModule.getSchema());
