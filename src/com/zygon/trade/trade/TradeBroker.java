@@ -79,11 +79,16 @@ public class TradeBroker implements ExchangeEventListener {
             return;
         }
         
-        if (this.ticker == null) {
-            this.log.trace("Broker is not ready. unable to activate trade: " + trade);
-        }
+        double currentPrice = 0.0;
         
-        double currentPrice = this.getCurrentPrice();
+        synchronized (this) {
+            if (this.ticker == null) {
+                this.log.trace("Broker is not ready. unable to activate trade: " + trade);
+                return;
+            }
+
+            currentPrice = this.getCurrentPrice();
+        }
 
         AccountInfo accountInfo = this.exchange.getAccountController().getAccountInfo(this.accountId);
 
@@ -207,7 +212,9 @@ public class TradeBroker implements ExchangeEventListener {
                 break;
             case TICKER:
                 TickerEvent tickerEvent = (TickerEvent) event;
-                this.ticker = tickerEvent.getTicker();
+                synchronized (this) {
+                    this.ticker = tickerEvent.getTicker();
+                }
 
                 // ticker signifies a price change - we might need to close
                 // out some trades.
