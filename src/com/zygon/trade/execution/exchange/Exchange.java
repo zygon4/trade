@@ -221,7 +221,7 @@ public abstract class Exchange {
     public void stop() {
         if (this.started) {
             this.processor.running = false;
-            // shouldn't have to interrupt
+            this.processor.interrupt();
             this.processor = null;
             this.started = false;
         }
