@@ -9,6 +9,6 @@ import java.io.IOException;
  *
  * @author zygon
  */
-public interface DataSource<T> {
+public interface DataSourceLoader<T> {
     public void writeData(Handler<T> handler) throws IOException;
 }

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author zygon
  */
-public class RawDataReader<T> implements DataSource<T> {
+public class RawDataReader<T> implements DataSourceLoader<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(RawDataReader.class);
     private final String filePath;

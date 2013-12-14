@@ -1,7 +1,7 @@
 
 package com.zygon.data.set;
 
-import com.zygon.data.DataSource;
+import com.zygon.data.DataSourceLoader;
 import com.zygon.data.Context;
 import com.zygon.data.Handler;
 import com.zygon.database.DataTransform;
@@ -31,11 +31,11 @@ public class DataSet<T> {
     private final Context ctx;
     private final String name;
     
-    private final DataSource<T> dataSource;
+    private final DataSourceLoader<T> dataSource;
     private final DataTransform<T> dataTransform;
     private final Database database;
     
-    public DataSet(Context ctx, DataSource<T> dataSource, DataTransform<T> dataTransform, Database database) {
+    public DataSet(Context ctx, DataSourceLoader<T> dataSource, DataTransform<T> dataTransform, Database database) {
         this.ctx = ctx;
         this.name = ctx.getName();
         
@@ -57,7 +57,7 @@ public class DataSet<T> {
 //            throw new IllegalArgumentException(uriSyntax);
 //        }
 //        
-//        DataSource<T> provider = null;
+//        DataSourceLoader<T> provider = null;
 //        
 //        if (dataSetURI.getScheme().equals("file")) {
 //            // TODO: new csv provider
