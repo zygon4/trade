@@ -7,7 +7,7 @@ import com.zygon.data.Context;
  *
  * @author david.charubini
  */
-public abstract class CurrencyEventFeed<T> extends PollFeedAdapter<T> {
+public abstract class TradeableEventFeed<T> extends PollFeedAdapter<T> {
 
     private static final String TRADEABLE = "tradeable";
     private static final String CURRENCY = "currency";
@@ -15,7 +15,7 @@ public abstract class CurrencyEventFeed<T> extends PollFeedAdapter<T> {
     private final String tradeable;
     private final String currency;
     
-    public CurrencyEventFeed(Context ctx, long cacheTime) {
+    public TradeableEventFeed(Context ctx, long cacheTime) {
         super(ctx, cacheTime);
         
         this.tradeable = ctx.getProperty(TRADEABLE);

@@ -5,7 +5,7 @@ import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
 import com.xeiam.xchange.service.polling.PollingMarketDataService;
 import com.zygon.data.Context;
-import com.zygon.data.feed.CurrencyEventFeed;
+import com.zygon.data.feed.TradeableEventFeed;
 import com.zygon.trade.market.data.Ticker;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author david.charubini
  * 
  */
-public class MtGoxFeed extends CurrencyEventFeed<Ticker> {
+public class MtGoxFeed extends TradeableEventFeed<Ticker> {
 
     private static Logger logger = LoggerFactory.getLogger(MtGoxFeed.class);
     
