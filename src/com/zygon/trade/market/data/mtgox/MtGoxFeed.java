@@ -5,9 +5,11 @@ import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
 import com.xeiam.xchange.service.polling.PollingMarketDataService;
 import com.zygon.data.Context;
-import com.zygon.data.feed.currency.CurrencyEventFeed;
+import com.zygon.data.feed.CurrencyEventFeed;
 import com.zygon.trade.market.data.Ticker;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,6 +18,8 @@ import java.io.IOException;
  */
 public class MtGoxFeed extends CurrencyEventFeed<Ticker> {
 
+    private static Logger logger = LoggerFactory.getLogger(MtGoxFeed.class);
+    
     private final PollingMarketDataService marketDataService;
     
     public MtGoxFeed(Context ctx) {
@@ -31,9 +35,9 @@ public class MtGoxFeed extends CurrencyEventFeed<Ticker> {
         try {
             ticker = new Ticker(this.marketDataService.getTicker(this.getTradeable(), this.getCurrency()), this.getCurrency());
         } catch (IOException io) {
-            io.printStackTrace();
+            logger.error(null, io);
         } catch (ExchangeException ee) {
-            ee.printStackTrace();
+            logger.error(null, ee);
         }
         
         return ticker;

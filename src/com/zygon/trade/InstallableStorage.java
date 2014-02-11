@@ -1,6 +1,8 @@
 package com.zygon.trade;
 
 /**
+ * This represents a store for "installable" object - this will generally be
+ * used for persisting/retrieving modules.
  *
  * @author davec
  */

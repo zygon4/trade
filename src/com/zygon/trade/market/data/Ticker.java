@@ -4,7 +4,6 @@
 
 package com.zygon.trade.market.data;
 
-import com.zygon.trade.market.Message;
 import java.math.BigDecimal;
 import java.util.Date;
 import org.joda.money.BigMoney;
@@ -13,10 +12,11 @@ import org.joda.money.BigMoney;
  *
  * @author zygon
  */
-public class Ticker extends Message {
+public class Ticker {
     
-    private TradeableIndex idx;
-    
+    private String tradeableIdentifer;
+    private Date timestamp;
+    private String source;
     private String currency;
     private BigMoney last;
     private BigMoney bid;
@@ -25,9 +25,21 @@ public class Ticker extends Message {
     private BigMoney low;
     private BigDecimal volume;
     
-    public Ticker(TradeableIndex idx, String currency, BigMoney last, BigMoney bid, 
+    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigMoney last, BigMoney bid, 
             BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
-        this.idx = idx;
+        // TODO: uncomment this and restrict inputs
+//        if (tradeableIdentifer == null) {
+//            throw new IllegalArgumentException("tradeableIdentifer cannot be null");
+//        }
+//        if (currency == null) {
+//            throw new IllegalArgumentException("currency cannot be null");
+//        }
+//        if (source == null) {
+//            throw new IllegalArgumentException("source cannot be null");
+//        }
+        this.tradeableIdentifer = tradeableIdentifer;
+        this.timestamp = ts;
+        this.source = source;
         this.currency = currency;
         this.last = last;
         this.bid = bid;
@@ -37,17 +49,13 @@ public class Ticker extends Message {
         this.volume = volume;
     }
     
-    private static TradeableIndex create(com.xeiam.xchange.dto.marketdata.Ticker tick) {
-        TradeableIndex idx = new TradeableIndex(tick.getTradableIdentifier(), tick.getTimestamp().getTime());
-        return idx;
+    private static Date getAdjustedDate (Date tickTime) {
+        return new Date(tickTime.getTime() + (1000 * 60 * 5));
     }
     
     public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String currency) {
-        this (create(tick), currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
+        this (tick.getTradableIdentifier(), getAdjustedDate(tick.getTimestamp()), "", currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
                 tick.getHigh(), tick.getLow(), tick.getVolume());
-    }
-
-    public Ticker() {
     }
 
     public BigMoney getAsk() {
@@ -75,19 +83,19 @@ public class Ticker extends Message {
     }
 
     public String getTradableIdentifier() {
-        return this.idx.getIdentifer();
+        return this.tradeableIdentifer;
     }
 
     public String getSource() {
-        return this.idx.getSource();
+        return this.source;
     }
     
     public BigDecimal getVolume() {
         return this.volume;
     }
 
-    public long getTimestamp() {
-        return this.idx.getTs();
+    public Date getTimestamp() {
+        return this.timestamp;
     }
 
     public void setAsk(BigMoney ask) {
@@ -105,10 +113,6 @@ public class Ticker extends Message {
     public void setHigh(BigMoney high) {
         this.high = high;
     }
-
-    public void setIdx(TradeableIndex idx) {
-        this.idx = idx;
-    }
     
     public void setLast(BigMoney last) {
         this.last = last;
@@ -116,6 +120,18 @@ public class Ticker extends Message {
 
     public void setLow(BigMoney low) {
         this.low = low;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setTradeableIdentifer(String tradeableIdentifer) {
+        this.tradeableIdentifer = tradeableIdentifer;
     }
 
     public void setVolume(BigDecimal volume) {
@@ -126,16 +142,17 @@ public class Ticker extends Message {
     public String toString() {
         String toString = null;
         try {
-            toString = String.format("%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
+            toString = String.format("%s/%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
                 this.getTradableIdentifier(),
                 this.getCurrency(),
+                this.getSource(),
                 this.last.getAmount().toPlainString(),
                 this.bid.getAmount().toPlainString(),
                 this.ask.getAmount().toPlainString(),
                 this.high.getAmount().toPlainString(),
                 this.low.getAmount().toPlainString(),
                 this.volume.toPlainString(),
-                new Date(this.getTimestamp()));
+                this.getTimestamp());
         } catch (Exception e) {
             e.printStackTrace();
         }

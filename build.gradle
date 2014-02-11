@@ -8,9 +8,6 @@ repositories {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
     maven {
-	url "http://kundera.googlecode.com/svn/maven2/maven-missing-resources"
-    } 
-    maven {
 	url "http://mvn.riptano.com/content/repositories/public"
     }
     maven {
@@ -35,6 +32,8 @@ dependencies {
     
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.1.0.M0'
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.1.0.M0'
+    compile group: 'org.eclipse.jetty', name: 'jetty-security', version: '9.1.0.M0'
+    compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.1.0.M0'
 
     runtime group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
     runtime group: 'org.apache.derby', name: 'derby', version: '10.10.1.1'

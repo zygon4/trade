@@ -3,7 +3,7 @@ package com.zygon.data.feed;
 
 import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
-import com.zygon.data.EventFeed.Handler;
+import com.zygon.data.Handler;
 import java.util.HashSet;
 import java.util.Set;
 

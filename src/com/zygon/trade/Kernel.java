@@ -13,21 +13,23 @@ package com.zygon.trade;
  */
 public class Kernel extends Module {
 
-    private final Module[] modules;
+    private static final String PRODUCT_NAME = "Stella";
+    private static final String VERSION = "1.0";
+    
+    public static final String ID = "kernel";
+    
     private final String rootDirectory;
 
     public Kernel(Module[] modules) {
-        super("Kernel");
-        this.modules = modules;
+        super(ID);
         
         this.rootDirectory = System.getProperty("trade.rootdir");
+        
+        for (Module module : modules) {
+            this.add(module);
+        }
     }
     
-    @Override
-    public Module[] getModules() {
-        return this.modules;
-    }
-
     public String getRootDirectory() {
         return this.rootDirectory;
     }
@@ -40,5 +42,13 @@ public class Kernel extends Module {
     @Override
     public void uninitialize() {
         // Nothing to do yet
+    }
+
+    @Override
+    protected void doWriteStatus(StringBuilder sb) {
+        sb.append(PRODUCT_NAME);
+        sb.append(" - ");
+        sb.append("v");
+        sb.append(VERSION);
     }
 }

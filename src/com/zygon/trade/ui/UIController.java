@@ -21,16 +21,14 @@ import java.util.List;
 public class UIController {
 
     private final Module root;
-    private final Module[] modules;
     private final ConfigurationManager configurationManager;
     
     private Shell shell = null;
 
     // Not crazy about passing through the Configuration Manager but i don't
     // want each Module to have a reference to it.
-    public UIController(Module root, Module[] modules, ConfigurationManager configurationManager) {
+    public UIController(Module root, ConfigurationManager configurationManager) {
         this.root = root;
-        this.modules = modules;
         this.configurationManager = configurationManager;
     }
 
@@ -68,7 +66,7 @@ public class UIController {
             throw new IllegalStateException();
         }
         
-        List<NavigationNode> nodes = this.buildNavigationTree(this.modules);
+        List<NavigationNode> nodes = this.buildNavigationTree(this.root.getModules());
         
         NavigationNode root = new NavigationNode(this.root, nodes.toArray(new NavigationNode[nodes.size()]));
         

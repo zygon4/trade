@@ -14,6 +14,10 @@ public class TickerEvent extends ExchangeEvent {
     public TickerEvent(Ticker ticker) {
         super(EventType.TICKER);
         
+        if (ticker == null) {
+            throw new IllegalArgumentException("Ticker cannot be null");
+        }
+        
         this.ticker = ticker;
     }
 

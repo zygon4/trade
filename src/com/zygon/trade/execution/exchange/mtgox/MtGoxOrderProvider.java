@@ -27,13 +27,13 @@ public class MtGoxOrderProvider implements OrderProvider {
     }
 
     @Override
-    public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
+    public LimitOrder getLimitOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
         // TBD: id and timestamp - is this execution restriction timestamp?
-        return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, "id", new Date(), BigMoney.of(this.currency, limitPrice));
+        return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date(), BigMoney.of(this.currency, limitPrice));
     }
 
     @Override
-    public MarketOrder getMarketOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency);
+    public MarketOrder getMarketOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
+        return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date());
     }
 }

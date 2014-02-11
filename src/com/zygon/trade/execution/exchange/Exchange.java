@@ -48,7 +48,7 @@ public abstract class Exchange {
         private volatile boolean running = true;
 
         public ExchangeEventProcessor() {
-            super();
+            super(ExchangeEventProcessor.class.getCanonicalName());
             super.setDaemon(true);
         }
 
@@ -154,12 +154,12 @@ public abstract class Exchange {
 
     public LimitOrder generateLimitOrder(String id, Order.OrderType type,
             double tradableAmount, String tradableIdentifier, String transactionCurrency, double price) {
-        return this.orderprovider.getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
+        return this.orderprovider.getLimitOrder(id, type, tradableAmount, tradableIdentifier, transactionCurrency, price);
     }
 
     public MarketOrder generateMarketOrder(String id, Order.OrderType type,
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return this.orderprovider.getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        return this.orderprovider.getMarketOrder(id, type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
 
     public AccountInfo getAccountInfo(String username) throws ExchangeException {
@@ -221,7 +221,7 @@ public abstract class Exchange {
     public void stop() {
         if (this.started) {
             this.processor.running = false;
-            // shouldn't have to interrupt
+            this.processor.interrupt();
             this.processor = null;
             this.started = false;
         }

@@ -31,6 +31,11 @@ public class CassandraDatabase implements Database {
     private final Map<Class<?>, DataTransform> transformsByCls = new HashMap<>();
 
     @Override
+    public void addTransform(DataTransform<?> transform) {
+        this.transformsByCls.put(transform.getClass(), transform);
+    }
+
+    @Override
     public void close() throws IOException {
         // TDB
     }
@@ -68,6 +73,11 @@ public class CassandraDatabase implements Database {
         throw new IllegalStateException ("No transformer found for " + obj.getClass().getCanonicalName());
     }
 
+    @Override
+    public void removeTransform(DataTransform<?> transform) {
+        this.transformsByCls.remove(transform.getClass());
+    }
+    
     @Override
     public <K, N, V> Object retrieve(Class<?> cls, Persistable<K, N, V> key) {
         

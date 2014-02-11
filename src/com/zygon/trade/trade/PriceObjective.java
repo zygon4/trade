@@ -13,9 +13,12 @@ import static com.zygon.trade.trade.TradeType.SHORT;
  */
 public class PriceObjective {
     
+    private static double UNIT_OF_CHANGE = 0.01; // TODO: allow for custom changes.
+    
     public static enum Modifier {
         ADD,
-        PERCENT
+        PERCENT,
+        PIP
     }
     
     private static double calcProfit(TradeType type, Modifier modifier, double takeProfit, double price) {
@@ -28,7 +31,9 @@ public class PriceObjective {
                     case ADD:
                         return price + takeProfit;
                     case PERCENT:
-                        return price + (price * takeProfit);
+                        return price + (price * (takeProfit / 100));
+                    case PIP:
+                        return price + (takeProfit * UNIT_OF_CHANGE);
                 }
 
             case SHORT:
@@ -38,7 +43,9 @@ public class PriceObjective {
                     case ADD:
                         return price - takeProfit;
                     case PERCENT:
-                        return price - (price * takeProfit);
+                        return price - (price * (takeProfit / 100));
+                    case PIP:
+                        return price - (takeProfit * UNIT_OF_CHANGE);
                 }
         }
 
@@ -54,7 +61,9 @@ public class PriceObjective {
                     case ADD:
                         return price - stopLoss;
                     case PERCENT:
-                        return price - (price * stopLoss);
+                        return price - (price * (stopLoss / 100));
+                    case PIP:
+                        return price - (stopLoss * UNIT_OF_CHANGE);
                 }
 
             case SHORT:
@@ -64,7 +73,9 @@ public class PriceObjective {
                     case ADD:
                         return price + stopLoss;
                     case PERCENT:
-                        return price + (price * stopLoss);
+                        return price + (price * (stopLoss / 100));
+                    case PIP:
+                        return price + (stopLoss * UNIT_OF_CHANGE);
                 }
         }
         
@@ -110,6 +121,9 @@ public class PriceObjective {
     }
 
     public final void setPrice(double price) {
+        if (this.priceSet) {
+            throw new IllegalStateException("Can only set price once");
+        }
         if (price < 0) {
             throw new IllegalArgumentException("price must be greater than or equal to zero");
         }

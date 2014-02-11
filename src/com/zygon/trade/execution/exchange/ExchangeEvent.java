@@ -25,6 +25,10 @@ public class ExchangeEvent {
         this.eventType = eventType;
     }
 
+    public String getDisplayString() {
+        return this.eventType.name();
+    }
+    
     public EventType getEventType() {
         return this.eventType;
     }

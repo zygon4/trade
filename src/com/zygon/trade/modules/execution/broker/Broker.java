@@ -1,7 +1,9 @@
 
 package com.zygon.trade.modules.execution.broker;
 
+import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
+import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
 import com.zygon.trade.trade.TradeBroker;
 
 /**
@@ -10,6 +12,7 @@ import com.zygon.trade.trade.TradeBroker;
  */
 public class Broker extends Module {
 
+    private String accountId = null;
     private TradeBroker broker;
     
     public Broker(String name) {
@@ -17,13 +20,16 @@ public class Broker extends Module {
     }
 
     @Override
-    protected void doWriteStatus(StringBuilder sb) {
-        this.writeTradeSummary(sb);
+    public void configure(Configuration configuration) {
+        super.configure(configuration);
+        this.accountId = configuration.getValue("accountId");
+        
+        this.broker = new TradeBroker(this.accountId, SimulationExchange.createInstance());
     }
 
     @Override
-    public Module[] getModules() {
-        return null;
+    protected void doWriteStatus(StringBuilder sb) {
+        this.writeTradeSummary(sb);
     }
 
     public TradeBroker getBroker() {
@@ -32,11 +38,10 @@ public class Broker extends Module {
 
     @Override
     public void initialize() {
+        
+        // TODO: exchange factory
+        
         this.broker.getExchange().start();
-    }
-
-    public void setBroker(TradeBroker broker) {
-        this.broker = broker;
     }
 
     @Override

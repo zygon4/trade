@@ -2,6 +2,9 @@
 package com.zygon.data.feed;
 
 import com.zygon.data.Context;
+import com.zygon.data.Handler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -9,6 +12,8 @@ import com.zygon.data.Context;
  */
 public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
 
+    private static Logger logger = LoggerFactory.getLogger(PollFeedAdapter.class);
+    
     private final class AdapterThread extends Thread {
 
         private volatile boolean running = true;
@@ -21,14 +26,21 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
         @Override
         public void run() {
             while (this.running) {
-                T t = PollFeedAdapter.this.get();
-                if (this.running) {
-                    for (Handler<T> reg : PollFeedAdapter.this.getHandlers()) {
-                        reg.handle(t);
+                try {
+                    T t = PollFeedAdapter.this.get();
+                    if (this.running) {
+                        for (Handler<T> reg : PollFeedAdapter.this.getHandlers()) {
+                            reg.handle(t);
+                        }
                     }
-                }
                 
-                try {Thread.sleep(PollFeedAdapter.this.cacheTime);} catch (Throwable ignore) {}
+                    if (PollFeedAdapter.this.cacheTime > 0) {
+                        try {Thread.sleep(PollFeedAdapter.this.cacheTime);} catch (Throwable ignore) {}
+                    }
+                
+                } catch (Exception e) {
+                    logger.error(null, e);
+                }
             }
         }
     }
@@ -58,6 +70,7 @@ public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
         
         if (getHandlers().isEmpty()) {
             this.runner.running = false;
+            this.runner.interrupt();
             this.runner = null;
             this.started = false;
         }

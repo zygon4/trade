@@ -1,19 +1,28 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.data.EventFeed;
+import com.zygon.data.Handler;
+import com.zygon.data.RawDataWriter;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
+import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.trade.TradePostMortem;
 import com.zygon.trade.trade.Trade;
 import com.zygon.trade.trade.TradeBroker;
+import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.trade.TradeSummary;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +33,10 @@ import org.slf4j.LoggerFactory;
  * processing the signals by translating them into orders.
  *
  * @author zygon
+ * 
+ * TODO: heterogeneous data 
  */
-public class Agent<T> implements EventFeed.Handler<T> {
+public class Agent<T> implements Handler<T> {
 
     private final class AgentThread extends Thread {
 
@@ -39,124 +50,164 @@ public class Agent<T> implements EventFeed.Handler<T> {
         @Override
         public void run() {
             while (this.running) {
-                
-                T data = null;
-                
-                try {
-                    data = Agent.this.dataQueue.take();
-                    if (this.running) {
-                        // 1) interpret data
-                        Collection<Message> messages = Agent.this.interpretData(data);
-
-                        // 2) process information
-                        if (!messages.isEmpty()) {
-                            Agent.this.processInformation(messages);
-                        }
-                        
-                        // 3) take actions (if there are any)
-                        Agent.this.processTradeSignals();
-                        
-                        // 4) give feedback to the strategy (if there is any)
-                        Agent.this.processPostTrade();
-                    }
-                } catch (ExchangeException ee) {
-                    if (this.running) {
-                        // TBD: anything else we can do? We'd probably like
-                        // to alarm/alert here.
-                        Agent.this.log.error(null, ee);
-                    }
-                } catch (InterruptedException ie) {
-                    if (this.running) {
-                        Agent.this.log.error(null, ie);
-                    }
+                if (this.running) {
+                    Agent.this.processPostTrade();
+                    try { Thread.sleep (3000); } catch (InterruptedException ignore) {}
                 }
             }
         }
     }
     
-    private final ArrayBlockingQueue<T> dataQueue = new ArrayBlockingQueue<T>(10000); // 10k is arbitrary
-    private final String name;
     private final Logger log;
+    private final String name;
     private final Collection<Interpreter<T>> interpreters;
-    private final Strategy strategy;
-    private TradeBroker broker;
+    private final Collection<Identifier> supportedIndicators;
+    private final TradeGenerator tradeGenerator;
+    private final TradeSummary tradeSummary;
     
+    private TradeBroker broker;
     private AgentThread runner = null;
     private boolean started = false;
-    
-    public Agent(String name, Collection<Interpreter<T>> interpreters, Strategy strategy, TradeBroker broker) {
+    private RawDataWriter<T> dataWriter = null;
+
+    public Agent(String name, 
+                 Collection<Interpreter<T>> interpreters, 
+                 Collection<Identifier> supportedIndicators, 
+                 TradeGenerator tradeGenerator, 
+                 TradeBroker broker) {
         
-        if (name == null || interpreters == null || strategy == null) {
+        if (name == null || interpreters == null || supportedIndicators == null || 
+            tradeGenerator == null) {
             throw new IllegalArgumentException("No null arguments permitted");
         }
         
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
         this.interpreters = interpreters;
-        this.strategy = strategy;
+        this.supportedIndicators = supportedIndicators;
+        this.tradeGenerator = tradeGenerator;
+        this.tradeSummary = new TradeSummary(this.name);
         this.broker = broker;
     }
     
     public TradeSummary getStrategySummary() {
-        return this.strategy.getTradeSummary();
+        return this.tradeSummary;
     }
     
     @Override
-    public void handle(T t) {
-        try {
-            this.dataQueue.put(t);
-        } catch (InterruptedException ie) {
-            this.log.error(null, ie);
+    public void handle(T date) {
+        if (this.started) {
+            if (date != null) {
+
+                // Log the data
+                if (Agent.this.dataWriter != null) {
+                    try {
+                        Agent.this.dataWriter.log(date);
+                    } catch (IOException io) {
+                        if (this.started) {
+                            // TBD: anything else we can do? We'd probably like
+                            // to alarm/alert here.
+                            Agent.this.log.error(null, io);
+                        }
+                    }
+                }
+
+                try {
+                    // 1) interpret data
+                    Collection<Message> messages = Agent.this.interpretData(date);
+
+                    // 2) process information
+                    if (!messages.isEmpty()) {
+                        Agent.this.processInformation(messages);
+                    }
+                } catch (ExchangeException ee) {
+                    if (this.started) {
+                        // TBD: anything else we can do? We'd probably like
+                        // to alarm/alert here.
+                        Agent.this.log.error(null, ee);
+                    }
+                } catch (ExecutionException exece) {
+                    if (this.started) {
+                        // TBD: anything else we can do? We'd probably like
+                        // to alarm/alert here.
+                        Agent.this.log.error(null, exece);
+                    }
+                } catch (InterruptedException ie) {
+                    if (this.started) {
+                        Agent.this.log.error(null, ie);
+                    }
+                }
+
+            } else {
+                this.log.debug("Received null data");
+            }
         }
     }
     
     public void initialize() {
-        this.strategy.start();
         this.start();
     }
     
-    private Collection<Message> interpretData (T t) {
+    private ExecutorService newFixedThreadPool = null;
+    private CompletionService<Message[]> completionService = null;
+    
+    private Collection<Message> interpretData (final T t) throws InterruptedException, ExecutionException {
         Collection<Message> messages = new ArrayList<>();
         
-        // TODO: use CompletionService for async processing
+        int synchronousActions = 0;
+        
+        for (final Interpreter<T> trans : this.interpreters) {
+            
+            completionService.submit(new Callable<Message[]>() {
 
-        for (Interpreter<T> trans : this.interpreters) {
-            Message[] translated = trans.interpret(t);
-            if (translated != null) {
-                messages.addAll(Arrays.asList(translated));
-            }
+                @Override
+                public Message[] call() throws Exception {
+                    return trans.interpret(t);
+                }
+            });
+            
+            synchronousActions ++;
         }
+        
+        for (int i = 0; i < synchronousActions; i++) {
+            Message[] interpretResult = completionService.take().get();
+            if (interpretResult != null && interpretResult.length != 0) {
+                messages.addAll(Arrays.asList(interpretResult));
+            }
+         }
         
         return messages;
     }
     
-    private void processInformation(Collection<Message> messages) {
+    private void processInformation(Collection<Message> messages) throws ExchangeException {
         for (Message msg : messages) {
             Indication indication = (Indication) msg;
-            if (this.strategy.getSupportedIndicators().contains(indication.getId())) {
-                this.strategy.send(msg);
+            
+            if (this.supportedIndicators.contains(indication.getId())) {
+                
+                this.tradeGenerator.notify(msg);
+                
+                Collection<Trade> trades = this.tradeGenerator.getTrades();
+                
+                if (!trades.isEmpty()) {
+                    for (Trade trade : trades) {
+                        this.broker.activate(trade);
+                    }
+                }
+                
             } else {
-                this.log.debug(this.name + " agent unable to process indication: " + indication.getId() + " using strategy " + this.strategy.getName());
+                this.log.debug(this.name + " agent unable to process indication: " + indication.getId());
             }
         }
     }
     
     private void processPostTrade() {
         Collection<TradePostMortem> tradePostMortems = new ArrayList<TradePostMortem>();
-        this.broker.getFinishedTrades(tradePostMortems);
-        if (!tradePostMortems.isEmpty()) {
-            this.strategy.process(tradePostMortems);
-        }
-    }
-    
-    private void processTradeSignals() throws ExchangeException {
-        Collection<Trade> tradeSignals = new ArrayList<Trade>();
-        this.strategy.receive(tradeSignals, 50); // 50 is arbitrary
         
-        if (!tradeSignals.isEmpty()) {
-            for (Trade trade : tradeSignals) {
-                this.broker.activate(trade);
-            }
+        this.broker.getFinishedTrades(tradePostMortems);
+        
+        for (TradePostMortem tpm : tradePostMortems) {
+            this.tradeSummary.add(tpm.getProfit());
         }
     }
     
@@ -174,26 +225,41 @@ public class Agent<T> implements EventFeed.Handler<T> {
         }
         this.broker = broker;
     }
+
+    public void setDataWriter(RawDataWriter<T> dataWriter) {
+        this.dataWriter = dataWriter;
+    }
     
-    public void start() {
+    private void start() {
         if (!this.started) {
+            this.newFixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+            this.completionService = new ExecutorCompletionService<Message[]>(this.newFixedThreadPool);
             this.runner = new AgentThread();
             this.runner.start();
             this.started = true;
         }
     }
     
-    public void stop() {
+    private void stop() {
         if (this.started) {
+            
+            try {
+                this.broker.cancelAll();
+            } catch (ExchangeException ee) {
+                this.log.error(null, ee);
+            }
+            
             this.runner.running = false;
             this.runner.interrupt();
             this.runner = null;
+            this.newFixedThreadPool.shutdown();
+            this.newFixedThreadPool = null;
+            this.completionService = null;
             this.started = false;
         }
     }
     
     public void uninitialize() {
         this.stop();
-        this.strategy.stop();
     }
 }

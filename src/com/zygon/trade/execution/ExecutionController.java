@@ -64,12 +64,12 @@ public final class ExecutionController {
     
     public LimitOrder generateLimitOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency, double price) {
-        return this.binding.getOrderProvider().getLimitOrder(type, tradableAmount, tradableIdentifier, transactionCurrency, price);
+        return this.binding.getOrderProvider().getLimitOrder(id, type, tradableAmount, tradableIdentifier, transactionCurrency, price);
     }
     
     public MarketOrder generateMarketOrder(String id, Order.OrderType type, 
             double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-        return this.binding.getOrderProvider().getMarketOrder(type, tradableAmount, tradableIdentifier, transactionCurrency);
+        return this.binding.getOrderProvider().getMarketOrder(id, type, tradableAmount, tradableIdentifier, transactionCurrency);
     }
 
     public AccountInfo getAccountInfo(String username) throws ExchangeException {

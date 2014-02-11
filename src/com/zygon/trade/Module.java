@@ -11,6 +11,8 @@ import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.parse.JSONSchemaParser;
 import com.zygon.schema.parse.SchemaParser;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +33,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     private final ConfigurationSchema schema; 
     private final Set<String> commands = new HashSet<>();
     private final SchemaRenderer schemaRender = new SchemaRenderer();
+    private final ArrayList<Module> modules = new ArrayList<Module>();
      
     private Module parent = null;
     private Configuration configuration; // is it easier to set a config once
@@ -57,6 +60,13 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
                 this.commands.add(cmdName);
             }
         }
+        
+        // for now lets add whatever modules are given - soon remove the
+        // getModule[] method.
+        Module[] modules = this.getModules();
+        if (modules != null && modules.length != 0) {
+            this.modules.addAll(Arrays.asList(this.getModules()));
+        }
     }    
     
     public Module(String name, Schema schema, Collection<String> supportedCommands) {
@@ -71,6 +81,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         this(name, null);
     }
 
+    /*pkg*/ void add(Module module) {
+        this.modules.add(module);
+    }
+    
     @Override
     public void configure(Configuration configuration) {
         // TODO: inspect properties and take action probably before setting
@@ -81,14 +95,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     /*pkg*/ void doHook() {
         
         this.logger.info("Hooking module {}", this.name);
-        
-        Module[] modules = this.getModules();
-        
-        if (modules != null) {
-            for (Module child : this.getModules()) {
-                child.setParent(this);
-            }
-        }
         
         if (modules != null) {
             for (Module child : this.getModules()) {
@@ -122,6 +128,33 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
                 }
             }
         }
+    }
+    
+    // TODO: only install if required
+    /*pkg*/ void doInstall() {
+        logger.info("Installing " + this.getDisplayname());
+        boolean installed = false;
+        
+        try {
+            this.install();
+            installed = true;
+        } catch (Throwable th) {
+            this.logger.error("Exception occurred while installing module " + this.name, th);
+            th.printStackTrace();
+        }
+        
+        // TODO: persist meta information
+        
+        if (installed) {
+            Module[] modules = this.getModules();
+            if (modules != null) {
+                for (Module child : this.getModules()) {
+                    child.doInstall();
+                }
+            }
+        }
+        
+        logger.info("Installation of " + this.getDisplayname() + " complete");
     }
     
     /*pkg*/ void doUnHook() {
@@ -190,7 +223,20 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return this.getModule(root, id);
     }
     
-    public abstract Module[] getModules();
+    protected <T extends Module> Collection<T> getChildrenModules() {
+        Collection<T> modules = new ArrayList<T>();
+        
+        for (Module mod : this.getModules()) {
+            T module = (T) mod;
+            modules.add(module);
+        }
+        
+        return modules;
+    }
+    
+    public Module[] getModules() {
+        return this.modules.toArray(new Module[this.modules.size()]);
+    }
     
     @Override
     public final String getDisplayname() {
@@ -237,7 +283,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         } else if (request.isStatusRequest()) {
             StringBuilder sb = new StringBuilder();
             this.writeStatus(sb);
-            sb.append('\n');
             output = sb.toString();
         }
         
@@ -279,16 +324,22 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
 
     @Override
     public void install() {
-        logger.info("Installing " + this.getDisplayname());
         
-        // TODO: persist meta information
-        
-        logger.info("Installation of " + this.getDisplayname() + " complete");
     }
 
     @Override
     public CommandResult process(Command command) {
         return CommandResult.SUCCESS;
+    }
+    
+    /*pkg*/ void setParents () {
+        Module[] modules = this.getModules();
+        
+        if (modules != null) {
+            for (Module child : this.getModules()) {
+                child.setParent(this);
+            }
+        }
     }
     
     /*pkg*/ void setParent(Module parent) {

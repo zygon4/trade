@@ -13,6 +13,6 @@ import com.xeiam.xchange.dto.trade.MarketOrder;
  * @author zygon
  */
 public interface OrderProvider {
-    public MarketOrder getMarketOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency);
-    public LimitOrder getLimitOrder(Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice);
+    public MarketOrder getMarketOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency);
+    public LimitOrder getLimitOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice);
 }

@@ -1,7 +1,10 @@
 
 package com.zygon.trade.agent;
 
+import com.zygon.trade.market.util.Duration;
 import com.zygon.trade.market.util.MovingAverage;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
 
@@ -92,14 +95,14 @@ public class AnalysisAgent {
             xVals[i] = i+1;
         }
         
-        MovingAverage ma = new MovingAverage(window);
+        MovingAverage ma = new MovingAverage(Duration._1, TimeUnit.HOURS);
         
         double totalError = 0.0;
         
         for (int i = 0; i < VALS.length; i++) {
             
             double d = VALS[i];
-            ma.add(d);
+            ma.add(d, new Date());
             
             if (ma.getAvailableValues() == window) {
                 interp = new PolynomialFunctionLagrangeForm(xVals, ma.getValues());

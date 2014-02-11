@@ -27,13 +27,16 @@ public class VolumeObjective {
         return this.value;
     }
 
-    public double getVolume(double account) {
+    public double getVolume(double account, double currentPrice) {
+        
+        double capital = 0.0;
+        
         switch (this.modifier) {
             case PERCENT:
-                return account * (this.value / 100);
+                capital = account * (this.value / 100);
         }
         
-        throw new UnsupportedOperationException();
+        return capital / currentPrice;
     }
     
     @Override
