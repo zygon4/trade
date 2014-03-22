@@ -24,7 +24,7 @@
             },
             "minItems": 1,
             "uniqueItems": true
-        }
+}
     },
     "required": ["id", "name", "price"]
 }

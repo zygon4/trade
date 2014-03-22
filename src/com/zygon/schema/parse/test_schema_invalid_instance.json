@@ -1,0 +1,6 @@
+{
+    "id": 2,
+    "name": "test schema instance",
+    "price": "11.50",
+    "tags": ["tag1", "tag1"]
+}
