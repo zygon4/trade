@@ -22,17 +22,17 @@ public class WebConsole extends Module {
     @Override
     public void configure(Configuration configuration) {
         super.configure(configuration);
-        int port = Integer.parseInt(configuration.getValue("port"));
+        int prt = Integer.parseInt(configuration.getValue("port"));
         
         if (this.server == null) {
-            this.port = port;
+            this.port = prt;
             this.server = new JettyServer(this.port);
         } else {
-            if (port != this.port) {
+            if (prt != this.port) {
                 this.server.stop();
-                this.server = new JettyServer(port);
+                this.server = new JettyServer(prt);
                 this.server.start();
-                this.port = port;
+                this.port = prt;
             }
         }
     }
