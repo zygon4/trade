@@ -5,14 +5,13 @@
 package com.zygon.trade.market.model.indication;
 
 import com.zygon.trade.market.util.Classification;
-import com.zygon.trade.market.Message;
 import java.util.Date;
 
 /**
  *
  * @author zygon
  */
-public class Indication extends Message {
+public class Indication {
     
     private final Identifier id;
     private final String tradableIdentifier; // USD, BTC, etc

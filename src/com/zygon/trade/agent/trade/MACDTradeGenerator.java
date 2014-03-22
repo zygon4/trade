@@ -27,10 +27,10 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
 //    private static final double PROFIT_MODIFIER         = 7.5;
 //    private static final double STOP_LOSS_MODIFER       = 0.5;
     
-    private static final double PROFIT_MODIFIER         = 1600;
+    private static final double PROFIT_MODIFIER         = 2000;
     private static final double STOP_LOSS_MODIFER       = 80;
     
-    private static final double VOLUME_MODIFER          = 2;
+    private static final double VOLUME_MODIFER          = 25;
     
     public MACDTradeGenerator() {
     }

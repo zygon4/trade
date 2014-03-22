@@ -4,14 +4,13 @@
 
 package com.zygon.trade.market.data.interpret;
 
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.numeric.RSI;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
+import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.util.Type;
-import java.util.Date;
 
 /**
  *
@@ -40,7 +39,7 @@ public class RSIInterpreter extends TickerInterpreter {
     private double lastValue = -1.0;
     
     @Override
-    public Message[] interpret(Ticker data) {
+    public Indication[] interpret(Ticker data) {
         
         double price = TickerUtil.getMidPrice(data);
         
@@ -69,7 +68,7 @@ public class RSIInterpreter extends TickerInterpreter {
 
                 double rsi = 100 - (100 / (1 + rs));
 
-                return new Message[] {
+                return new Indication[] {
                     new RSI(data.getTradableIdentifier(), data.getTimestamp().getTime(), rsi)
                 };
             }

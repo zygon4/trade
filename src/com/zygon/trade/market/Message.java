@@ -10,6 +10,7 @@ package com.zygon.trade.market;
  * 
  * This is just for typing right now, remove asap.
  */
+@Deprecated
 public class Message {
 
 }

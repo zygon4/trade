@@ -3,7 +3,6 @@ package com.zygon.trade.agent.trade;
 
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.execution.MarketConditions;
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.model.indication.Indication;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +27,7 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
     }
     
     @Override
-    public void notify(Message message) {
+    public void notify(Indication message) {
         Indication indication = (Indication) message;
         
         this.marketConditions.putIndication(indication, null);

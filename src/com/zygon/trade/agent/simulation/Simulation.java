@@ -145,7 +145,7 @@ public class Simulation<T> {
         TradeSummary totalSummary = new TradeSummary("total");
         
         try {
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 10; i++) {
                 
                 Collection<Interpreter<Ticker>> interpreters = createInterpretters();
                 

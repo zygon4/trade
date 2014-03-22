@@ -10,6 +10,7 @@ import com.zygon.trade.agent.trade.MACDTradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerWriter;
+import com.zygon.trade.market.data.interpret.RSIInterpreter;
 import com.zygon.trade.market.data.interpret.TickerMACD;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.Identifier;
@@ -43,10 +44,12 @@ public class Agent extends Module {
     private static Collection<Interpreter<Ticker>> getInterpreters() {
         Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
         
-        Aggregation leading = new Aggregation(Type.AVG, Duration._15, TimeUnit.MINUTES);
-        Aggregation lagging = new Aggregation(Type.AVG, Duration._60, TimeUnit.MINUTES);
-        Aggregation macd = new Aggregation(Type.AVG, Duration._5, TimeUnit.MINUTES);
+        Aggregation leading = new Aggregation(Type.AVG, Duration._4, TimeUnit.HOURS);
+        Aggregation lagging = new Aggregation(Type.AVG, Duration._24, TimeUnit.HOURS);
+        Aggregation macd = new Aggregation(Type.AVG, Duration._1, TimeUnit.HOURS);
         interpreters.add(new TickerMACD(leading, lagging, macd));
+        
+        interpreters.add(new RSIInterpreter(new Aggregation(Type.AVG, Duration._4, TimeUnit.HOURS)));
         
         return interpreters;
     }

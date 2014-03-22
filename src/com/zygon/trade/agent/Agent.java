@@ -4,7 +4,6 @@ package com.zygon.trade.agent;
 import com.zygon.data.Handler;
 import com.zygon.data.RawDataWriter;
 import com.zygon.trade.execution.ExchangeException;
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.data.Interpreter;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
@@ -68,6 +67,7 @@ public class Agent<T> implements Handler<T> {
     private TradeBroker broker;
     private AgentThread runner = null;
     private boolean started = false;
+    // This will be moving soon but it was insane to be here
     private RawDataWriter<T> dataWriter = null;
 
     public Agent(String name, 
@@ -114,7 +114,7 @@ public class Agent<T> implements Handler<T> {
 
                 try {
                     // 1) interpret data
-                    Collection<Message> messages = Agent.this.interpretData(date);
+                    Collection<Indication> messages = Agent.this.interpretData(date);
 
                     // 2) process information
                     if (!messages.isEmpty()) {
@@ -149,19 +149,19 @@ public class Agent<T> implements Handler<T> {
     }
     
     private ExecutorService newFixedThreadPool = null;
-    private CompletionService<Message[]> completionService = null;
+    private CompletionService<Indication[]> completionService = null;
     
-    private Collection<Message> interpretData (final T t) throws InterruptedException, ExecutionException {
-        Collection<Message> messages = new ArrayList<>();
+    private Collection<Indication> interpretData (final T t) throws InterruptedException, ExecutionException {
+        Collection<Indication> messages = new ArrayList<>();
         
         int synchronousActions = 0;
         
         for (final Interpreter<T> trans : this.interpreters) {
             
-            completionService.submit(new Callable<Message[]>() {
+            completionService.submit(new Callable<Indication[]>() {
 
                 @Override
-                public Message[] call() throws Exception {
+                public Indication[] call() throws Exception {
                     return trans.interpret(t);
                 }
             });
@@ -170,7 +170,7 @@ public class Agent<T> implements Handler<T> {
         }
         
         for (int i = 0; i < synchronousActions; i++) {
-            Message[] interpretResult = completionService.take().get();
+            Indication[] interpretResult = completionService.take().get();
             if (interpretResult != null && interpretResult.length != 0) {
                 messages.addAll(Arrays.asList(interpretResult));
             }
@@ -179,11 +179,10 @@ public class Agent<T> implements Handler<T> {
         return messages;
     }
     
-    private void processInformation(Collection<Message> messages) throws ExchangeException {
-        for (Message msg : messages) {
-            Indication indication = (Indication) msg;
+    private void processInformation(Collection<Indication> messages) throws ExchangeException {
+        for (Indication msg : messages) {
             
-            if (this.supportedIndicators.contains(indication.getId())) {
+            if (this.supportedIndicators.contains(msg.getId())) {
                 
                 this.tradeGenerator.notify(msg);
                 
@@ -196,7 +195,7 @@ public class Agent<T> implements Handler<T> {
                 }
                 
             } else {
-                this.log.debug(this.name + " agent unable to process indication: " + indication.getId());
+                this.log.debug(this.name + " agent unable to process indication: " + msg.getId());
             }
         }
     }
@@ -233,7 +232,7 @@ public class Agent<T> implements Handler<T> {
     private void start() {
         if (!this.started) {
             this.newFixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
-            this.completionService = new ExecutorCompletionService<Message[]>(this.newFixedThreadPool);
+            this.completionService = new ExecutorCompletionService<Indication[]>(this.newFixedThreadPool);
             this.runner = new AgentThread();
             this.runner.start();
             this.started = true;

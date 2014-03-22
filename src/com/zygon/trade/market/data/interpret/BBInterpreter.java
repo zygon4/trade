@@ -4,12 +4,12 @@
 
 package com.zygon.trade.market.data.interpret;
 
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.market.BollingerBand;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
+import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.util.Type;
 
 /**
@@ -32,7 +32,7 @@ public class BBInterpreter extends TickerInterpreter {
     }
     
     @Override
-    public Message[] interpret(Ticker data) {
+    public Indication[] interpret(Ticker data) {
         
         double price = TickerUtil.getMidPrice(data);
         
@@ -42,8 +42,8 @@ public class BBInterpreter extends TickerInterpreter {
         double std = this.ema.getStd();
         
         if (!Double.isNaN(ma) && !Double.isNaN(std)) {
-            Message bb = new BollingerBand(data.getTradableIdentifier(), data.getTimestamp().getTime(), ma, std, this.kstd, price);
-            return new Message[]{bb};
+            Indication bb = new BollingerBand(data.getTradableIdentifier(), data.getTimestamp().getTime(), ma, std, this.kstd, price);
+            return new Indication[]{bb};
         } else {
             return null;
         }

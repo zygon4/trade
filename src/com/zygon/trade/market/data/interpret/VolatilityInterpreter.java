@@ -4,12 +4,12 @@
 
 package com.zygon.trade.market.data.interpret;
 
-import com.zygon.trade.market.Message;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.numeric.Volatility;
 import com.zygon.trade.market.util.MovingAverage;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
+import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.util.Type;
 
 /**
@@ -32,14 +32,14 @@ public class VolatilityInterpreter extends TickerInterpreter {
     }
     
     @Override
-    public Message[] interpret(Ticker data) {
+    public Indication[] interpret(Ticker data) {
         this.ma.add(TickerUtil.getMidPrice(data), data.getTimestamp());
         
         double high = this.ma.getHigh();
         double low = this.ma.getLow();
         double volatility = high - low;
         
-        return new Message[] {
+        return new Indication[] {
             new Volatility(data.getTradableIdentifier(), data.getTimestamp().getTime(), volatility)
         };
     }
