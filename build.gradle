@@ -40,17 +40,6 @@ dependencies {
     runtime group: 'org.apache.derby', name: 'derbytools', version: '10.10.1.1'
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'src'
-        }
-    }
-}
-
 war {
     from 'src/rootContent' // adds a file-set to the root of the archive
 //    webInf { from 'src/additionalWebInf' } // adds a file-set to the WEB-INF dir.
