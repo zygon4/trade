@@ -14,7 +14,7 @@ public class WebServer {
     }
 
     protected void error(String msg, Throwable th) {
-        // TBD:
+        // TODO: log
     }
     
     public final int getPort() {
@@ -22,10 +22,10 @@ public class WebServer {
     }
     
     public void start() {
-        
+        // TODO: log
     }
     
     public void stop() {
-        
+        // TODO: log
     }
 }
