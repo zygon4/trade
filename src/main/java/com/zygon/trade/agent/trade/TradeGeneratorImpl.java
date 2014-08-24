@@ -1,10 +1,10 @@
 
 package com.zygon.trade.agent.trade;
 
+import com.google.common.collect.Lists;
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.market.model.indication.Indication;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -32,7 +32,7 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
         
         this.marketConditions.putIndication(indication, null);
         
-        Collection<Indication> additionalIndications = new ArrayList<Indication>();
+        Collection<Indication> additionalIndications = Lists.newArrayList();
         
         this.getAdditionalIndications(additionalIndications);
         

@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent.trade;
 
+import com.google.common.collect.Lists;
 import com.xeiam.xchange.currency.Currencies;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.market.model.indication.market.Direction;
@@ -13,7 +14,6 @@ import com.zygon.trade.trade.TradeSignal;
 import com.zygon.trade.trade.TradeSignal.Decision;
 import com.zygon.trade.trade.TradeUrgency;
 import com.zygon.trade.trade.VolumeObjective;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -102,7 +102,7 @@ public class MACDTradeGenerator extends TradeGeneratorImpl {
     @Override
     public Collection<Trade> getTrades() {
          
-        Collection<Trade> trades = new ArrayList<>();
+        Collection<Trade> trades = Lists.newArrayList();
         
         TradeSignal tradeSignal = createTradeSignal();
         if (tradeSignal != null) {

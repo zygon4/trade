@@ -1,9 +1,9 @@
 
 package com.zygon.trade.market.data;
 
+import com.google.common.collect.Lists;
 import com.zygon.data.Handler;
 import com.zygon.trade.market.model.indication.Indication;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -55,7 +55,7 @@ public class DataSource<T> implements Handler<T> {
     }
     
     private Collection<Indication> interpretData (final T t) throws InterruptedException, ExecutionException {
-        Collection<Indication> messages = new ArrayList<>();
+        Collection<Indication> messages = Lists.newArrayList();
         
         int synchronousActions = 0;
         

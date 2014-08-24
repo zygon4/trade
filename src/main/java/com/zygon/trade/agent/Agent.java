@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent;
 
+import com.google.common.collect.Lists;
 import com.zygon.data.Handler;
 import com.zygon.data.RawDataWriter;
 import com.zygon.trade.execution.ExchangeException;
@@ -13,7 +14,6 @@ import com.zygon.trade.trade.TradeBroker;
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.trade.TradeSummary;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -152,7 +152,7 @@ public class Agent<T> implements Handler<T> {
     private CompletionService<Indication[]> completionService = null;
     
     private Collection<Indication> interpretData (final T t) throws InterruptedException, ExecutionException {
-        Collection<Indication> messages = new ArrayList<>();
+        Collection<Indication> messages = Lists.newArrayList();
         
         int synchronousActions = 0;
         
@@ -201,7 +201,7 @@ public class Agent<T> implements Handler<T> {
     }
     
     private void processPostTrade() {
-        Collection<TradePostMortem> tradePostMortems = new ArrayList<TradePostMortem>();
+        Collection<TradePostMortem> tradePostMortems = Lists.newArrayList();
         
         this.broker.getFinishedTrades(tradePostMortems);
         

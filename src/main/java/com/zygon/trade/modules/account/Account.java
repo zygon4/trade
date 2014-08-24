@@ -1,6 +1,7 @@
 
 package com.zygon.trade.modules.account;
 
+import com.google.common.collect.Lists;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Configuration;
@@ -8,7 +9,6 @@ import com.zygon.trade.Module;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
-import java.util.ArrayList;
 import java.util.Collection;
 import org.joda.money.CurrencyUnit;
 
@@ -19,7 +19,7 @@ import org.joda.money.CurrencyUnit;
 public class Account extends Module {
 
     private static Collection<String> getSupportedCommands() {
-        Collection<String> supportedCommands = new ArrayList<String>();
+        Collection<String> supportedCommands = Lists.newArrayList();
         
         // TBD
         

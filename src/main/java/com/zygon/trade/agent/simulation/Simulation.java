@@ -1,6 +1,7 @@
 
 package com.zygon.trade.agent.simulation;
 
+import com.google.common.collect.Lists;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.data.Context;
 import com.zygon.data.Handler;
@@ -23,7 +24,6 @@ import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.trade.TradeSummary;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -114,7 +114,7 @@ public class Simulation<T> {
     }
     
     private static Collection<Interpreter<Ticker>> createInterpretters() {
-        Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
+        Collection<Interpreter<Ticker>> interpreters = Lists.newArrayList();
         
         MovingAverage leading = new MovingAverage(Duration._12, TimeUnit.DAYS, new MovingAverage.ExponentialValueFn(), 2);
         MovingAverage lagging = new MovingAverage(Duration._26, TimeUnit.DAYS, new MovingAverage.ExponentialValueFn(), 2);
@@ -155,7 +155,7 @@ public class Simulation<T> {
                 };
                 
                 
-                Simulation<Ticker> simulation = new Simulation<Ticker>(dataSet, interpreters, new ArrayList<Identifier>(Arrays.asList(RSI.ID)), new RSITrader(), wallets);
+                Simulation<Ticker> simulation = new Simulation<Ticker>(dataSet, interpreters, Lists.newArrayList(Arrays.asList(RSI.ID)), new RSITrader(), wallets);
                 TradeSummary summary = simulation.run();
                 totalSummary.add(summary);
                 System.out.println(i+1 + ":" + summary + " net: " + totalSummary.getNetProfit());

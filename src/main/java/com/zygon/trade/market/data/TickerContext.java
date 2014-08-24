@@ -1,8 +1,8 @@
 
 package com.zygon.trade.market.data;
 
+import com.google.common.collect.Lists;
 import com.zygon.trade.market.data.interpret.TickerPriceInterpreter;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Collection;
 public class TickerContext extends DataSource<Ticker> {
     
     private static Collection<Interpreter<Ticker>> createDefaultInterpreters() {
-        Collection<Interpreter<Ticker>> interpreters = new ArrayList<Interpreter<Ticker>>();
+        Collection<Interpreter<Ticker>> interpreters = Lists.newArrayList();
         interpreters.add(new TickerPriceInterpreter(true));
         // TODO: spread, etc
         return interpreters;

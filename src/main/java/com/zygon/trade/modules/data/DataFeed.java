@@ -1,6 +1,7 @@
 
 package com.zygon.trade.modules.data;
 
+import com.google.common.collect.Lists;
 import com.zygon.data.Context;
 import com.zygon.data.EventFeed;
 import com.zygon.data.Handler;
@@ -10,7 +11,6 @@ import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -23,7 +23,7 @@ public class DataFeed<T> extends Module {
     private static final Schema SCHEMA = new Schema("data_feed.json");
     
     private final FeedProvider feedProviderFactory = new FeedProviderFactory();
-    private final Collection<Handler<T>> feedRegistrations = new ArrayList<Handler<T>>();
+    private final Collection<Handler<T>> feedRegistrations = Lists.newArrayList();
     private EventFeed<T> dataFeed = null;
     
     private String clazz = null;

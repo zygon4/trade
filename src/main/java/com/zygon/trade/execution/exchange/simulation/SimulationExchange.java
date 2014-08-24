@@ -4,6 +4,8 @@
 
 package com.zygon.trade.execution.exchange.simulation;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
@@ -30,7 +32,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -98,7 +99,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
     public static final class SimulationAccountController implements AccountController {
 
         private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
-        private Map<CurrencyUnit, WalletInfo> walletsByCurrency = new HashMap<>();
+        private Map<CurrencyUnit, WalletInfo> walletsByCurrency = Maps.newHashMap();
         private final String user;
         private double fees = 0.0;
         
@@ -180,7 +181,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
     
     public static final class SimulationOrderBookProvider implements OrderBookProvider {
 
-        private final List<LimitOrder> orders = new ArrayList<>();
+        private final List<LimitOrder> orders = Lists.newArrayList();
         
         @Override
         public void getOpenOrders(List<LimitOrder> orders) {
