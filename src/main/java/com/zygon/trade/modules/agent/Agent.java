@@ -1,6 +1,7 @@
 
 package com.zygon.trade.modules.agent;
 
+import com.google.common.collect.Lists;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Kernel;
 import com.zygon.trade.Module;
@@ -13,7 +14,6 @@ import com.zygon.trade.market.data.TickerWriter;
 import com.zygon.trade.market.data.interpret.RSIInterpreter;
 import com.zygon.trade.market.data.interpret.TickerMACD;
 import com.zygon.trade.market.util.Aggregation;
-import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
 import com.zygon.trade.market.util.Duration;
@@ -22,7 +22,6 @@ import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.Broker;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +41,7 @@ public class Agent extends Module {
     // that I'm using now.  So, don't bother with hard lifting until we have
     // a better goal in mind.
     private static Collection<Interpreter<Ticker>> getInterpreters() {
-        Collection<Interpreter<Ticker>> interpreters = new ArrayList<>();
+        Collection<Interpreter<Ticker>> interpreters = Lists.newArrayList();
         
         Aggregation leading = new Aggregation(Type.AVG, Duration._4, TimeUnit.HOURS);
         Aggregation lagging = new Aggregation(Type.AVG, Duration._24, TimeUnit.HOURS);
@@ -63,7 +62,7 @@ public class Agent extends Module {
         AgentBuilder<Ticker> builder = new AgentBuilder<Ticker>();
         builder.setName(name+"_agent");
         builder.setInterpreters(getInterpreters());
-        builder.setSupportedIndicators(new ArrayList<Identifier>(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
+        builder.setSupportedIndicators(Lists.newArrayList(Arrays.asList(MACDZeroCross.ID, MACDSignalCross.ID)));
         if (writer != null) {
             builder.setDataWriter(writer);
         }
