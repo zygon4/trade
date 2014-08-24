@@ -4,6 +4,8 @@
 
 package com.zygon.trade.trade;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.Order.OrderType;
 import com.xeiam.xchange.dto.account.AccountInfo;
@@ -12,9 +14,7 @@ import com.zygon.trade.execution.OrderProvider;
 import static com.zygon.trade.trade.TradeType.LONG;
 import static com.zygon.trade.trade.TradeType.SHORT;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.joda.money.BigMoney;
@@ -39,7 +39,7 @@ public class TradeMonitor {
     /*pkg*/ static class TradeState {
         private final TradeSignal signal;
         private final double requiredFillVolume; // on both sides of the trade
-        private final Map<OrderType,Map<Double,Double>> fillVolumeByPriceAndType = new HashMap<OrderType,Map<Double,Double>>();
+        private final Map<OrderType,Map<Double,Double>> fillVolumeByPriceAndType = Maps.newHashMap();
         
         private BigDecimal openingPrice = null;
         private BigDecimal closingPrice = null;
@@ -119,7 +119,7 @@ public class TradeMonitor {
             Map<Double,Double> fillVolByPrice = this.fillVolumeByPriceAndType.get(orderType);
             
             if (fillVolByPrice == null) {
-                fillVolByPrice = new HashMap<Double,Double>();
+                fillVolByPrice = Maps.newHashMap();
                 this.fillVolumeByPriceAndType.put(orderType, fillVolByPrice);
             }
             
@@ -224,8 +224,8 @@ public class TradeMonitor {
     private final Trade trade;
     private final AccountInfo accountInfo;
     private final OrderProvider orderProvider;
-    private final Map<String,TradeSignal> signalsByOrderId = new HashMap<String,TradeSignal>();
-    private final Map<TradeSignal,TradeState> stateBySignal = new HashMap<TradeSignal,TradeState>();
+    private final Map<String,TradeSignal> signalsByOrderId = Maps.newHashMap();
+    private final Map<TradeSignal,TradeState> stateBySignal = Maps.newHashMap();
     
     private long startTime = 0;
     private Signal entryReason;
@@ -244,7 +244,7 @@ public class TradeMonitor {
             throw new IllegalStateException("closed");
         }
         
-        Collection<Order> orders = new ArrayList<Order>();
+        Collection<Order> orders = Lists.newArrayList();
         
         for (Entry<TradeSignal, TradeState> entry : this.stateBySignal.entrySet()) {
             TradeSignal signal = entry.getKey();
@@ -300,7 +300,7 @@ public class TradeMonitor {
         this.tradeId = tradeId;
         this.enterPrice = price;
         
-        Collection<Order> orders = new ArrayList<Order>();
+        Collection<Order> orders = Lists.newArrayList();
         
         for (TradeSignal signal : this.trade.getTradeSignals()) {
             
@@ -377,7 +377,7 @@ public class TradeMonitor {
             throw new IllegalStateException("closed");
         }
         
-        Collection<Order> orders = new ArrayList<Order>();
+        Collection<Order> orders = Lists.newArrayList();
         
         for (Entry<TradeSignal, TradeState> entry : this.stateBySignal.entrySet()) {
             TradeSignal signal = entry.getKey();

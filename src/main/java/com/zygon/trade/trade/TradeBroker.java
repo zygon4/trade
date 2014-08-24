@@ -1,6 +1,8 @@
 
 package com.zygon.trade.trade;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.zygon.trade.execution.ExchangeException;
@@ -13,7 +15,6 @@ import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -47,9 +48,9 @@ public class TradeBroker implements ExchangeEventListener {
         }
     }
     
-    private final ArrayList<TradePostMortem> finishedTrades = new ArrayList<TradePostMortem>();
+    private final ArrayList<TradePostMortem> finishedTrades = Lists.newArrayList();
     private final Logger log;
-    private final Map<String, TradeMonitor> tradeMonitorsByTradeId = new HashMap<String, TradeMonitor>();
+    private final Map<String, TradeMonitor> tradeMonitorsByTradeId = Maps.newHashMap();
     private final String accountId;
     private final Exchange exchange;
     private final TradeSummary tradeSummary = new TradeSummary();
