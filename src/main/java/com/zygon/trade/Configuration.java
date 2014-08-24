@@ -1,8 +1,8 @@
 
 package com.zygon.trade;
 
+import com.google.common.collect.Maps;
 import com.zygon.schema.ConfigurationSchema;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,8 +14,8 @@ public class Configuration {
     // TBD: this is fucked now - need to rethink considering
     //      new configuration schema.
     
-    private final Map<String, Property> propertiesByName = new HashMap<>();
-    private final Map<String, String> valuesByName = new HashMap<>();
+    private final Map<String, Property> propertiesByName = Maps.newHashMap();
+    private final Map<String, String> valuesByName = Maps.newHashMap();
     
     private final ConfigurationSchema schema;
 

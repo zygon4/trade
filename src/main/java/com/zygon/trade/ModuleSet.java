@@ -1,12 +1,11 @@
 
 package com.zygon.trade;
 
+import com.google.common.collect.Maps;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
  * 
@@ -14,9 +13,9 @@ import java.util.TreeMap;
  */
 /*pkg*/ class ModuleSet {
 
-    private final Map<Class<? extends Module>, Module> parentByChildClass = new HashMap<Class<? extends Module>, Module>();
-    private final Map<String, Module> modulesById = new HashMap<>();
-    private final Map<String, Module> topLevelModulesById = new TreeMap<>();
+    private final Map<Class<? extends Module>, Module> parentByChildClass = Maps.newHashMap();
+    private final Map<String, Module> modulesById = Maps.newHashMap();
+    private final Map<String, Module> topLevelModulesById = Maps.newTreeMap();
     private final InstallableStorage installableStorage;
 
     public ModuleSet(InstallableStorage installableStorage) {
