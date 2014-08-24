@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import com.google.common.collect.Lists;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;
 import com.zygon.command.Command;
@@ -11,10 +12,10 @@ import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.parse.JSONSchemaParser;
 import com.zygon.schema.parse.SchemaParser;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     private final ConfigurationSchema schema; 
     private final Set<String> commands = new HashSet<>();
     private final SchemaRenderer schemaRender = new SchemaRenderer();
-    private final ArrayList<Module> modules = new ArrayList<Module>();
+    private final List<Module> modules = Lists.newArrayList();
      
     private Module parent = null;
     private Configuration configuration; // is it easier to set a config once
@@ -224,7 +225,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
     
     protected <T extends Module> Collection<T> getChildrenModules() {
-        Collection<T> modules = new ArrayList<T>();
+        Collection<T> modules = Lists.newArrayList();
         
         for (Module mod : this.getModules()) {
             T module = (T) mod;
