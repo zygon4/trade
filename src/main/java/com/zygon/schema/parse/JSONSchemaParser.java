@@ -1,18 +1,18 @@
 
 package com.zygon.schema.parse;
 
-import com.zygon.schema.Type;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.zygon.schema.ArraySchemaElement;
+import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.IntegerSchemaElement;
 import com.zygon.schema.NumericSchemaElement;
 import com.zygon.schema.PropertiesSchemaElement;
-import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.SchemaElement;
 import com.zygon.schema.StringElement;
+import com.zygon.schema.Type;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +131,7 @@ public class JSONSchemaParser implements SchemaParser {
         SchemaElement[] elements = null;
         
         if (props.containsKey(Keyword.PROPERTIES.getVal())) {
-            List<SchemaElement> elems = new ArrayList<>();
+            List<SchemaElement> elems = Lists.newArrayList();
             Map<String, Object> properties = (Map<String, Object>) props.get(Keyword.PROPERTIES.getVal());
             
             for (String key : properties.keySet()) {
@@ -247,7 +247,7 @@ public class JSONSchemaParser implements SchemaParser {
     @Override
     public ConfigurationSchema parse(String schemaResourceName, InputStream is) throws IOException {
         
-        HashMap<String, Object> props = (HashMap<String,Object>) new ObjectMapper().readValue(is, HashMap.class);
+        Map<String, Object> props = (Map<String,Object>) new ObjectMapper().readValue(is, HashMap.class);
         
         String schema = (String) props.get(Keyword.SCHEMA.getVal());
         SchemaElement element = parse(props);
