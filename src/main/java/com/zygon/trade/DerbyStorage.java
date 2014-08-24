@@ -1,13 +1,6 @@
 package com.zygon.trade;
 
-import com.zygon.trade.modules.account.AccountModule;
-import com.zygon.trade.modules.agent.AgentModule;
-import com.zygon.trade.modules.ui.CLIModule;
-import com.zygon.trade.modules.data.DataModule;
-import com.zygon.trade.modules.execution.broker.BrokerModule;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +17,6 @@ public class DerbyStorage implements InstallableStorage {
     
     private static final String TABLE_NAME = "install";
     private static final String SCHEMA = "(id int)";
-    
-    private final DBUtil dbUtil = new DBUtil();
     private final Connection con;
     private boolean installed = false;
 
@@ -37,8 +28,8 @@ public class DerbyStorage implements InstallableStorage {
         
         if (!this.installed) {
             try {
-                if (!this.tableExists(con, TABLE_NAME)) {
-                    this.dbUtil.createTable(con, TABLE_NAME, SCHEMA);
+                if (!DBUtil.tableExists(con, TABLE_NAME)) {
+                    DBUtil.createTable(con, TABLE_NAME, SCHEMA);
                 }
             } catch (SQLException sqe) {
                 // log/do something better
@@ -73,19 +64,6 @@ public class DerbyStorage implements InstallableStorage {
        this.metadataById.put(id, metadata);
     }
     
-    private boolean tableExists(Connection con, String tableName) throws SQLException {
-
-        boolean tableExists = false;
-
-        DatabaseMetaData metaData = con.getMetaData();
-        ResultSet resultSet = metaData.getTables(null, null, tableName, null);
-
-        if (resultSet != null) {
-            tableExists = true;
-        }
-        
-        return tableExists;
-    }
     
 //    public static void main(String[] args) throws Exception {
 //        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
