@@ -8,16 +8,22 @@ import com.zygon.trade.Response;
  *
  * @author zygon
  */
-public class Footer implements Component {
+public class Text extends StyledComponent {
 
     private final String content;
-
-    public Footer(String content) {
+    
+    public Text(Styling style, String content) {
+        super(style);
+        
         this.content = content;
+    }
+
+    public Text(String content) {
+        this (null, content);
     }
     
     @Override
     public Response render(Request request) {
-        return new Response(WebUtil.writeTag(Tags.FOOTER, this.content));
+        return new Response(WebUtil.writeTag(Tags.SAMP, this.content));
     }
 }

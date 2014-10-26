@@ -18,6 +18,6 @@ public class Header implements Component {
     
     @Override
     public Response render(Request request) {
-        return new Response(WebUtil.writeTag("header", WebUtil.writeTag("h1", this.header)));
+        return new Response(WebUtil.writeTag(Tags.H1, this.header));
     }
 }
