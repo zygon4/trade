@@ -7,5 +7,5 @@
 *.ear
 /build/
 /.gradle/
-/src/com/zygon/trade/Main.java
+/src/main/java/com/zygon/trade/Main.java
 lib/
