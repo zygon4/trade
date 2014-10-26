@@ -76,7 +76,7 @@ public class Agent extends Module {
     private com.zygon.trade.agent.Agent agent = null;
     
     public Agent(String name) {
-        super (name); // TODO: schema
+        super (name, SCHEMA); // TODO: schema
     }
     
     @Override
