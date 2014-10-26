@@ -26,16 +26,20 @@ public abstract class ParentModule extends Module {
         this.childClazz = childClazz;
         this.logger = LoggerFactory.getLogger(name);
         
-        Module instance = null;
+        Configurable instance = null;
         
         try {
-            instance = (Module) this.childClazz.getConstructor(String.class).newInstance("foo");
+            instance = (Configurable) this.childClazz.getConstructor(String.class).newInstance("foo");
         } catch (Exception e) {
             logger.error(null, e);
             throw new RuntimeException();
         }
         
         this.childSchema = instance.getSchema();
+        
+        if (childSchema == null) {
+            throw new IllegalStateException("Child class " + this.childClazz + " must provide a schema");
+        }
     }
 
     public ParentModule(String name, Schema schema, Class<? extends Module> childClazz) {

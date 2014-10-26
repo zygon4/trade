@@ -88,8 +88,9 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     @Override
     public void configure(Configuration configuration) {
-        // TODO: inspect properties and take action probably before setting
-        // the in memory config
+        // TODO: inspect properties and take action probably before setting the in memory config.  
+        // TODO: Consider making a protected "doConfiguration" to enforce proper usage by children classes.
+        // TODO: Check if the configuration name and (possibly) version matches our own.
         this.configuration = configuration;
     }
     
