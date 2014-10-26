@@ -6,12 +6,12 @@ package com.zygon.trade.ui;
 
 import asg.cliche.Shell;
 import asg.cliche.ShellFactory;
+import com.google.common.collect.Lists;
 import com.zygon.trade.ConfigurationCommandProcessor;
 import com.zygon.trade.ConfigurationManager;
 import com.zygon.trade.Module;
 import com.zygon.trade.OutputProviderImpl;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class UIController {
 
     private List<NavigationNode> buildNavigationTree(Module[] modules) {
         
-        List<NavigationNode> nodes = new ArrayList<>();
+        List<NavigationNode> nodes = Lists.newArrayList();
         
         if (modules != null) {
             for (Module module : modules) {
