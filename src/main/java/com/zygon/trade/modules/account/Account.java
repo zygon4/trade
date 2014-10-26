@@ -6,6 +6,7 @@ import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.trade.Configuration;
 import com.zygon.trade.Module;
+import com.zygon.trade.Schema;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.modules.execution.broker.BrokerModule;
@@ -26,13 +27,14 @@ public class Account extends Module {
         return supportedCommands;
     }
     
+    private static final Schema SCHEMA = new Schema("account_schema.json");
+    
     private String brokerName;
     private String accountID;
     private AccountController accountController = null;
     
     public Account(String name) {
-        // TODO: schema
-        super(name, null, getSupportedCommands());
+        super(name, SCHEMA, getSupportedCommands());
     }
 
     @Override
