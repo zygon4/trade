@@ -1,7 +1,7 @@
 
 package com.zygon.trade.modules.execution.broker;
 
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
 import com.zygon.trade.trade.TradeBroker;

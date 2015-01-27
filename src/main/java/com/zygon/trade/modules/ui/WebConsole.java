@@ -1,7 +1,7 @@
 
 package com.zygon.trade.modules.ui;
 
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.ui.web.JettyServer;
 

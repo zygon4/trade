@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.ConfigurationManager;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Date;

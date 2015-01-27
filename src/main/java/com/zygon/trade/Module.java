@@ -4,6 +4,8 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.Configurable;
+import com.zygon.configuration.Configuration;
 import com.google.common.collect.Lists;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;

@@ -2,7 +2,7 @@
 package com.zygon.trade.modules.data;
 
 import com.zygon.data.Context;
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerReader;

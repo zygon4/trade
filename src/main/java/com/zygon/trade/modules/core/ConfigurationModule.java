@@ -1,7 +1,7 @@
 
 package com.zygon.trade.modules.core;
 
-import com.zygon.trade.ConfigurationManager;
+import com.zygon.configuration.ConfigurationManager;
 import com.zygon.trade.Module;
 
 /**

@@ -1,6 +1,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.Configuration;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.modules.account.Account;

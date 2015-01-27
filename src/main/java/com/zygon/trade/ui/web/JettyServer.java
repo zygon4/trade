@@ -6,9 +6,15 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
@@ -19,6 +25,8 @@ import org.eclipse.jetty.util.security.Credential;
  */
 public class JettyServer extends WebServer {
 
+    private static final boolean REQUEST_LOGGER = true;
+    
     private static SecurityHandler basicAuth(String username, String password, String realm) {
 
         HashLoginService loginService = new HashLoginService();
@@ -48,26 +56,46 @@ public class JettyServer extends WebServer {
     public JettyServer(int port) {
         super(port);
         
-        this.server = new Server(port);
+        this.server = new Server();
         
-        ServletHandler handler = new ServletHandler();
-        ServletHolder holder = new ServletHolder(new DefaultServlet());
-        handler.addServlet(holder);
-        handler.addServletWithMapping(holder, "/*");
+        // Connector(s)
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        httpConfig.setOutputBufferSize(32768);
+        ServerConnector http = new ServerConnector(this.server, new HttpConnectionFactory(httpConfig));        
+        http.setPort(port);
+        http.setIdleTimeout(30000);
         
-        this.server.setHandler(handler);
+        this.server.setConnectors(new Connector[] { http });
+        
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        
+        // web resources
+        ResourceHandler resources = new ResourceHandler();
+//        resources.setResourceBase("");
         
         
-//        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-//        context.setSecurityHandler(basicAuth("zygon", "foobar", "admin"));
-//        context.setContextPath("/");
-//        server.setHandler(context);
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resources, context});
         
-        // I think this could replace the need for a web.xml - which I'd like
-//        WebAppContext webapp = new WebAppContext();
-//        webapp.setContextPath("/");
-//        webapp.setWar("../../tests/test-webapps/test-jetty-webapp/target/test-jetty-webapp-9.0.0-SNAPSHOT.war");
-//        server.setHandler(webapp);
+        this.server.setHandler(handlers);
+        
+        
+        context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
+        context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class, "/");
+        
+//        String homePath = System.getProperty("user.home");
+//        String pwdPath = System.getProperty("user.dir");
+
+        
+        // Lastly, the default servlet for root content (always needed, to satisfy servlet spec)
+        // It is important that this is last.
+//        ServletHolder holderPwd = new ServletHolder("default", DefaultServlet.class);
+//        holderPwd.setInitParameter("resourceBase",pwdPath);
+//        holderPwd.setInitParameter("dirAllowed","true");
+//        context.addServlet(holderPwd,"/");
+        
+//        String jettyHome = System.getProperty("jetty.home","./web");
         
     }
 

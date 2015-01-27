@@ -7,7 +7,7 @@ import com.zygon.data.EventFeed;
 import com.zygon.data.Handler;
 import com.zygon.data.FeedProvider;
 import com.zygon.data.FeedProviderFactory;
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import java.io.IOException;

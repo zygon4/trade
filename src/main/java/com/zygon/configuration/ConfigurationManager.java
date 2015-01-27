@@ -1,5 +1,7 @@
 
-package com.zygon.trade;
+package com.zygon.configuration;
+
+import com.zygon.trade.InstallableStorage;
 
 /**
  *

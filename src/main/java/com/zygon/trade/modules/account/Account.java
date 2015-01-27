@@ -4,7 +4,7 @@ package com.zygon.trade.modules.account;
 import com.google.common.collect.Lists;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.execution.AccountController;

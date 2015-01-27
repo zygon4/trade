@@ -2,7 +2,7 @@
 package com.zygon.trade.modules.agent;
 
 import com.google.common.collect.Lists;
-import com.zygon.trade.Configuration;
+import com.zygon.configuration.Configuration;
 import com.zygon.trade.Kernel;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
