@@ -3,7 +3,6 @@ package com.zygon.configuration;
 
 import com.google.common.collect.Maps;
 import com.zygon.schema.ConfigurationSchema;
-import com.zygon.trade.Property;
 import java.util.Map;
 
 /**

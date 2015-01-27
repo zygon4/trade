@@ -1,7 +1,6 @@
 
 package com.zygon.configuration;
 
-import com.zygon.configuration.Configuration;
 import com.zygon.schema.ConfigurationSchema;
 
 /**
