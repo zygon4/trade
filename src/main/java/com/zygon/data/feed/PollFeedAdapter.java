@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class PollFeedAdapter<T> extends AbstractEventFeed<T> {
 
-    private static Logger logger = LoggerFactory.getLogger(PollFeedAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PollFeedAdapter.class);
     
     private final class AdapterThread extends Thread {
 
