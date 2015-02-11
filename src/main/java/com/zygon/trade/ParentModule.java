@@ -1,7 +1,6 @@
 
 package com.zygon.trade;
 
-import com.zygon.configuration.Configurable;
 import com.zygon.configuration.Configuration;
 import com.zygon.command.Command;
 import com.zygon.command.CommandResult;
