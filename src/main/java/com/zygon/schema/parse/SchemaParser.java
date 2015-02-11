@@ -1,7 +1,6 @@
 
 package com.zygon.schema.parse;
 
-import com.zygon.schema.ConfigurationSchema;
 import java.io.IOException;
 import java.io.InputStream;
 

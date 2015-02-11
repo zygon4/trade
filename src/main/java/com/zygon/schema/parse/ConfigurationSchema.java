@@ -1,7 +1,7 @@
 
-package com.zygon.schema;
+package com.zygon.schema.parse;
 
-import com.zygon.schema.parse.SchemaParser;
+import com.zygon.schema.SchemaElement;
 import java.io.IOException;
 import java.io.InputStream;
 

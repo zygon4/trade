@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.zygon.command.CommandProcessor;
 import com.zygon.command.CommandResult;
 import com.zygon.command.Command;
-import com.zygon.schema.ConfigurationSchema;
+import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.schema.parse.JSONSchemaParser;
 import com.zygon.schema.parse.SchemaParser;
 import java.io.IOException;

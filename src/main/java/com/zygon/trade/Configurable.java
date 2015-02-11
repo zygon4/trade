@@ -2,7 +2,7 @@
 package com.zygon.trade;
 
 import com.zygon.configuration.Configuration;
-import com.zygon.schema.ConfigurationSchema;
+import com.zygon.schema.parse.ConfigurationSchema;
 
 /**
  * This could even be a core (trade) package concept.

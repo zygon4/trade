@@ -2,7 +2,7 @@
 package com.zygon.configuration;
 
 import com.google.common.collect.Maps;
-import com.zygon.schema.ConfigurationSchema;
+import com.zygon.schema.parse.ConfigurationSchema;
 import java.util.Map;
 
 /**

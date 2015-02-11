@@ -4,7 +4,6 @@ package com.zygon.schema.parse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.zygon.schema.ArraySchemaElement;
-import com.zygon.schema.ConfigurationSchema;
 import com.zygon.schema.IntegerSchemaElement;
 import com.zygon.schema.NumericSchemaElement;
 import com.zygon.schema.PropertiesSchemaElement;
