@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import com.google.common.base.Preconditions;
 import com.zygon.configuration.Configuration;
 import com.google.common.collect.Lists;
 import com.zygon.command.CommandProcessor;
@@ -45,8 +46,10 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         this.logger = LoggerFactory.getLogger(this.name);
         
         try {
+            
             if (schema != null) {
-                this.schema = schemaParser.parse(schema.getSchemaResource(), this.getClass().getResourceAsStream(schema.getSchemaResource()));
+                this.schema = schema.getConfigurationSchema() != null ? schema.getConfigurationSchema() : 
+                        schemaParser.parse(schema.getSchemaResource(), this.getClass().getResourceAsStream(schema.getSchemaResource()));
             } else {
                 this.schema = null;
             }
@@ -89,6 +92,8 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     @Override
     public void configure(Configuration configuration) {
+        Preconditions.checkState(this.hasSchema());
+        
         // TODO: inspect properties and take action probably before setting the in memory config.  
         // TODO: Consider making a protected "doConfiguration" to enforce proper usage by children classes.
         // TODO: Check if the configuration name and (possibly) version matches our own.
