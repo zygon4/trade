@@ -7,6 +7,7 @@ package com.zygon.schema;
  */
  public enum Type {
     ARRAY("array"), 
+    BOOLEAN("boolean"),
     INTEGER("integer"),
     NUMBER("number"), 
     OBJECT("object"), 
