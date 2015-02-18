@@ -1,6 +1,7 @@
 
 package com.zygon.schema.parse;
 
+import com.google.common.base.Preconditions;
 import com.zygon.schema.SchemaElement;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,10 @@ public class ConfigurationSchema {
     private final SchemaElement element;
 
     public ConfigurationSchema(String schemaResourceName, String draft, SchemaElement element) {
+        Preconditions.checkNotNull(schemaResourceName);
+        Preconditions.checkNotNull(draft);
+        Preconditions.checkNotNull(element);
+        
         this.schemaResourceName = schemaResourceName;
         this.draft = draft;
         this.element = element;
