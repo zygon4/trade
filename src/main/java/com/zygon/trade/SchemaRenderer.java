@@ -4,11 +4,6 @@ import com.zygon.schema.NumericSchemaElement;
 import com.zygon.schema.PropertiesSchemaElement;
 import com.zygon.schema.SchemaElement;
 import com.zygon.schema.Type;
-import static com.zygon.schema.Type.ARRAY;
-import static com.zygon.schema.Type.INTEGER;
-import static com.zygon.schema.Type.NUMBER;
-import static com.zygon.schema.Type.OBJECT;
-import static com.zygon.schema.Type.STRING;
 
 /**
  *
@@ -29,6 +24,7 @@ public class SchemaRenderer {
         
         switch (element.getType()) {
             case ARRAY:
+            case BOOLEAN:
                 throw new UnsupportedOperationException();
             case INTEGER:
             case NUMBER:  // fall through
