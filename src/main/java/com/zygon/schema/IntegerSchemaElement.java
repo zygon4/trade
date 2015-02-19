@@ -10,4 +10,8 @@ public class IntegerSchemaElement extends NumericSchemaElement {
     public IntegerSchemaElement(String id, String description, Integer min, Integer max, boolean exclusiveMinimum) {
         super(id, Type.INTEGER, description, min, max, exclusiveMinimum);
     }
+    
+    public IntegerSchemaElement(String id, String description, Integer min, Integer max) {
+        this(id, description, min, max, false);
+    }
 }
