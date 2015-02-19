@@ -1,7 +1,12 @@
 
 package com.zygon.schema;
 
+import com.google.common.base.Preconditions;
+import java.util.Map;
+import java.util.Set;
+
 /**
+ * TBD: consider setting a package-scoped parent for Id nesting
  *
  * @author david.charubini
  */
@@ -12,7 +17,11 @@ public class SchemaElement {
     private final String description;
     private final String defaultValue;
 
-    // Dot '.' may become a forbidden character - we may have to use
+    // TBD: "id" may not be strong enough. Compound schemas may require
+    // nested, multi-named elements which could require magical appending
+    // of names for querying deeper within the schema tree.
+    
+    // TBD: Dot '.' may become a forbidden character - we may have to use
     // something to delineate nested schemas
     public SchemaElement(String id, Type type, String description, String defaultValue) {
         this.id = id;
@@ -25,11 +34,20 @@ public class SchemaElement {
         this(id, type, description, null);
     }
 
-    public String getDefaultValue() {
+    /**
+     * 
+     * @param schemaElements 
+     */
+    public void addSchemaElements(Map<String, String> schemaElements) {
+        Preconditions.checkState(!schemaElements.containsKey(this.getId()));
+        schemaElements.put(this.getId(), this.hasDefault() ? this.getDefaultValue() : null);
+    }
+    
+    public final String getDefaultValue() {
         return this.defaultValue;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return this.description;
     }
 
@@ -39,5 +57,9 @@ public class SchemaElement {
 
     public final Type getType() {
         return this.type;
+    }
+    
+    public final boolean hasDefault() {
+        return this.defaultValue != null;
     }
 }

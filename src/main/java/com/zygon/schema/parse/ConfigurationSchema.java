@@ -2,9 +2,11 @@
 package com.zygon.schema.parse;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.zygon.schema.SchemaElement;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  *
@@ -24,6 +26,20 @@ public class ConfigurationSchema {
         this.schemaResourceName = schemaResourceName;
         this.draft = draft;
         this.element = element;
+    }
+    
+    /**
+     * Returns all of the configuration schema ids and their respective default
+     * values (if present).
+     * @return all of the configuration schema ids and their respective default
+     * values (if present).
+     */
+    public Map<String, String> getSchemaElements() {
+        Map<String, String> schemaElements = Maps.newHashMap();
+        
+        this.element.addSchemaElements(schemaElements);
+        
+        return schemaElements;
     }
     
     public String getDescription() {

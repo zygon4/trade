@@ -2,10 +2,13 @@
 package com.zygon.configuration;
 
 /**
- *
+ * This was another avenue to configuration.  It should probably be shut down.
+ * Default values and options are being taken care of in schema. Maybe eventually
+ * this could become the configuration DAO component?
+ * 
  * @author zygon
  */
-public final class Property {
+/*pkg*/ final class Property {
     private final String name;
     private final String defaultValue;
     private final String[] options;
