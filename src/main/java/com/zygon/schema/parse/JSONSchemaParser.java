@@ -171,7 +171,8 @@ public class JSONSchemaParser implements SchemaParser {
             exclusiveMin = (boolean) props.get(Keyword.EXCLUSIVE_MINIMUM.getVal());
         }
         
-        return new IntegerSchemaElement(title, description, min, max, exclusiveMin);
+        // TODO: parse default
+        return new IntegerSchemaElement(title, description, 0, min, max, exclusiveMin);
     }
     
     private NumericSchemaElement parseNumeric (String title, String description, Map<String, Object> props) {
@@ -200,12 +201,14 @@ public class JSONSchemaParser implements SchemaParser {
             exclusiveMin = (boolean) props.get(Keyword.EXCLUSIVE_MINIMUM.getVal());
         }
         
-        return new NumericSchemaElement(title, description, min, max, exclusiveMin);
+        // TODO: parse default
+        return new NumericSchemaElement(title, description, null, min, max, exclusiveMin);
     }
     
     private StringElement parseString (String title, String description, Map<String, Object> props) {
         // TBD: regex, constraints, etc
-        return new StringElement(title, description);
+        // TODO: parse default
+        return new StringElement(title, description, null);
     }
     
     private SchemaElement parse (Map<String, Object> props, String id) {

@@ -7,7 +7,7 @@ package com.zygon.schema;
  */
 public class BooleanSchemaElement extends PrimativeSchemaElement {
 
-    public BooleanSchemaElement(String id, String description) {
-        super(id, Type.BOOLEAN, description);
+    public BooleanSchemaElement(String id, String description, boolean defaultValue) {
+        super(id, Type.BOOLEAN, description, String.valueOf(defaultValue));
     }
 }
