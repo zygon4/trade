@@ -83,9 +83,9 @@ public class Agent extends Module {
     public void configure(Configuration configuration) {
         super.configure(configuration);
         // TBD: if the broker name changes.
-        this.brokerName = configuration.getValue("broker");
+        this.brokerName = configuration.getStringValue("broker");
         
-        String agentName = configuration.getValue("name");
+        String agentName = configuration.getStringValue("name");
         String agentDataDirPath = this.getAgentDir(agentName);
         File agentDataDir = new File(agentDataDirPath);
         

@@ -37,7 +37,7 @@ public class DataSet extends Module {
     public void configure(Configuration configuration) {
         super.configure(configuration);
         
-        String uri = configuration.getValue("data-uri");
+        String uri = configuration.getStringValue("data-uri");
         
         if (this.dataURI != null && !uri.equals(this.dataURI)) {
             throw new UnsupportedOperationException("TODO: edit");

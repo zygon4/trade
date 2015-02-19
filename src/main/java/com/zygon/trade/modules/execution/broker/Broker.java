@@ -22,7 +22,7 @@ public class Broker extends Module {
     @Override
     public void configure(Configuration configuration) {
         super.configure(configuration);
-        this.accountId = configuration.getValue("accountId");
+        this.accountId = configuration.getStringValue("accountId");
         
         this.broker = new TradeBroker(this.accountId, SimulationExchange.createInstance());
     }

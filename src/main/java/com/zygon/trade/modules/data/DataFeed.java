@@ -46,11 +46,11 @@ public class DataFeed<T> extends Module {
         
         // TBD: enable/disable configuration and handling already running feeds
         
-        this.clazz = configuration.getValue("class");
-        this.tradeable = configuration.getValue("tradeable");
-        this.currency = configuration.getValue("currency");
+        this.clazz = configuration.getStringValue("class");
+        this.tradeable = configuration.getStringValue("tradeable");
+        this.currency = configuration.getStringValue("currency");
         
-        String dataSetId = configuration.getValue("data-set-identifier");
+        String dataSetId = configuration.getStringValue("data-set-identifier");
         if (dataSetId != null) {
             if (this.dataSetIdentifier == null || !dataSetId.equals(this.dataSetIdentifier)) {
                 this.dataSetModule = (DataSet) this.getModule(dataSetId);

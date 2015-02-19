@@ -53,7 +53,7 @@ public abstract class ParentModule extends Module {
     
     /*pkg*/ Module createChild(Configuration config, boolean install) {
         
-        String name = config.getValue("name");
+        String name = config.getStringValue("name");
         
         Module instance = null;
         
@@ -119,7 +119,7 @@ public abstract class ParentModule extends Module {
             // TBD: parse arguments into a validated Configuration object
             Configuration config = new Configuration(this.childSchema);
             // Totally ghetto for now
-            config.setValue("name", "foo");
+            config.setStringValue("name", "foo");
             
             try {
                 Module child = this.createChild(config, true);

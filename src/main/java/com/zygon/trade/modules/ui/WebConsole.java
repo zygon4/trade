@@ -22,7 +22,7 @@ public class WebConsole extends Module {
     @Override
     public void configure(Configuration configuration) {
         super.configure(configuration);
-        int prt = Integer.parseInt(configuration.getValue("port"));
+        int prt = configuration.getIntValue("port");
         
         if (this.server == null) {
             this.port = prt;

@@ -27,12 +27,51 @@ public class Configuration {
         return this.schema;
     }
     
-    public String getValue(String id) {
+    public boolean getBooleanValue(String id) {
+        return Boolean.parseBoolean(this.getValue(id));
+    }
+    
+    public int getIntValue(String id) {
+        return Integer.parseInt(this.getValue(id));
+    }
+    
+    public long getLongValue(String id) {
+        return Long.parseLong(this.getValue(id));
+    }
+    
+    public String getStringValue(String id) {
+        return this.getValue(id);
+    }
+    
+    private String getValue(String id) {
         Preconditions.checkArgument(this.valuesById.containsKey(id));
         return this.valuesById.get(id);
     }
     
-    public void setValue(String id, String value) {
+    public void resetDefaults() {
+        // Clear shouldn't be necessary but doesn't hurt - especially
+        // in case there's some bad data hanging around.
+        this.valuesById.clear();
+        this.valuesById.putAll(this.schema.getSchemaElements());
+    }
+    
+    public void setBooleanValue(String id, boolean value) {
+        this.setValue(id, String.valueOf(value));
+    }
+    
+    public void setIntValue(String id, int value) {
+        this.setValue(id, String.valueOf(value));
+    }
+    
+    public void setLongValue(String id, long value) {
+        this.setValue(id, String.valueOf(value));
+    }
+    
+    public void setStringValue(String id, String value) {
+        this.setValue(id, value);
+    }
+    
+    private void setValue(String id, String value) {
         Preconditions.checkArgument(this.valuesById.containsKey(id));
         this.valuesById.put(id, value);
     }

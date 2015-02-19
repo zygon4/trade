@@ -42,8 +42,8 @@ public class Account extends Module {
         super.configure(configuration);
         // TBD: if someone changes the id/broker.. need to reset any hooks
         
-        this.brokerName = configuration.getValue("broker");
-        this.accountID = configuration.getValue("accountId");
+        this.brokerName = configuration.getStringValue("broker");
+        this.accountID = configuration.getStringValue("accountId");
     }
 
     @Override
