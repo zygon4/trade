@@ -7,7 +7,6 @@ package com.zygon.trade;
 import com.zygon.configuration.ConfigurationManager;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Date;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
@@ -35,7 +34,7 @@ public class Service implements Daemon {
     
     @Override
     public void init(DaemonContext dc) throws DaemonInitException, Exception {
-        log.info(new Date(System.currentTimeMillis())+": Initializing");
+        log.info("Initializing");
         
         if (this.kernel != null) {
             throw new IllegalStateException("Kernel is already initialized");
@@ -63,7 +62,7 @@ public class Service implements Daemon {
     
     @Override
     public void start() throws Exception {
-       log.info(new Date(System.currentTimeMillis())+": Starting");
+       log.info("Starting");
        
        synchronized (this.initLock) {
            
@@ -82,7 +81,7 @@ public class Service implements Daemon {
 
     @Override
     public void stop() throws Exception {
-        log.info(new Date(System.currentTimeMillis())+": Stopping");
+        log.info("Stopping");
         
         synchronized (this.initLock) {
             initLock.notify();
@@ -96,7 +95,7 @@ public class Service implements Daemon {
 
     @Override
     public void destroy() {
-        log.info(new Date(System.currentTimeMillis())+": Destroying");
+        log.info("Destroying");
         
         try {
             this.connectionManager.close();
