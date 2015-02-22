@@ -53,7 +53,7 @@ import java.util.Map.Entry;
         return newInstance;
     }
     
-    private Module create(MetaData moduleMeta, ParentModule parent) {
+    private Module create(MetaDataHelper moduleMeta, ParentModule parent) {
         try {
             Module module = null;
             if (parent != null) {
@@ -82,7 +82,7 @@ import java.util.Map.Entry;
         
         // Lets store the parent/child class relationships first
         for (String moduleId : moduleIds) {
-            MetaData moduleMeta = this.installableStorage.retrieve(moduleId);
+            MetaDataHelper moduleMeta = new MetaDataHelper(this.installableStorage.retrieve(moduleId));
             if (!moduleMeta.getId().equals(moduleId)) {
                 //shouldn't happen - but nervous nelly - maybe remove this later
                 throw new IllegalArgumentException();
@@ -112,7 +112,7 @@ import java.util.Map.Entry;
         
         // Now, lets create any remaining children using their known parent
         for (String moduleId : moduleIds) {
-            MetaData moduleMeta = this.installableStorage.retrieve(moduleId);
+            MetaDataHelper moduleMeta = new MetaDataHelper(this.installableStorage.retrieve(moduleId));
             if (!moduleMeta.getId().equals(moduleId)) {
                 //shouldn't happen - but nervous nelly - maybe remove this later
                 throw new IllegalArgumentException();

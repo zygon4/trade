@@ -22,12 +22,11 @@ public class InMemoryInstallableStorageNEW implements InstallableStorage {
         Configuration cliConfig = new Configuration(cliModule.getSchema());
         cliConfig.setBooleanValue("enabled", true);
         this.metadataById.put(cliModule.getDisplayname(), 
-                new MetaData(cliModule.getDisplayname(), "com.zygon.trade.modules.ui.CLIModule", cliConfig));
+                MetaDataHelper.createServerMetaProperties(cliModule.getDisplayname(), cliConfig, "com.zygon.trade.modules.ui.CLIModule"));
         
         this.metadataById.put("pg", 
-                new MetaData("pg", 
-                             PlaygroundModule.class.getCanonicalName(), 
-                             new Configuration(new PlaygroundModule("foo").getSchema())));
+                MetaDataHelper.createServerMetaProperties("pg", 
+                             new Configuration(new PlaygroundModule("foo").getSchema()), PlaygroundModule.class.getCanonicalName()));
     }
     
     @Override
