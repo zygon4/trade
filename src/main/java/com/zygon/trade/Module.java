@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Module implements OutputProvider, CommandProcessor, Installable, Configurable {
 
+    // TBD: unique identifier using the name
     private final String name;
     private final Logger logger;
     private final ConfigurationSchema schema; 

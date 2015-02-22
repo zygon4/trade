@@ -2,6 +2,7 @@
 package com.zygon.trade;
 
 import com.google.common.collect.Maps;
+import com.zygon.configuration.Configuration;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Map.Entry;
  */
 /*pkg*/ class ModuleSet {
 
-    private final Map<Class<? extends Module>, Module> parentByChildClass = Maps.newHashMap();
+    private final Map<Class<? extends Module>, ParentModule> parentByChildClass = Maps.newHashMap();
     private final Map<String, Module> modulesById = Maps.newHashMap();
     private final Map<String, Module> topLevelModulesById = Maps.newTreeMap();
     private final InstallableStorage installableStorage;
@@ -30,31 +31,25 @@ import java.util.Map.Entry;
         }
     }
     
-    private Module createModule(MetaData metaData) 
+    private Module createModule(String clazz, String name) 
             throws ClassNotFoundException, InstantiationException, IllegalAccessException, 
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         
-        Class<Module> clazz = (Class<Module>) Class.forName(metaData.getClazz());
+        Class<Module> cls = (Class<Module>) Class.forName(clazz);
         Constructor<Module> constructor = null;
         Module newInstance = null;
         
-        // TBD: this got a little weird - not quite sure what constructors 
-        // are required now and when..
         try {
-            constructor = clazz.getConstructor(String.class);
-            newInstance = constructor.newInstance(metaData.getId());
+            constructor = cls.getConstructor(String.class);
+            newInstance = constructor.newInstance(name);
         } catch (NoSuchMethodException nsme) {
-            // try again..
+            // try again with parent module constructor signature
             
-            constructor = clazz.getConstructor();
+            constructor = cls.getConstructor();
             newInstance = constructor.newInstance();
         }
         
         return newInstance;
-    }
-    
-    /*pkg*/ Module[] getModules() {
-        return this.topLevelModulesById.values().toArray(new Module[this.topLevelModulesById.size()]);
     }
     
     private Module create(MetaData moduleMeta, ParentModule parent) {
@@ -64,17 +59,21 @@ import java.util.Map.Entry;
                 module = parent.createChild(moduleMeta.getConfiguration(), false);
                 parent.add(module);
             } else {
-                module = createModule(moduleMeta);
+                module = createModule(moduleMeta.getClazz(), moduleMeta.getId());
             }
             
             this.modulesById.put(moduleMeta.getId(), module);
             
             return module;
         } catch (Exception e) {
-            // Not quite sure what to do - this is fatal
+            // Treat as fatal
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+    
+    /*pkg*/ Module[] getModules() {
+        return this.topLevelModulesById.values().toArray(new Module[this.topLevelModulesById.size()]);
     }
     
     private void loadModules() {
@@ -88,10 +87,25 @@ import java.util.Map.Entry;
                 throw new IllegalArgumentException();
             }
             
-            if (moduleMeta.getConfigurable() instanceof ParentModule) {
-                ParentModule parentModule = (ParentModule) moduleMeta.getConfigurable();
-                Module module = this.create(moduleMeta, null);
-                this.parentByChildClass.put(parentModule.getChildClazz(), module);
+            Module mod = null;
+            
+            try {
+                mod = this.createModule(moduleMeta.getClazz(), moduleMeta.getId());
+            } catch (Exception e) {
+                // Treat as fatal
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            
+            if (mod instanceof ParentModule) {
+                ParentModule parentModule = (ParentModule) mod;
+                
+                // TODO: load configuration for parent module
+                
+                // Store our parent by child class relationship
+                this.parentByChildClass.put(parentModule.getChildClazz(), parentModule);
+                // Store the general id and module
+                this.modulesById.put(moduleMeta.getId(), parentModule);
             }
         }
         
@@ -103,15 +117,33 @@ import java.util.Map.Entry;
                 throw new IllegalArgumentException();
             }
             
-            if (!(moduleMeta.getConfigurable() instanceof ParentModule)) {
-                Class<? extends Module> childClazz = (Class<? extends Module>) moduleMeta.getConfigurable().getClass();
+            Module mod = null;
+            
+            // We are possibly re-creating a lot of classes here - we could
+            // optimize if it becomes a problem.
+            try {
+                mod = this.createModule(moduleMeta.getClazz(), moduleMeta.getId());
+            } catch (Exception e) {
+                // Treat as fatal
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            
+            if (!(mod instanceof ParentModule)) {
+                Class<? extends Module> childClazz = (Class<? extends Module>) mod.getClass();
                 
+                // This is not a parent class, does it *have* a parent?
                 if (this.parentByChildClass.containsKey(childClazz)) {
-                    ParentModule knownParentModule = (ParentModule) this.parentByChildClass.get(childClazz);
-                    this.create(moduleMeta, knownParentModule);
-                } else {
-                    this.create(moduleMeta, null);
+                    ParentModule knownParentModule = this.parentByChildClass.get(childClazz);
+                    
+                    // TODO: load child configuration
+                    Configuration config = moduleMeta.getConfiguration();
+                    
+                    Module module = knownParentModule.createChild(config, false);
+                    knownParentModule.add(module);
                 }
+                
+                this.modulesById.put(moduleMeta.getId(), mod);
             }
         }
         

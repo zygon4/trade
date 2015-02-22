@@ -45,7 +45,7 @@ public class Service implements Daemon {
                 "zygon" + File.separator + "opt" + File.separator + "trade");
         
         // ConfigurationManager is a bump on a log right now.
-        this.configurationManager = new ConfigurationManager(new InMemoryInstallableStorage());
+        this.configurationManager = new ConfigurationManager(new InMemoryInstallableStorageNEW());
         
         this.moduleSet = new ModuleSet(this.configurationManager.getStorage());
         

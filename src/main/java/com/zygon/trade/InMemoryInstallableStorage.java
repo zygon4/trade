@@ -33,7 +33,7 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         Configuration agentModuleConfig = new Configuration(agentModule.getSchema());
         agentModuleConfig.setStringValue("name", agentModule.getDisplayname());
         this.metadataById.put(agentModule.getDisplayname(), 
-                new MetaData(agentModule.getDisplayname(), "com.zygon.trade.modules.agent.AgentModule", agentModule, agentModuleConfig));
+                new MetaData(agentModule.getDisplayname(), "com.zygon.trade.modules.agent.AgentModule", agentModuleConfig));
         
         
         Agent agent = new Agent("macd");
@@ -42,13 +42,13 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         // TBD: set: interpretters, strategy, etc. For now it's hardcoded in the agent
         agentConfig.setStringValue("broker", "mtgox");
         this.metadataById.put(agent.getDisplayname(), 
-                new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agent, agentConfig));
+                new MetaData(agent.getDisplayname(), "com.zygon.trade.modules.agent.Agent", agentConfig));
         
         DataSetModule dataSetModule = new DataSetModule();
         Configuration dataSetModuleConfig = new Configuration(dataSetModule.getSchema());
         dataSetModuleConfig.setStringValue("name", dataSetModule.getDisplayname());
         this.metadataById.put(dataSetModule.getDisplayname(), 
-                new MetaData(dataSetModule.getDisplayname(), "com.zygon.trade.modules.data.DataSetModule", dataSetModule, dataSetModuleConfig));
+                new MetaData(dataSetModule.getDisplayname(), "com.zygon.trade.modules.data.DataSetModule", dataSetModuleConfig));
         
         
         DataSet mtgoxTickerDataSet = new DataSet("mtgox-ticker-data");
@@ -56,14 +56,14 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         mtgoxTickerDataSetConfig.setStringValue("name", mtgoxTickerDataSet.getDisplayname());
         mtgoxTickerDataSetConfig.setStringValue("data-uri", "file:///home/zygon/opt/trade/system/data/agent/macd/macd_ticker.txt");
         this.metadataById.put(mtgoxTickerDataSet.getDisplayname(), 
-                new MetaData(mtgoxTickerDataSet.getDisplayname(), "com.zygon.trade.modules.data.DataSet", mtgoxTickerDataSet, mtgoxTickerDataSetConfig));
+                new MetaData(mtgoxTickerDataSet.getDisplayname(), "com.zygon.trade.modules.data.DataSet", mtgoxTickerDataSetConfig));
         
         
         DataModule data = new DataModule();
         Configuration dataConfig = new Configuration(data.getSchema());
         dataConfig.setStringValue("name", data.getDisplayname());
         this.metadataById.put("data", 
-                new MetaData("data", "com.zygon.trade.modules.data.DataModule", data, dataConfig));
+                new MetaData("data", "com.zygon.trade.modules.data.DataModule", dataConfig));
         
         
         DataFeed<Ticker> mtgoxTicker = new DataFeed<Ticker>("mtgox-ticker");
@@ -74,14 +74,14 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         mtgoxConfig.setStringValue("currency", CurrencyPair.BTC_USD.counterCurrency);
 //        mtgoxConfig.setStringValue("data-set-identifier", mtgoxTickerDataSet.getDisplayname());
         this.metadataById.put(mtgoxTicker.getDisplayname(), 
-                new MetaData(mtgoxTicker.getDisplayname(), "com.zygon.trade.modules.data.DataFeed", mtgoxTicker, mtgoxConfig));
+                new MetaData(mtgoxTicker.getDisplayname(), "com.zygon.trade.modules.data.DataFeed", mtgoxConfig));
         
         
         BrokerModule brokerModule = new BrokerModule();
         Configuration brokerConfig = new Configuration(brokerModule.getSchema());
         brokerConfig.setStringValue("name", brokerModule.getDisplayname());
         this.metadataById.put(brokerModule.getDisplayname(), 
-                new MetaData(brokerModule.getDisplayname(), "com.zygon.trade.modules.execution.broker.BrokerModule", brokerModule, brokerConfig));
+                new MetaData(brokerModule.getDisplayname(), "com.zygon.trade.modules.execution.broker.BrokerModule", brokerConfig));
         
         
         Broker broker = new Broker("mtgox");
@@ -89,14 +89,14 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         mtgoxBrokerConfig.setStringValue("accountId", "joe");
         mtgoxBrokerConfig.setStringValue("name", broker.getDisplayname());
         this.metadataById.put(broker.getDisplayname(), 
-                new MetaData(broker.getDisplayname(), "com.zygon.trade.modules.execution.broker.Broker", broker, mtgoxBrokerConfig));
+                new MetaData(broker.getDisplayname(), "com.zygon.trade.modules.execution.broker.Broker", mtgoxBrokerConfig));
         
         
         AccountModule accountModule = new AccountModule();
         Configuration accountModuleConfig = new Configuration(accountModule.getSchema());
         accountModuleConfig.setStringValue("name", accountModule.getDisplayname());
         this.metadataById.put(accountModule.getDisplayname(), 
-                new MetaData(accountModule.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", accountModule, accountModuleConfig));
+                new MetaData(accountModule.getDisplayname(), "com.zygon.trade.modules.account.AccountModule", accountModuleConfig));
         
         
         Account account = new Account("joe");
@@ -105,20 +105,20 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         accountConfig.setStringValue("broker", "mtgox");
         accountConfig.setStringValue("accountId", "joe");
         this.metadataById.put(account.getDisplayname(), 
-                new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.Account", account, accountConfig));
+                new MetaData(account.getDisplayname(), "com.zygon.trade.modules.account.Account", accountConfig));
         
         CLIModule cliModule = new CLIModule("cli");
         Configuration cliConfig = new Configuration(cliModule.getSchema());
         cliConfig.setStringValue("name", cliModule.getDisplayname());
         this.metadataById.put(cliModule.getDisplayname(), 
-                new MetaData(cliModule.getDisplayname(), "com.zygon.trade.modules.ui.CLIModule", cliModule, cliConfig));
+                new MetaData(cliModule.getDisplayname(), "com.zygon.trade.modules.ui.CLIModule", cliConfig));
         
         
         UserInterfaceModule userInterfaceModule = new UserInterfaceModule();
         Configuration userInterfaceModuleConfig = new Configuration(userInterfaceModule.getSchema());
         userInterfaceModuleConfig.setStringValue("name", userInterfaceModule.getDisplayname());
         this.metadataById.put(userInterfaceModule.getDisplayname(), 
-                new MetaData(userInterfaceModule.getDisplayname(), "com.zygon.trade.modules.ui.UserInterfaceModule", userInterfaceModule, userInterfaceModuleConfig));        
+                new MetaData(userInterfaceModule.getDisplayname(), "com.zygon.trade.modules.ui.UserInterfaceModule", userInterfaceModuleConfig));        
         
         
         WebConsole webConsole = new WebConsole("default");
@@ -126,7 +126,7 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         webConsoleConfig.setStringValue("name", webConsole.getDisplayname());
         webConsoleConfig.setIntValue("port", 8080);
         this.metadataById.put(webConsole.getDisplayname(), 
-                new MetaData(webConsole.getDisplayname(), "com.zygon.trade.modules.ui.WebConsole", webConsole, webConsoleConfig));
+                new MetaData(webConsole.getDisplayname(), "com.zygon.trade.modules.ui.WebConsole", webConsoleConfig));
     }
     
     @Override

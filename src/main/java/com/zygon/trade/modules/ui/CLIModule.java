@@ -4,7 +4,10 @@
 
 package com.zygon.trade.modules.ui;
 
+import com.zygon.schema.BooleanSchemaElement;
+import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.trade.Module;
+import com.zygon.trade.Schema;
 import com.zygon.trade.ui.UIController;
 import java.io.IOException;
 
@@ -18,7 +21,7 @@ public class CLIModule extends Module {
     private UIController controller = null;
 
     public CLIModule(String name) {
-        super(name);
+        super(name, new Schema(new ConfigurationSchema("CLIModule_schema", "v1", new BooleanSchemaElement("enabled", "enabled or not", true))));
     }
 
     @Override
