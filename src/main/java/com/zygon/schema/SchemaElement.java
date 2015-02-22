@@ -3,10 +3,11 @@ package com.zygon.schema;
 
 import com.google.common.base.Preconditions;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * TBD: consider setting a package-scoped parent for Id nesting
+ * 
+ * TBD: SchemaElement builder
  *
  * @author david.charubini
  */

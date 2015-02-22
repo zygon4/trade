@@ -1,7 +1,5 @@
 
-package com.zygon.trade;
-
-import com.zygon.configuration.Configuration;
+package com.zygon.configuration;
 
 /**
  *

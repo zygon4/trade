@@ -1,6 +1,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.MetaData;
 import com.google.common.collect.Maps;
 import com.zygon.configuration.Configuration;
 import java.lang.reflect.Constructor;

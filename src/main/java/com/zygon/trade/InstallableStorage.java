@@ -1,5 +1,7 @@
 package com.zygon.trade;
 
+import com.zygon.configuration.MetaData;
+
 /**
  * This represents a store for "installable" object - this will generally be
  * used for persisting/retrieving modules.

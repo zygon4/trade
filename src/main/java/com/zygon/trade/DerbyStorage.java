@@ -1,5 +1,6 @@
 package com.zygon.trade;
 
+import com.zygon.configuration.MetaData;
 import com.zygon.util.DBUtil;
 import java.sql.Connection;
 import java.sql.SQLException;

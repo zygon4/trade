@@ -1,6 +1,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.MetaData;
 import com.zygon.configuration.Configuration;
 import com.zygon.trade.modules.core.PlaygroundModule;
 import com.zygon.trade.modules.ui.CLIModule;
