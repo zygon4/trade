@@ -21,15 +21,13 @@ import java.util.List;
 public class UIController {
 
     private final Module root;
-    private final ConfigurationManager configurationManager;
     
     private Shell shell = null;
 
     // Not crazy about passing through the Configuration Manager but i don't
     // want each Module to have a reference to it.
-    public UIController(Module root, ConfigurationManager configurationManager) {
+    public UIController(Module root) {
         this.root = root;
-        this.configurationManager = configurationManager;
     }
 
     private List<NavigationNode> buildNavigationTree(Module[] modules) {
@@ -50,8 +48,7 @@ public class UIController {
                         // Here we are injecting some additional functionality to keep the configuration
                         // code outside of the Module implementation.
                         new OutputProviderImpl(module, 
-                                               new ConfigurationCommandProcessor(module, module, 
-                                                                                 this.configurationManager)), children)
+                                               new ConfigurationCommandProcessor(module, module)), children)
                         );
             }
         }

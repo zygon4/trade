@@ -1,7 +1,6 @@
 
 package com.zygon.trade;
 
-import com.zygon.configuration.MetaData;
 import com.google.common.collect.Maps;
 import com.zygon.configuration.Configuration;
 import java.lang.reflect.Constructor;
@@ -27,7 +26,7 @@ import java.util.Map.Entry;
     
     void configure() {
         for (Entry<String, Module> entry : this.modulesById.entrySet()) {
-            MetaData meta = this.installableStorage.retrieve(entry.getKey());
+            InstallableMetaData meta = this.installableStorage.retrieve(entry.getKey()).getInstallableMetaData();
             entry.getValue().configure(meta.getConfiguration());
         }
     }
@@ -53,26 +52,6 @@ import java.util.Map.Entry;
         return newInstance;
     }
     
-    private Module create(MetaDataHelper moduleMeta, ParentModule parent) {
-        try {
-            Module module = null;
-            if (parent != null) {
-                module = parent.createChild(moduleMeta.getConfiguration(), false);
-                parent.add(module);
-            } else {
-                module = createModule(moduleMeta.getClazz(), moduleMeta.getId());
-            }
-            
-            this.modulesById.put(moduleMeta.getId(), module);
-            
-            return module;
-        } catch (Exception e) {
-            // Treat as fatal
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-    
     /*pkg*/ Module[] getModules() {
         return this.topLevelModulesById.values().toArray(new Module[this.topLevelModulesById.size()]);
     }
@@ -82,7 +61,7 @@ import java.util.Map.Entry;
         
         // Lets store the parent/child class relationships first
         for (String moduleId : moduleIds) {
-            MetaDataHelper moduleMeta = new MetaDataHelper(this.installableStorage.retrieve(moduleId));
+            InstallableMetaDataHelper moduleMeta = new InstallableMetaDataHelper(this.installableStorage.retrieve(moduleId).getInstallableMetaData());
             if (!moduleMeta.getId().equals(moduleId)) {
                 //shouldn't happen - but nervous nelly - maybe remove this later
                 throw new IllegalArgumentException();
@@ -112,7 +91,7 @@ import java.util.Map.Entry;
         
         // Now, lets create any remaining children using their known parent
         for (String moduleId : moduleIds) {
-            MetaDataHelper moduleMeta = new MetaDataHelper(this.installableStorage.retrieve(moduleId));
+            InstallableMetaDataHelper moduleMeta = new InstallableMetaDataHelper(this.installableStorage.retrieve(moduleId).getInstallableMetaData());
             if (!moduleMeta.getId().equals(moduleId)) {
                 //shouldn't happen - but nervous nelly - maybe remove this later
                 throw new IllegalArgumentException();

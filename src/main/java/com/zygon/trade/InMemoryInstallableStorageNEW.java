@@ -1,7 +1,6 @@
 
 package com.zygon.trade;
 
-import com.zygon.configuration.MetaData;
 import com.zygon.configuration.Configuration;
 import com.zygon.trade.modules.core.PlaygroundModule;
 import com.zygon.trade.modules.ui.CLIModule;
@@ -15,18 +14,34 @@ import java.util.Map;
  */
 public class InMemoryInstallableStorageNEW implements InstallableStorage {
 
-    private final Map<String, MetaData> metadataById = new HashMap<>();
+    private Installable create(final InstallableMetaData metaData) {
+        return new Installable() {
+
+            @Override
+            public String getId() {
+                return metaData.getId();
+            }
+
+            @Override
+            public InstallableMetaData getInstallableMetaData() {
+                return metaData;
+            }
+        };
+    }
+    
+    private final Map<String, Installable> metadataById = new HashMap<>();
     
     {
         CLIModule cliModule = new CLIModule("cli");
-        Configuration cliConfig = new Configuration(cliModule.getSchema());
-        cliConfig.setBooleanValue("enabled", true);
+        Configuration cliConfig = cliModule.hasSchema() ? new Configuration(cliModule.getSchema()) : null;
         this.metadataById.put(cliModule.getDisplayname(), 
-                MetaDataHelper.createServerMetaProperties(cliModule.getDisplayname(), cliConfig, "com.zygon.trade.modules.ui.CLIModule"));
+                create(InstallableMetaDataHelper.createServerMetaProperties(cliModule.getDisplayname(), cliConfig, "com.zygon.trade.modules.ui.CLIModule")));
         
         this.metadataById.put("pg", 
-                MetaDataHelper.createServerMetaProperties("pg", 
-                             new Configuration(new PlaygroundModule("foo").getSchema()), PlaygroundModule.class.getCanonicalName()));
+                create(InstallableMetaDataHelper.createServerMetaProperties(
+                            "pg", 
+                             new Configuration(new PlaygroundModule("foo").getSchema()), 
+                             PlaygroundModule.class.getCanonicalName())));
     }
     
     @Override
@@ -35,12 +50,12 @@ public class InMemoryInstallableStorageNEW implements InstallableStorage {
     }
 
     @Override
-    public MetaData retrieve(String id) {
+    public Installable retrieve(String id) {
         return this.metadataById.get(id);
     }
 
     @Override
-    public void store(String id, MetaData metadata) {
-        this.metadataById.put(id, metadata);
+    public void store(Installable installable) {
+        this.metadataById.put(installable.getId(), installable);
     }    
 }

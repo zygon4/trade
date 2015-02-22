@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Intercept configuration related requests.
  *
  * @author zygon
  */
@@ -18,12 +19,10 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
     
     private final CommandProcessor cmdProcessor;
     private final Configurable configurable;
-    private final ConfigurationManager configurationManager;
 
-    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, Configurable configurable, ConfigurationManager configurationManager) {
+    public ConfigurationCommandProcessor(CommandProcessor cmdProcessor, Configurable configurable) {
         this.cmdProcessor = cmdProcessor;
         this.configurable = configurable;
-        this.configurationManager = configurationManager;
     }
     
     private CommandResult handleCreateRequest(CommandProcessor cmdProcessor, Command command) {
@@ -43,6 +42,7 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
          * - 
          */
         
+        ConfigurationManager configurationManager = new ConfigurationManager(configurable.getConfiguration());
         
 //        this.configurable.c
         // TODO:
@@ -54,7 +54,9 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
         CommandResult result = null;
         
         if (command.isEditRequest()) {
+            
             if (this.configurable != null) {
+                
                 if (command.hasArguments()) {
                     result = this.handleEditRequest(this.configurable, command.getArguments());
                 } else {
@@ -66,6 +68,7 @@ public class ConfigurationCommandProcessor implements CommandProcessor {
                 logger.error("Unable to process edit request. No schema.");
                 throw new IllegalArgumentException("Unable to process edit request. No schema.");
             }
+            
         } else if (command.isCreateRequest()) {
             
             if (this.cmdProcessor instanceof ParentModule) {

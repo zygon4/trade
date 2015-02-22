@@ -4,6 +4,7 @@ package com.zygon.configuration;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.zygon.schema.parse.ConfigurationSchema;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -46,6 +47,10 @@ public class Configuration {
     private String getValue(String id) {
         Preconditions.checkArgument(this.valuesById.containsKey(id));
         return this.valuesById.get(id);
+    }
+    
+    public final Map<String, String> getValues() {
+        return Collections.unmodifiableMap(this.valuesById);
     }
     
     public void resetDefaults() {

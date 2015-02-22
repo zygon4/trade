@@ -1,15 +1,18 @@
 
-package com.zygon.configuration;
+package com.zygon.trade;
 
 import com.google.common.base.Preconditions;
+import com.zygon.configuration.Configuration;
 import java.util.Collections;
 import java.util.Map;
 
 /**
  *
+ * This class helps store and retrieve installed objects
+ * 
  * @author david.charubini
  */
-public class MetaData {
+public class InstallableMetaData {
     
     public static final String ID = "id";
     
@@ -17,9 +20,9 @@ public class MetaData {
     private final Map<String,String> properties;
     private final Configuration configuration;
 
-    public MetaData(String id, Configuration configuration, Map<String,String> properties) {
+    public InstallableMetaData(String id, Configuration configuration, Map<String,String> properties) {
         Preconditions.checkNotNull(id);
-        Preconditions.checkNotNull(configuration);
+        // Allowing configuration to be null
         Preconditions.checkNotNull(properties);
         
         this.id = id;
@@ -27,7 +30,11 @@ public class MetaData {
         this.properties = Collections.unmodifiableMap(properties);
     }
     
-    public MetaData(String id, Configuration configuration) {
+    public InstallableMetaData(String id, Map<String,String> properties) {
+        this (id, null, properties);
+    }
+    
+    public InstallableMetaData(String id, Configuration configuration) {
         this(id, configuration, Collections.EMPTY_MAP);
     }
     
@@ -41,5 +48,9 @@ public class MetaData {
 
     public String getProperty(String key) {
         return properties.get(key);
+    }
+    
+    public boolean hasConfiguration() {
+        return this.configuration != null;
     }
 }

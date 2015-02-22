@@ -9,6 +9,7 @@ public class Command {
     
     public static final String EDIT = "edit";
     public static final String CREATE = "create";
+    // TODO: reset configuration
 
     private final String name;
     // TBD: string array args seems like weak sauce

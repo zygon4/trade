@@ -4,7 +4,6 @@
 
 package com.zygon.trade;
 
-import com.zygon.configuration.ConfigurationManager;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -23,7 +22,6 @@ public class Service implements Daemon {
     private static final Logger log = LoggerFactory.getLogger(Service.class);
 
     private final ConnectionManager connectionManager;
-    private ConfigurationManager configurationManager;
     private ModuleSet moduleSet;
     
     private Module kernel;
@@ -44,10 +42,7 @@ public class Service implements Daemon {
         System.setProperty("trade.rootdir", File.separator + "home" + File.separator + 
                 "zygon" + File.separator + "opt" + File.separator + "trade");
         
-        // ConfigurationManager is a bump on a log right now.
-        this.configurationManager = new ConfigurationManager(new InMemoryInstallableStorageNEW());
-        
-        this.moduleSet = new ModuleSet(this.configurationManager.getStorage());
+        this.moduleSet = new ModuleSet(new InMemoryInstallableStorageNEW());
         
         Module[] modules = this.moduleSet.getModules();
         

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +144,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     /*pkg*/ void doInstall() {
         logger.info("Installing " + this.getDisplayname());
         boolean installed = false;
-        
+
         try {
             this.install();
             installed = true;
@@ -151,9 +152,9 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
             this.logger.error("Exception occurred while installing module " + this.name, th);
             th.printStackTrace();
         }
-        
+
         // TODO: persist meta information
-        
+
         if (installed) {
             Module[] modules = this.getModules();
             if (modules != null) {
@@ -162,7 +163,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
                 }
             }
         }
-        
+
         logger.info("Installation of " + this.getDisplayname() + " complete");
     }
     
@@ -253,6 +254,16 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     }
 
     @Override
+    public String getId() {
+        return this.name;
+    }
+
+    @Override
+    public InstallableMetaData getInstallableMetaData() {
+        return InstallableMetaDataHelper.createServerMetaProperties(this.getId(), this.getConfiguration(), this.getClass().getCanonicalName());
+    }
+
+    @Override
     public final String getNavigationElementToken() {
         return this.name.toLowerCase().replace(" ", "");
     }
@@ -312,8 +323,7 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return node;
     }
 
-    @Override
-    public ConfigurationSchema getSchema() {
+    public final ConfigurationSchema getSchema() {
         return this.schema;
     }
     
@@ -331,7 +341,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     public abstract void initialize();
 
-    @Override
     public void install() {
         
     }
@@ -361,7 +370,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
     
     public abstract void uninitialize();
 
-    @Override
     public void uninstall() {
         logger.info("Uninstalling " + this.getDisplayname());
         
@@ -370,24 +378,20 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         logger.info("Uninstallation of " + this.getDisplayname() + " complete");
     }
     
+    // This is silly direct-to-string writing - this needs to be extracted else
+    // where.
     private void writeStatus (StringBuilder sb) {
+        
+        sb.append("== Status for [").append(this.getDisplayname()).append("] ==").append('\n');
+        
         if (this.hasSchema()) {
             Configuration config = getConfiguration();
-            ConfigurationSchema schema = config.getSchema();
-        
-        // TBD
-        
-//        for (int i = 0; i < schema.getProperties().length; i++) {
-//            Property prop = schema.getProperties()[i];
-//            String configValue = config.getValue(prop.getName());
-//            if (configValue == null) {
-//                configValue = "[        ]";
-//            }
-//            sb.append(prop.getName()).append(":").append(configValue);
-//            if (i < schema.getProperties().length - 1) {
-//                sb.append('\n');
-//            }
-//        }
+
+            Map<String, String> configValues = config.getValues();
+            
+            for (Map.Entry<String, String> configEntry : configValues.entrySet()) {
+                sb.append("  # ").append(configEntry.getKey()).append(": ").append(configEntry.getValue()).append('\n');
+            }
         }
         
         this.doWriteStatus(sb);

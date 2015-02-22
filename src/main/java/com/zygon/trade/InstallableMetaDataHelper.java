@@ -4,31 +4,30 @@ package com.zygon.trade;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.zygon.configuration.Configuration;
-import com.zygon.configuration.MetaData;
 import java.util.Map;
 
 /**
  * 
  * This wraps the Metadata object because (as far as I can tell) it won't be able
- * to construct a subclass of MetaData during normal processing.
+ to construct a subclass of InstallableMetaData during normal processing.
  *
  * @author zygon
  */
-public class MetaDataHelper {
+public class InstallableMetaDataHelper {
 
     public static final String CLASS = "class";
     
-    public static MetaData createServerMetaProperties(String id, Configuration configuration, String clazz) {
+    public static InstallableMetaData createServerMetaProperties(String id, Configuration configuration, String clazz) {
         Map<String, String> properties = Maps.newHashMap();
         
         properties.put(CLASS, clazz);
         
-        return new MetaData(id, configuration, properties);
+        return new InstallableMetaData(id, configuration, properties);
     }
     
-    private final MetaData metaData;
+    private final InstallableMetaData metaData;
 
-    public MetaDataHelper(MetaData metaData) {
+    public InstallableMetaDataHelper(InstallableMetaData metaData) {
         Preconditions.checkNotNull(metaData);
         
         this.metaData = metaData;

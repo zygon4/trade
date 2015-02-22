@@ -1,6 +1,5 @@
 package com.zygon.trade;
 
-import com.zygon.configuration.MetaData;
 import com.zygon.util.DBUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -43,7 +42,7 @@ public class DerbyStorage implements InstallableStorage {
     
     // this, right here, is just some loggygagging - this needs to 
     // come from storage - and cleaner.
-    private final Map<String, MetaData> metadataById = new HashMap<>();
+    private final Map<String, Installable> metadataById = new HashMap<>();
     
     @Override
     public String[] getStoredIds() {
@@ -53,17 +52,17 @@ public class DerbyStorage implements InstallableStorage {
     }
     
     @Override
-    public MetaData retrieve(String id) {
+    public Installable retrieve(String id) {
         this.checkInstallation(this.con);
         
         return this.metadataById.get(id);
     }
 
     @Override
-    public void store(String id, MetaData metadata) {
-       this.checkInstallation(this.con);
-       
-       this.metadataById.put(id, metadata);
+    public void store(Installable installable) {
+        this.checkInstallation(this.con);
+        
+        this.metadataById.put(installable.getId(), installable);
     }
     
     

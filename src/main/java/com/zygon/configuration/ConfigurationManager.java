@@ -1,26 +1,25 @@
 
 package com.zygon.configuration;
 
-import com.zygon.trade.InstallableStorage;
+import com.google.common.base.Preconditions;
 
 /**
- *
  * @author zygon
  * 
+ * Idempotent Configuration Manager
  * 
- * TBD: Im not quite sure the full range of responsibility of this 
- * class is yet - it may go away, it may not.
  */
-public class ConfigurationManager {
+public final class ConfigurationManager {
     
-    private final InstallableStorage storage;
+    private final Configuration configuration;
 
-    public ConfigurationManager(InstallableStorage storage) {
-        this.storage = storage;
-    }
-    
-    public InstallableStorage getStorage() {
-        return storage;
+    public ConfigurationManager(Configuration configuration) {
+        Preconditions.checkNotNull(configuration);
+        
+        this.configuration = configuration;
     }
 
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
 }

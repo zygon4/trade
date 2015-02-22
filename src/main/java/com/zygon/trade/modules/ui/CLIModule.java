@@ -27,7 +27,7 @@ public class CLIModule extends Module {
     @Override
     public void initialize() {
         
-        this.controller = new UIController(this.getRoot(), null); // null for now
+        this.controller = new UIController(this.getRoot());
         
         try {
             this.controller.initialize();
