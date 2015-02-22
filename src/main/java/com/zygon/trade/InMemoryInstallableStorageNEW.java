@@ -12,6 +12,7 @@ import java.util.Map;
  *
  * @author zygon
  */
+@Deprecated
 public class InMemoryInstallableStorageNEW implements InstallableStorage {
 
     private Installable create(final InstallableMetaData metaData) {

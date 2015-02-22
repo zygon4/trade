@@ -7,10 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Using Derby db
  *
  * @author david.charubini
  */
-public class DerbyStorage implements InstallableStorage {
+public class LocalInstallableStorage implements InstallableStorage {
 
     static {
 	System.setProperty("derby.system.home", "/tmp");
@@ -21,7 +22,7 @@ public class DerbyStorage implements InstallableStorage {
     private final Connection con;
     private boolean installed = false;
 
-    public DerbyStorage(Connection con) {
+    public LocalInstallableStorage(Connection con) {
         this.con = con;
     }
     
@@ -73,7 +74,7 @@ public class DerbyStorage implements InstallableStorage {
 //        
 //        ConnectionManager cm = new ConnectionManager("org.apache.derby.jdbc.EmbeddedDriver");
 //        try {
-//            storage = new DerbyStorage(cm.getConnection());
+//            storage = new LocalInstallableStorage(cm.getConnection());
 //        } finally {
 //            cm.close();
 //        }
