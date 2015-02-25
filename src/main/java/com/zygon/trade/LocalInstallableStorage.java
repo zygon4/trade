@@ -1,10 +1,16 @@
 package com.zygon.trade;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.zygon.configuration.Configuration;
+import com.zygon.configuration.ConfigurationManager;
 import com.zygon.util.DBUtil;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Using Derby db
@@ -17,12 +23,17 @@ public class LocalInstallableStorage implements InstallableStorage {
 	System.setProperty("derby.system.home", "/tmp");
     }
     
-    private static final String TABLE_NAME = "install";
-    private static final String SCHEMA = "(id int)";
+    private static final String INSTALLED_TABLE_NAME = "INSTALLED";
+    private static final String INSTALLED_TABLE_SCHEMA = 
+            "(ID CHAR(1024) NOT NULL, CLASSNAME CHAR(1024) NOT NULL"
+            + "PRIMARY KEY (ID))";
+    
     private final Connection con;
     private boolean installed = false;
 
     public LocalInstallableStorage(Connection con) {
+        Preconditions.checkNotNull(con);
+        
         this.con = con;
     }
     
@@ -30,8 +41,8 @@ public class LocalInstallableStorage implements InstallableStorage {
         
         if (!this.installed) {
             try {
-                if (!DBUtil.tableExists(con, TABLE_NAME)) {
-                    DBUtil.createTable(con, TABLE_NAME, SCHEMA);
+                if (!DBUtil.tableExists(con, INSTALLED_TABLE_NAME)) {
+                    DBUtil.createTable(con, INSTALLED_TABLE_NAME, INSTALLED_TABLE_SCHEMA);
                 }
             } catch (SQLException sqe) {
                 // log/do something better
@@ -41,108 +52,93 @@ public class LocalInstallableStorage implements InstallableStorage {
         }
     }
     
-    // this, right here, is just some loggygagging - this needs to 
-    // come from storage - and cleaner.
-    private final Map<String, Installable> metadataById = new HashMap<>();
+    private Module createModule(String clazz, String name) 
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, 
+            NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+        
+        Class<Module> cls = (Class<Module>) Class.forName(clazz);
+        Constructor<Module> constructor = null;
+        Module newInstance = null;
+        
+        try {
+            constructor = cls.getConstructor(String.class);
+            newInstance = constructor.newInstance(name);
+        } catch (NoSuchMethodException nsme) {
+            // try again with parent module constructor signature
+            
+            constructor = cls.getConstructor();
+            newInstance = constructor.newInstance();
+        }
+        
+        return newInstance;
+    }
+    
+    private static final String QUERY_GET_INSTALLED_IDS = "SELECT ID FROM " + INSTALLED_TABLE_NAME;
     
     @Override
-    public String[] getStoredIds() {
+    public String[] getStoredIds() throws SQLException {
         this.checkInstallation(this.con);
         
-        return this.metadataById.keySet().toArray(new String[this.metadataById.keySet().size()]);
+        List<String> storedIds = Lists.newArrayList();
+        
+        try (ResultSet results = DBUtil.executeQuery(this.con, QUERY_GET_INSTALLED_IDS)) {
+            while (results.next()) {
+                storedIds.add(results.getString(1));
+            }
+        }
+        
+        return storedIds.toArray(new String[storedIds.size()]);
+    }
+    
+    private static String createRetrieveInstallableQuery(String id) {
+        return String.format("SELECT * FROM %s WHERE ID = '%s'", INSTALLED_TABLE_NAME, id);
     }
     
     @Override
-    public Installable retrieve(String id) {
+    public Installable retrieve(String id) throws SQLException {
         this.checkInstallation(this.con);
         
-        return this.metadataById.get(id);
+        try (ResultSet result = DBUtil.executeQuery(this.con, createRetrieveInstallableQuery(id))) {
+            if (!result.next()) {
+                // Not found - do a precheck?
+                return null;
+            }
+            
+            // 1) Instantiate class via its classpath
+            String idCol = result.getString(1);
+            String classnameCol = result.getString(2);
+            
+            try {
+                Module installedModule = this.createModule(classnameCol, idCol);
+
+                // 2) Check for configuration from Config Manager using id
+                Configuration installedModuleConfiguration = new ConfigurationManager(this.con, installedModule.getId()).getConfiguration();
+
+                return installedModule;                
+            } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
+                     InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
+                // log/do something better
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
-    @Override
-    public void store(Installable installable) {
-        this.checkInstallation(this.con);
-        
-        this.metadataById.put(installable.getId(), installable);
+    private static String createStoreInstallable(String id, String clazz) {
+        return String.format(
+            "INSERT INTO %s (ID, CLASSNAME) " +
+            "VALUES ('%s', '%s')",
+            INSTALLED_TABLE_NAME, id, clazz
+            );
     }
     
-    
-//    public static void main(String[] args) throws Exception {
-//        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-//
-//        InstallableStorage storage = null;
-//        
-//        ConnectionManager cm = new ConnectionManager("org.apache.derby.jdbc.EmbeddedDriver");
-//        try {
-//            storage = new LocalInstallableStorage(cm.getConnection());
-//        } finally {
-//            cm.close();
-//        }
-//        
-//        storage.store("1", null);
-//        storage.retrieve("1");
-//        String[] storedIds = storage.getStoredIds();
-//                             
-//        //        
-//        //        
-//        //        Properties p = new Properties();
-//        //
-//        //        p.put("user", "sa");
-//        //        p.put("password", "");
-//        //
-//        //        Connection con = null;
-//        //        
-//        //        try {
-//        //            con = DriverManager.getConnection("jdbc:derby:mynewDB;create=true", p);
-//        //            
-//        //            boolean tableExists = false;
-//        //            try {
-//        //                tableExists = tableExists(con, "foo");
-//        //            } catch (SQLException sql) {
-//        //                tableExists = false;
-//        //            }
-//        //            
-//        //            Statement stmt = null;
-//        //            if (tableExists) {
-//        //                try {
-//        //                    stmt = con.createStatement();
-//        //                    stmt.execute("drop table mynewDB.foo");
-//        //                } finally {
-//        //                    if (stmt != null) { stmt.close(); }
-//        //                }
-//        //            }
-//        //            
-//        //            try {
-//        //                stmt = con.createStatement();
-//        //                stmt.execute("create table foo(id int)");
-//        //            } finally {
-//        //                if (stmt != null) { stmt.close(); }
-//        //            }
-//        //            
-//        //            try {
-//        //                stmt = con.createStatement();
-//        //                stmt.execute("insert into foo values(1)");
-//        //            } finally {
-//        //                if (stmt != null) { stmt.close(); }
-//        //            }
-//        //            
-//        //            try {
-//        //                stmt = con.createStatement();
-//        //                ResultSet results = stmt.executeQuery("select * from foo");
-//        //                
-//        //                while (results.next()) {
-//        //                    System.out.println("result: " + results.getInt("id"));
-//        //                }
-//        //            } finally {
-//        //                if (stmt != null) { stmt.close(); }
-//        //            }
-//        //            
-//        //        } catch (SQLException se) {
-//        //            se.printStackTrace();
-//        //        } finally {
-//        //            if (con != null) {
-//        //                con.close();
-//        //            }
-//        //        }
-//    }
+    @Override
+    public void store(Installable installable) throws SQLException {
+        this.checkInstallation(this.con);
+        
+        String id = new InstallableMetaDataHelper(installable.getInstallableMetaData()).getId();
+        String clazz = new InstallableMetaDataHelper(installable.getInstallableMetaData()).getClazz();
+
+        String storeSql = createStoreInstallable(id, clazz);
+        DBUtil.executeUpdate(this.con, storeSql);
+    }
 }

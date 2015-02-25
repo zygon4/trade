@@ -4,6 +4,7 @@
 
 package com.zygon.trade;
 
+import com.zygon.configuration.Configurable;
 import com.google.common.base.Preconditions;
 import com.zygon.configuration.Configuration;
 import com.google.common.collect.Lists;

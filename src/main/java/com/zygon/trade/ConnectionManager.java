@@ -1,10 +1,8 @@
-
 package com.zygon.trade;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  *
@@ -13,39 +11,38 @@ import java.util.Properties;
 /*pkg*/ class ConnectionManager {
 
     private static final String DATABASE_NAME = "trade";
-    
+    private static final String DBURL = "jdbc:derby:" + DATABASE_NAME +";create=true;user=sa;password=";
+
     // could handle pooling, limiting, etc
-    
     private final String driverClazz;
     private Connection con = null;
 
     public ConnectionManager(String driverClazz) throws ClassNotFoundException {
         this.driverClazz = driverClazz;
     }
-    
-    public void close() throws SQLException {
-        this.con.close();
-        this.con = null;
-    }
+
+    public void shutdown() throws SQLException {
+        if (this.con != null) {
+            DriverManager.getConnection(DBURL + ";shutdown=true");
+            this.con.close();
+            this.con = null;
+        }
+    }    
     
     public Connection getConnection() throws SQLException {
-        
+
         if (this.con == null) {
-            
+
             try {
                 Class.forName(this.driverClazz);
             } catch (ClassNotFoundException cnf) {
                 // TBD:?? what else to do?
                 throw new RuntimeException(cnf);
             }
-            
-            Properties p = new Properties();
-            p.put("user", "sa");
-            p.put("password", "");
-            
-            this.con = DriverManager.getConnection("jdbc:derby:"+DATABASE_NAME+";create=true", p);
+
+            this.con = DriverManager.getConnection(DBURL);
         }
-        
+
         return this.con;
     }
 }

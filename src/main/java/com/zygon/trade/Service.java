@@ -42,7 +42,11 @@ public class Service implements Daemon {
         System.setProperty("trade.rootdir", File.separator + "home" + File.separator + 
                 "zygon" + File.separator + "opt" + File.separator + "trade");
         
-        this.moduleSet = new ModuleSet(new InMemoryInstallableStorageNEW());
+        LocalInstallableStorage localInstallableStorage = new LocalInstallableStorage(this.connectionManager.getConnection());
+        
+        // TODO: Get modules from classpath and give to ModuleSet
+        
+        this.moduleSet = new ModuleSet(localInstallableStorage);
         
         Module[] modules = this.moduleSet.getModules();
         
@@ -93,7 +97,7 @@ public class Service implements Daemon {
         log.info("Destroying");
         
         try {
-            this.connectionManager.close();
+            this.connectionManager.shutdown();
         } catch (SQLException e) {
             // Not sure what else to do..
             e.printStackTrace(System.err);

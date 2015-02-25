@@ -9,6 +9,8 @@ import com.google.common.base.Preconditions;
  */
 public class Version {
     
+    public static Version VERSION_1_0_0 = new Version(1, 0, 0);
+    
     private final int major;
     private final int minor;
     private final int point;

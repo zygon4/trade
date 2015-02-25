@@ -16,22 +16,26 @@ public class DBUtil {
     private DBUtil() {}
     
     public static void createTable(Connection con, String tableName, String schema) throws SQLException {
-        Statement stmt = null;
-        try {
-            stmt = con.createStatement();
-            stmt.execute("create table "+tableName+" "+schema);
-        } finally {
-            if (stmt != null) { stmt.close(); }
+        try (Statement stmt = con.createStatement()) {
+            stmt.execute("CREATE TABLE " + tableName + " " + schema);
         }
     }
     
     public static void deleteTable(Connection con, String tableName) throws SQLException {
-        Statement stmt = null;
-        try {
-            stmt = con.createStatement();
-            stmt.execute("drop table " + tableName);
-        } finally {
-            if (stmt != null) { stmt.close(); }
+        try (Statement stmt = con.createStatement()) {
+            stmt.execute("DROP TABLE " + tableName);
+        }
+    }
+    
+    public static int executeUpdate(Connection con, String query) throws SQLException {
+        try (Statement stmt = con.createStatement()) {
+            return stmt.executeUpdate(query);
+        }
+    }
+    
+    public static ResultSet executeQuery(Connection con, String query) throws SQLException {
+        try (Statement stmt = con.createStatement()) {
+            return stmt.executeQuery(query);
         }
     }
     
