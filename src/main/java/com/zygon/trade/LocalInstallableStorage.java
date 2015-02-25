@@ -112,7 +112,7 @@ public class LocalInstallableStorage implements InstallableStorage {
                 Module installedModule = this.createModule(classnameCol, idCol);
 
                 // 2) Check for configuration from Config Manager using id
-                Configuration installedModuleConfiguration = new ConfigurationManager(this.con, installedModule.getId()).getConfiguration();
+                Configuration installedModuleConfiguration = new ConfigurationManager(this.con, installedModule).getConfiguration();
 
                 return installedModule;                
             } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 

@@ -25,16 +25,16 @@ public final class ConfigurationManager {
             + "CONSTRAINT ID_FK FOREIGN KEY (ID) REFERENCES INSTALLED (ID)";
     
     private final Connection con;
-    private final String configurableId;
+    private final Configurable configurable;
     
     private boolean installed = false;
 
-    public ConfigurationManager(Connection con, String configurableId) {
+    public ConfigurationManager(Connection con, Configurable configurable) {
         Preconditions.checkNotNull(con);
-        Preconditions.checkNotNull(configurableId);
+        Preconditions.checkNotNull(configurable);
         
         this.con = con;
-        this.configurableId = configurableId;
+        this.configurable = configurable;
     }
     
     private void checkInstallation(Connection con) {
@@ -55,7 +55,7 @@ public final class ConfigurationManager {
     public Configuration getConfiguration() {
         this.checkInstallation(this.con);
         
-        return new Configuration(new ConfigurationSchema(this.configurableId, "v1", new IntegerSchemaElement("count", "some important count", 50, 0, 100)));
+        return new Configuration(new ConfigurationSchema(this.configurable.getId(), "v1", new IntegerSchemaElement("count", "some important count", 50, 0, 100)));
     }
     
     public void store (Configuration configuration) {
