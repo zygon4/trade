@@ -198,7 +198,6 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         // If children have additional info to write out
     }
 
-    @Override
     public Configuration getConfiguration() {
         // TBD: return default config if nothing is set.
         return this.configuration;

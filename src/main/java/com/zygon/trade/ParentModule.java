@@ -1,7 +1,6 @@
 
 package com.zygon.trade;
 
-import com.zygon.configuration.Configurable;
 import com.zygon.configuration.Configuration;
 import com.zygon.command.Command;
 import com.zygon.command.CommandResult;
@@ -28,10 +27,10 @@ public abstract class ParentModule extends Module {
         this.childClazz = childClazz;
         this.logger = LoggerFactory.getLogger(name);
         
-        Configurable instance = null;
+        Module instance = null;
         
         try {
-            instance = (Configurable) this.childClazz.getConstructor(String.class).newInstance("foo");
+            instance = (Module) this.childClazz.getConstructor(String.class).newInstance("foo");
         } catch (Exception e) {
             logger.error(null, e);
             throw new RuntimeException();
@@ -68,7 +67,7 @@ public abstract class ParentModule extends Module {
         if (install) {
             instance.install();
             instance.configure(config);
-            
+        
             try {
                 instance.doInit();
             } catch (Throwable th) {

@@ -7,6 +7,5 @@ package com.zygon.configuration;
  */
 public interface Configurable {
     public void configure(Configuration configuration);
-    public Configuration getConfiguration();
     public String getId();
 }
