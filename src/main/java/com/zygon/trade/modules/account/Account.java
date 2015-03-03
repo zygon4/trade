@@ -5,6 +5,10 @@ import com.google.common.collect.Lists;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.configuration.Configuration;
+import com.zygon.schema.PropertiesSchemaElement;
+import com.zygon.schema.SchemaElement;
+import com.zygon.schema.StringElement;
+import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.trade.Module;
 import com.zygon.trade.Schema;
 import com.zygon.trade.execution.AccountController;
@@ -18,7 +22,22 @@ import org.joda.money.CurrencyUnit;
  * @author zygon
  */
 public class Account extends Module {
-
+    
+    private static Schema createSchema() {
+        
+        StringElement brokerName = new StringElement("brokerName", "Broker name", "");
+        StringElement accountId = new StringElement("accountId", "Account identifier", "");
+        
+        PropertiesSchemaElement properties = 
+                new PropertiesSchemaElement(
+                        "Account properties", 
+                        new SchemaElement[] {brokerName, accountId});
+        
+        ConfigurationSchema configSchema = new ConfigurationSchema(Account.class.getCanonicalName()+"_schema", "v1", properties);
+        
+        return new Schema(configSchema);
+    }
+    
     private static Collection<String> getSupportedCommands() {
         Collection<String> supportedCommands = Lists.newArrayList();
         
@@ -27,14 +46,12 @@ public class Account extends Module {
         return supportedCommands;
     }
     
-    private static final Schema SCHEMA = new Schema("account_schema.json");
-    
     private String brokerName;
     private String accountID;
     private AccountController accountController = null;
     
     public Account(String name) {
-        super(name, SCHEMA, getSupportedCommands());
+        super(name, createSchema(), getSupportedCommands());
     }
 
     @Override

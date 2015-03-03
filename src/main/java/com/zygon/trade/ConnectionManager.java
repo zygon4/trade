@@ -11,7 +11,7 @@ import java.sql.SQLException;
 /*pkg*/ class ConnectionManager {
 
     private static final String DATABASE_NAME = "trade";
-    private static final String DBURL = "jdbc:derby:" + DATABASE_NAME +";create=true;user=sa;password=";
+    private static final String DBURL = "jdbc:derby:" + DATABASE_NAME +";create=true";
 
     // could handle pooling, limiting, etc
     private final String driverClazz;

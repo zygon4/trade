@@ -33,17 +33,10 @@ public class DBUtil {
         }
     }
     
-    public static ResultSet executeQuery(Connection con, String query) throws SQLException {
-        try (Statement stmt = con.createStatement()) {
-            return stmt.executeQuery(query);
-        }
-    }
-    
     public static boolean tableExists(Connection con, String tableName) throws SQLException {
 
         DatabaseMetaData metaData = con.getMetaData();
         ResultSet resultSet = metaData.getTables(null, null, tableName, null);
-
-        return resultSet != null;
+        return resultSet.next();
     }
 }

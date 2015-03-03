@@ -36,10 +36,10 @@ public abstract class ParentModule extends Module {
             throw new RuntimeException();
         }
         
-        this.childSchema = instance.getConfiguration().getSchema();
+        this.childSchema = instance.getSchema();
         
         if (childSchema == null) {
-            throw new IllegalStateException("Child class " + this.childClazz + " must provide a schema");
+            throw new IllegalStateException("Child class [" + this.childClazz + "] must provide a schema");
         }
     }
 

@@ -12,6 +12,17 @@ import java.util.Map;
  */
 public class PropertiesSchemaElement extends SchemaElement {
 
+    private static String[] getRequiredElementIds(SchemaElement[] schemaElements) {
+        String[] ids = new String[schemaElements.length];
+        
+        int i = 0;
+        for (SchemaElement element : schemaElements) {
+            ids[i++] = element.getId();
+        }
+        
+        return ids;
+    }
+
     private final SchemaElement[] possibleElements;
     private final String[] requiredElementIdentifiers;
     
@@ -20,6 +31,10 @@ public class PropertiesSchemaElement extends SchemaElement {
         
         this.possibleElements = possibleElements;
         this.requiredElementIdentifiers = requiredElementIdentifiers;
+    }
+    
+    public PropertiesSchemaElement(String description, SchemaElement[] possibleElements) {
+        this(description, possibleElements, getRequiredElementIds(possibleElements));
     }
 
     @Override

@@ -2,7 +2,10 @@
 package com.zygon.trade.modules.execution.broker;
 
 import com.zygon.configuration.Configuration;
+import com.zygon.schema.StringElement;
+import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.trade.Module;
+import com.zygon.trade.Schema;
 import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
 import com.zygon.trade.trade.TradeBroker;
 
@@ -12,11 +15,19 @@ import com.zygon.trade.trade.TradeBroker;
  */
 public class Broker extends Module {
 
+    private static Schema createSchema() {
+        
+        StringElement connections = new StringElement("accountId", "Account Identifier", "");
+        ConfigurationSchema configSchema = new ConfigurationSchema(Broker.class.getCanonicalName()+"_schema", "v1", connections);
+        
+        return new Schema(configSchema);
+    }
+    
     private String accountId = null;
     private TradeBroker broker;
     
     public Broker(String name) {
-        super(name, null, null);
+        super(name, createSchema(), null);
     }
 
     @Override

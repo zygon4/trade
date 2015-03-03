@@ -20,8 +20,8 @@ public class CLIModule extends Module {
 
     private UIController controller = null;
 
-    public CLIModule(String name) {
-        super(name, new Schema(new ConfigurationSchema("CLIModule_schema", "v1", new BooleanSchemaElement("enabled", "enabled or not", true))));
+    public CLIModule() {
+        super("cli", new Schema(new ConfigurationSchema("CLIModule_schema", "v1", new BooleanSchemaElement("enabled", "enabled or not", true))));
     }
 
     @Override

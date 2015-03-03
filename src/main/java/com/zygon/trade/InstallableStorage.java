@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @author davec
  */
 public interface InstallableStorage {
+    public void remove(String id) throws SQLException;
     public String[] getStoredIds() throws SQLException;
     public Installable retrieve(String id) throws SQLException;
     public void store(Installable installable) throws SQLException;

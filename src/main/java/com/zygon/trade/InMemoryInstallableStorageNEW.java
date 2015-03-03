@@ -4,6 +4,7 @@ package com.zygon.trade;
 import com.zygon.configuration.Configuration;
 import com.zygon.trade.modules.core.PlaygroundModule;
 import com.zygon.trade.modules.ui.CLIModule;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class InMemoryInstallableStorageNEW implements InstallableStorage {
     private final Map<String, Installable> metadataById = new HashMap<>();
     
     {
-        CLIModule cliModule = new CLIModule("cli");
+        CLIModule cliModule = new CLIModule();
         Configuration cliConfig = cliModule.hasSchema() ? new Configuration(cliModule.getSchema()) : null;
         this.metadataById.put(cliModule.getDisplayname(), 
                 create(InstallableMetaDataHelper.createServerMetaProperties(cliModule.getDisplayname(), cliConfig, "com.zygon.trade.modules.ui.CLIModule")));
@@ -50,6 +51,11 @@ public class InMemoryInstallableStorageNEW implements InstallableStorage {
         return this.metadataById.keySet().toArray(new String[this.metadataById.keySet().size()]);
     }
 
+    @Override
+    public void remove(String id) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public Installable retrieve(String id) {
         return this.metadataById.get(id);

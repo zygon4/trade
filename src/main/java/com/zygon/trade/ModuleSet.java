@@ -3,8 +3,6 @@ package com.zygon.trade;
 
 import com.google.common.collect.Maps;
 import com.zygon.configuration.Configuration;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,33 +27,14 @@ import java.util.Map.Entry;
         try {
             for (Entry<String, Module> entry : this.modulesById.entrySet()) {
                 InstallableMetaData meta = this.installableStorage.retrieve(entry.getKey()).getInstallableMetaData();
-                entry.getValue().configure(meta.getConfiguration());
+                if (meta.hasConfiguration()) {
+                    entry.getValue().configure(meta.getConfiguration());
+                }
             }
         } catch (SQLException sql) {
             // TODO: log fatal error
             throw new RuntimeException(sql);
         }
-    }
-    
-    private Module createModule(String clazz, String name) 
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, 
-            NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
-        
-        Class<Module> cls = (Class<Module>) Class.forName(clazz);
-        Constructor<Module> constructor = null;
-        Module newInstance = null;
-        
-        try {
-            constructor = cls.getConstructor(String.class);
-            newInstance = constructor.newInstance(name);
-        } catch (NoSuchMethodException nsme) {
-            // try again with parent module constructor signature
-            
-            constructor = cls.getConstructor();
-            newInstance = constructor.newInstance();
-        }
-        
-        return newInstance;
     }
     
     /*pkg*/ Module[] getModules() {
@@ -77,7 +56,7 @@ import java.util.Map.Entry;
                 Module mod = null;
 
                 try {
-                    mod = this.createModule(moduleMeta.getClazz(), moduleMeta.getId());
+                    mod = Module.createModule(moduleMeta.getClazz(), moduleMeta.getId());
                 } catch (Exception e) {
                     // Treat as fatal
                     e.printStackTrace();
@@ -109,7 +88,7 @@ import java.util.Map.Entry;
                 // We are possibly re-creating a lot of classes here - we could
                 // optimize if it becomes a problem.
                 try {
-                    mod = this.createModule(moduleMeta.getClazz(), moduleMeta.getId());
+                    mod = Module.createModule(moduleMeta.getClazz(), moduleMeta.getId());
                 } catch (Exception e) {
                     // Treat as fatal
                     e.printStackTrace();

@@ -2,8 +2,6 @@
 package com.zygon.configuration;
 
 import com.google.common.base.Preconditions;
-import com.zygon.schema.IntegerSchemaElement;
-import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.util.DBUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,49 +14,56 @@ import java.sql.SQLException;
  */
 public final class ConfigurationManager {
     
-    // DB tables reference is kind of backwards - It would be nice to have
-    // a more generic schema name/location vs "INSTALL"
-    private static final String CONFIGURATION_TABLE_NAME = "INSTALL.CONFIGURATION";
+    private static final String CONFIGURATION_TABLE_NAME = "CONFIGURATION";
     private static final String CONFIGURATION_TABLE_SCHEMA = 
-            "(ID CHAR(1024) NOT NULL, CLASSNAME CHAR(1024) NOT NULL "
+            "(ID VARCHAR(1024) NOT NULL, CLASSNAME VARCHAR(1024) NOT NULL, "
             + "PRIMARY KEY (ID), "
-            + "CONSTRAINT ID_FK FOREIGN KEY (ID) REFERENCES INSTALLED (ID)";
+            + "CONSTRAINT ID_FK FOREIGN KEY (ID) REFERENCES INSTALLED (ID))";
     
     private final Connection con;
     private final Configurable configurable;
+    private final Configuration configuration;
     
-    private boolean installed = false;
-
     public ConfigurationManager(Connection con, Configurable configurable) {
         Preconditions.checkNotNull(con);
         Preconditions.checkNotNull(configurable);
+        Preconditions.checkNotNull(configurable.getSchema());
         
         this.con = con;
         this.configurable = configurable;
+        this.configuration = new Configuration(this.configurable.getSchema());
+        
+        this.installConfigurationResources(this.con);
     }
     
-    private void checkInstallation(Connection con) {
-        
-        if (!this.installed) {
-            try {
-                if (!DBUtil.tableExists(con, CONFIGURATION_TABLE_NAME)) {
-                    DBUtil.createTable(con, CONFIGURATION_TABLE_NAME, CONFIGURATION_TABLE_SCHEMA);
-                }
-            } catch (SQLException sqe) {
-                // log/do something better
-                throw new RuntimeException(sqe);
+    private void installConfigurationResources(Connection con) {
+        try {
+            if (!DBUtil.tableExists(con, CONFIGURATION_TABLE_NAME)) {
+                DBUtil.createTable(con, CONFIGURATION_TABLE_NAME, CONFIGURATION_TABLE_SCHEMA);
             }
-            this.installed = true;
+        } catch (SQLException sqe) {
+            // log/do something better
+            throw new RuntimeException(sqe);
         }
     }
     
     public Configuration getConfiguration() {
-        this.checkInstallation(this.con);
-        
-        return new Configuration(new ConfigurationSchema(this.configurable.getId(), "v1", new IntegerSchemaElement("count", "some important count", 50, 0, 100)));
+        return this.configuration;
     }
     
-    public void store (Configuration configuration) {
+    public boolean isConfigurableStored() {
+        // TBD: does "configurableStored" mean that there's a spot open for
+        // this configurable, or does it mean that all configuration content
+        // has been configured?
+        
+        // TODO: query db
+        return false;
+    }
+    
+    public void store() {
         // TODO: persist
+        
+        // TODO: try/catch/rollback
+        this.configurable.configure(this.getConfiguration());
     }
 }

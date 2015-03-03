@@ -15,6 +15,8 @@ import com.zygon.schema.parse.ConfigurationSchema;
 import com.zygon.schema.parse.JSONSchemaParser;
 import com.zygon.schema.parse.SchemaParser;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +35,38 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Module implements OutputProvider, CommandProcessor, Installable, Configurable {
 
+    /*pkg*/ static  Module createModule(String clazz, String name) 
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, 
+            NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+        
+        Class<Module> cls = (Class<Module>) Class.forName(clazz);
+        Constructor<Module> constructor = null;
+        Module newInstance = null;
+        
+        if (name != null) {
+            try {
+                constructor = cls.getConstructor(String.class);
+                newInstance = constructor.newInstance(name);
+            } catch (NoSuchMethodException nsme) {
+                // try again with parent module constructor signature
+
+                constructor = cls.getConstructor();
+                newInstance = constructor.newInstance();
+            }
+        } else {
+            constructor = cls.getConstructor();
+            newInstance = constructor.newInstance();
+        }
+        
+        return newInstance;
+    }
+    
+    /*pkg*/ static  Module createModule(String clazz) 
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, 
+            NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+        return createModule(clazz, null);
+    }
+    
     // TBD: unique identifier using the name
     private final String name;
     private final Logger logger;
@@ -323,12 +357,13 @@ public abstract class Module implements OutputProvider, CommandProcessor, Instal
         return node;
     }
 
+    @Override
     public final ConfigurationSchema getSchema() {
         return this.schema;
     }
     
     protected final boolean hasSchema() {
-        return this.schema != null;
+        return this.getSchema() != null;
     }
     
     /**
