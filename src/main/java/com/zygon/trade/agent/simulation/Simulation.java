@@ -24,14 +24,12 @@ import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.trade.TradeSummary;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
-
 
 
 /**
@@ -150,8 +148,8 @@ public class Simulation<T> {
                 Collection<Interpreter<Ticker>> interpreters = createInterpretters();
                 
                 Wallet[] wallets = new Wallet[]{
-                    new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1100.0)),
-                    new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 1.5))
+                    new Wallet("USD", BigDecimal.valueOf(1100.0)),
+                    new Wallet("BTC", BigDecimal.valueOf(1.5))
                 };
                 
                 

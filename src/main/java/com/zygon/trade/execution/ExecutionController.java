@@ -99,7 +99,7 @@ public final class ExecutionController {
             throw new IllegalStateException("No wallet of currency " + currency + " found");
         }
         
-        return wallet.getBalance().getAmount().doubleValue();
+        return wallet.getBalance().doubleValue();
     }
     
     public String placeOrder (String username, Order order) throws ExchangeException {

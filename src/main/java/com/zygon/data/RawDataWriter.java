@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Date;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
 
 /**
  *
@@ -72,11 +70,11 @@ public class RawDataWriter<T> {
                 new Date(), 
                 "BOX", 
                 "USD", 
-                BigMoney.of(CurrencyUnit.USD, 1.34), 
-                BigMoney.of(CurrencyUnit.USD, 1.37), 
-                BigMoney.of(CurrencyUnit.USD, 1.32), 
-                BigMoney.of(CurrencyUnit.USD, 1.37), 
-                BigMoney.of(CurrencyUnit.USD, 1.33), 
+                BigDecimal.valueOf(1.34), 
+                BigDecimal.valueOf(1.37), 
+                BigDecimal.valueOf(1.32), 
+                BigDecimal.valueOf(1.37), 
+                BigDecimal.valueOf(1.33), 
                 BigDecimal.valueOf(99.9)));
     }
     

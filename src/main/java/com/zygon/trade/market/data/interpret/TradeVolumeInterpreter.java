@@ -17,7 +17,7 @@ public class TradeVolumeInterpreter implements Interpreter<Trade> {
     @Override
     public Volume[] interpret(Trade in) {
         return new Volume[] {
-            new Volume(in.getTradableIdentifier(), in.getTransactionCurrency(), 
+            new Volume(in.getCurrencyPair().baseSymbol, in.getCurrencyPair().counterSymbol, 
                 in.getTimestamp().getTime(), in.getTradableAmount().doubleValue())};
     }
 }

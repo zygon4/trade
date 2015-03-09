@@ -17,8 +17,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
 
 /**
  * This might become a "trade manager" in the future.  Being a full manager
@@ -305,8 +303,8 @@ public class TradeMonitor {
         for (TradeSignal signal : this.trade.getTradeSignals()) {
             
             signal.getPriceObjective().setPrice(this.enterPrice);
-            BigMoney signalCurrencybalance = this.accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), this.enterPrice);
+            BigDecimal signalCurrencybalance = this.accountInfo.getBalance(signal.getCurrency());
+            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.doubleValue(), this.enterPrice);
 
             String orderKey = generateOrderKey(this.tradeId, String.valueOf(orderId++));
             // TODO: limit order by not generating an order immediately - wait for the ticker notification instead

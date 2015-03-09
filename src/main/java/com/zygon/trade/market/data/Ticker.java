@@ -6,7 +6,6 @@ package com.zygon.trade.market.data;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import org.joda.money.BigMoney;
 
 /**
  *
@@ -18,15 +17,15 @@ public class Ticker {
     private Date timestamp;
     private String source;
     private String currency;
-    private BigMoney last;
-    private BigMoney bid;
-    private BigMoney ask;
-    private BigMoney high;
-    private BigMoney low;
+    private BigDecimal last;
+    private BigDecimal bid;
+    private BigDecimal ask;
+    private BigDecimal high;
+    private BigDecimal low;
     private BigDecimal volume;
     
-    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigMoney last, BigMoney bid, 
-            BigMoney ask, BigMoney high, BigMoney low, BigDecimal volume) {
+    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigDecimal last, BigDecimal bid, 
+            BigDecimal ask, BigDecimal high, BigDecimal low, BigDecimal volume) {
         // TODO: uncomment this and restrict inputs
 //        if (tradeableIdentifer == null) {
 //            throw new IllegalArgumentException("tradeableIdentifer cannot be null");
@@ -54,15 +53,15 @@ public class Ticker {
     }
     
     public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String currency) {
-        this (tick.getTradableIdentifier(), getAdjustedDate(tick.getTimestamp()), "", currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
+        this (tick.getCurrencyPair().baseSymbol, getAdjustedDate(tick.getTimestamp()), "", currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
                 tick.getHigh(), tick.getLow(), tick.getVolume());
     }
 
-    public BigMoney getAsk() {
+    public BigDecimal getAsk() {
         return this.ask;
     }
 
-    public BigMoney getBid() {
+    public BigDecimal getBid() {
         return this.bid;
     }
     
@@ -70,15 +69,15 @@ public class Ticker {
         return this.currency;
     }
 
-    public BigMoney getHigh() {
+    public BigDecimal getHigh() {
         return this.high;
     }
 
-    public BigMoney getLast() {
+    public BigDecimal getLast() {
         return this.last;
     }
 
-    public BigMoney getLow() {
+    public BigDecimal getLow() {
         return this.low;
     }
 
@@ -98,11 +97,11 @@ public class Ticker {
         return this.timestamp;
     }
 
-    public void setAsk(BigMoney ask) {
+    public void setAsk(BigDecimal ask) {
         this.ask = ask;
     }
 
-    public void setBid(BigMoney bid) {
+    public void setBid(BigDecimal bid) {
         this.bid = bid;
     }
 
@@ -110,15 +109,15 @@ public class Ticker {
         this.currency = currency;
     }
     
-    public void setHigh(BigMoney high) {
+    public void setHigh(BigDecimal high) {
         this.high = high;
     }
     
-    public void setLast(BigMoney last) {
+    public void setLast(BigDecimal last) {
         this.last = last;
     }
 
-    public void setLow(BigMoney low) {
+    public void setLow(BigDecimal low) {
         this.low = low;
     }
 
@@ -146,11 +145,11 @@ public class Ticker {
                 this.getTradableIdentifier(),
                 this.getCurrency(),
                 this.getSource(),
-                this.last.getAmount().toPlainString(),
-                this.bid.getAmount().toPlainString(),
-                this.ask.getAmount().toPlainString(),
-                this.high.getAmount().toPlainString(),
-                this.low.getAmount().toPlainString(),
+                this.last.toPlainString(),
+                this.bid.toPlainString(),
+                this.ask.toPlainString(),
+                this.high.toPlainString(),
+                this.low.toPlainString(),
                 this.volume.toPlainString(),
                 this.getTimestamp());
         } catch (Exception e) {

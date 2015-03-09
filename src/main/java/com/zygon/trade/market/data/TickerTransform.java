@@ -9,7 +9,6 @@ import com.zygon.database.cassandra.CassandraPersistableComponent;
 import java.math.BigDecimal;
 import java.util.Date;
 import me.prettyprint.hector.api.beans.Composite;
-import org.joda.money.BigMoney;
 
 /**
  *
@@ -68,12 +67,12 @@ public class TickerTransform implements DataTransform<Ticker> {
         Date timestamp = nameComponent.getComponent();
         
         PersistableComponent<Composite> value = val.getValue();
-        BigMoney last = BigMoney.parse(value.getComponent().get(0, CassDAO.UTF8Type));
-        BigMoney bid = BigMoney.parse(value.getComponent().get(1, CassDAO.UTF8Type));
-        BigMoney ask = BigMoney.parse(value.getComponent().get(2, CassDAO.UTF8Type));
-        BigMoney high = BigMoney.parse(value.getComponent().get(3, CassDAO.UTF8Type));
-        BigMoney low = BigMoney.parse(value.getComponent().get(4, CassDAO.UTF8Type));
-        BigDecimal volume = BigDecimal.valueOf(value.getComponent().get(5, CassDAO.DoubleType));
+        BigDecimal last = new BigDecimal(value.getComponent().get(0, CassDAO.UTF8Type));
+        BigDecimal bid = new BigDecimal(value.getComponent().get(1, CassDAO.UTF8Type));
+        BigDecimal ask = new BigDecimal(value.getComponent().get(2, CassDAO.UTF8Type));
+        BigDecimal high = new BigDecimal(value.getComponent().get(3, CassDAO.UTF8Type));
+        BigDecimal low = new BigDecimal(value.getComponent().get(4, CassDAO.UTF8Type));
+        BigDecimal volume = new BigDecimal(value.getComponent().get(5, CassDAO.DoubleType));
         
         return new Ticker(tradeable, timestamp, source, currency, last, bid, ask, high, low, volume);
     }

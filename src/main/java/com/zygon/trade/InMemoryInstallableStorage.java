@@ -87,8 +87,8 @@ public class InMemoryInstallableStorage implements InstallableStorage {
         Configuration mtgoxConfig = new Configuration(mtgoxTicker.getConfiguration().getSchema());
         mtgoxConfig.setStringValue("name", mtgoxTicker.getDisplayname());
         mtgoxConfig.setStringValue("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
-        mtgoxConfig.setStringValue("tradeable", CurrencyPair.BTC_USD.baseCurrency);
-        mtgoxConfig.setStringValue("currency", CurrencyPair.BTC_USD.counterCurrency);
+        mtgoxConfig.setStringValue("tradeable", CurrencyPair.BTC_USD.baseSymbol);
+        mtgoxConfig.setStringValue("currency", CurrencyPair.BTC_USD.counterSymbol);
 //        mtgoxConfig.setStringValue("data-set-identifier", mtgoxTickerDataSet.getDisplayname());
         this.metadataById.put(mtgoxTicker.getDisplayname(), 
                 create(InstallableMetaDataHelper.createServerMetaProperties(mtgoxTicker.getDisplayname(), mtgoxConfig, "com.zygon.trade.modules.data.DataFeed")));

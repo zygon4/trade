@@ -22,8 +22,8 @@ public class TradePriceInterpreter implements Interpreter<Trade> {
             // TODO: wrap the xeiam.xchange Trade with a local Trade that
             // provides a currency
             
-            new Price(in.getTradableIdentifier(), in.getTimestamp().getTime(), 
-                in.getPrice().getAmount().doubleValue(), Currencies.USD)
+            new Price(in.getCurrencyPair().baseSymbol, in.getTimestamp().getTime(), 
+                in.getPrice().doubleValue(), Currencies.USD)
         };
     }
 }

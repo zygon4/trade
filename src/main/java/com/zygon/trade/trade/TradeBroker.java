@@ -13,13 +13,12 @@ import com.zygon.trade.execution.exchange.TickerEvent;
 import com.zygon.trade.execution.exchange.TradeFillEvent;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerUtil;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,10 +95,10 @@ public class TradeBroker implements ExchangeEventListener {
         // TBD: perform real account/risk analsysis
         for (TradeSignal signal : trade.getTradeSignals()) {
 
-            BigMoney signalCurrencybalance = accountInfo.getBalance(CurrencyUnit.of(signal.getCurrency()));
-            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.getAmount().doubleValue(), currentPrice);
+            BigDecimal signalCurrencybalance = accountInfo.getBalance(signal.getCurrency());
+            double desiredVolume = signal.getVolumeObjective().getVolume(signalCurrencybalance.doubleValue(), currentPrice);
 
-            if (desiredVolume > signalCurrencybalance.getAmount().doubleValue()) {
+            if (desiredVolume > signalCurrencybalance.doubleValue()) {
 
                 this.log.trace("Unable to fund trade: " + trade);
                 return;

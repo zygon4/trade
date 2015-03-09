@@ -6,6 +6,7 @@ package com.zygon.trade.execution.exchange.simulation;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
@@ -37,7 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
-import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +54,8 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
     public static SimulationExchange createInstance() {
         return new SimulationExchange("joe", 
                 new Wallet[]{
-                    new Wallet("USD", BigMoney.of(CurrencyUnit.USD, 1000.0)),
-                    new Wallet("BTC", BigMoney.of(CurrencyUnit.of("BTC"), 10.0))
+                    new Wallet("USD", BigDecimal.valueOf(1000.0)),
+                    new Wallet("BTC", BigDecimal.valueOf(10.0))
                 }, 
                 new MarketConditions("mtgox"));
     }
@@ -70,7 +70,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
 
         public WalletInfo(Wallet wallet) {
             this.currency = wallet.getCurrency();
-            this.ammount = wallet.getBalance().getAmount().doubleValue();
+            this.ammount = wallet.getBalance().doubleValue();
             this.high = this.ammount;
             this.low = this.ammount;
         }
@@ -92,7 +92,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
         }
         
         private Wallet getWallet() {
-            return new Wallet(this.currency, BigMoney.of(CurrencyUnit.getInstance(this.currency), this.ammount));
+            return new Wallet(this.currency, BigDecimal.valueOf(this.ammount));
         }
     }
     
@@ -198,12 +198,14 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
 
         @Override
         public LimitOrder getLimitOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency, double limitPrice) {
-            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date(), BigMoney.of(CurrencyUnit.USD, limitPrice));
+            return new LimitOrder(type, BigDecimal.valueOf(tradableAmount), new CurrencyPair(tradableIdentifier, transactionCurrency),
+                    id, new Date(), BigDecimal.valueOf(limitPrice));
         }
 
         @Override
         public MarketOrder getMarketOrder(String id, Order.OrderType type, double tradableAmount, String tradableIdentifier, String transactionCurrency) {
-            return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), tradableIdentifier, transactionCurrency, id, new Date());
+            return new MarketOrder(type, BigDecimal.valueOf(tradableAmount), new CurrencyPair(tradableIdentifier, transactionCurrency),
+                    id, new Date());
         }
     }
     
@@ -241,13 +243,13 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
                 // simulate a buy by adding the tradable and subtracting the transaction currency
                 if (order.getType() == Order.OrderType.BID) {
                     totalCost = totalCost.add(fee);
-                    this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                    this.accntController.subtract(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
+                    this.accntController.add(order.getTradableAmount(), CurrencyUnit.of(order.getCurrencyPair().baseSymbol));
+                    this.accntController.subtract(totalCost, CurrencyUnit.of(order.getCurrencyPair().counterSymbol));
                 } else {
                     // simulate a sell by subtracting the tradable and adding the transaction currency
                     totalCost = totalCost.subtract(fee);
-                    this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getTradableIdentifier()));
-                    this.accntController.add(totalCost, CurrencyUnit.of(order.getTransactionCurrency()));
+                    this.accntController.subtract(order.getTradableAmount(), CurrencyUnit.of(order.getCurrencyPair().baseSymbol));
+                    this.accntController.add(totalCost, CurrencyUnit.of(order.getCurrencyPair().counterSymbol));
                 }
             } catch (InterruptedException ie) {
 //                ie.printStackTrace();
@@ -326,7 +328,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
         
         if (r != null) {
             Ticker data = (Ticker) r;
-            tradeExecutor.setPrice(data.getAsk().plus(data.getBid()).dividedBy(2, RoundingMode.UP).getAmount());
+            tradeExecutor.setPrice(data.getAsk().add(data.getBid()).divide(BigDecimal.valueOf(2), RoundingMode.UP));
             try { this.exchangeEvents.put(new TickerEvent(data)); } catch (InterruptedException ignore) {}
         }
     }

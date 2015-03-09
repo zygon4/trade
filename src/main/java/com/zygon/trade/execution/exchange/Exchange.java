@@ -189,7 +189,7 @@ public abstract class Exchange {
             throw new IllegalStateException("No wallet of currency " + currency + " found");
         }
 
-        return wallet.getBalance().getAmount().doubleValue();
+        return wallet.getBalance().doubleValue();
     }
 
     public boolean isConnected() {

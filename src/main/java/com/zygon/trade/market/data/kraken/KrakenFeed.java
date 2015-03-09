@@ -1,9 +1,9 @@
 
 package com.zygon.trade.market.data.kraken;
 
-import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.currency.CurrencyPair;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 import com.zygon.data.Context;
 import com.zygon.data.feed.TradeableEventFeed;
 import com.zygon.trade.market.data.Ticker;
@@ -29,11 +29,9 @@ public class KrakenFeed extends TradeableEventFeed<Ticker> {
         Ticker ticker = null;
         
         try {
-            ticker = new Ticker(this.marketDataService.getTicker(this.getTradeable(), this.getCurrency()), this.getCurrency());
+            ticker = new Ticker(this.marketDataService.getTicker(new CurrencyPair(this.getTradeable(), this.getCurrency())), this.getCurrency());
         } catch (IOException io) {
             io.printStackTrace();
-        } catch (ExchangeException ee) {
-            ee.printStackTrace();
         }
         
         return ticker;
