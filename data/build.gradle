@@ -1,0 +1,25 @@
+
+apply plugin: 'java'
+// Only an application for testing
+apply plugin:'application'
+
+mainClassName = "com.zygon.data1.provider.CoinbaseTester"
+
+repositories {
+    mavenCentral();
+}
+
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '15.0'
+    
+    
+    compile group: 'com.xeiam.xchange', name: 'xchange-coinbase', version: '3.0.0'
+    compile group: 'com.xeiam.xchange', name: 'xchange-kraken', version: '3.0.0'
+    
+//    compile group: 'com.xeiam.xchange', name: 'xchange-mtgox', version: '1.10.0'
+    
+    
+    // Trying out the coinbase sdk vs xchange
+    compile group: 'com.coinbase.api', name: 'coinbase-java', version: '1.9.1'
+}
