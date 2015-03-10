@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A data contract service agreement
+ * 
+ * TBD: builder pattern perhaps
  *
  * @author zygon
  */
