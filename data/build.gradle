@@ -11,15 +11,16 @@ repositories {
 
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '15.0'
-    
-    
-    compile group: 'com.xeiam.xchange', name: 'xchange-coinbase', version: '3.0.0'
-    compile group: 'com.xeiam.xchange', name: 'xchange-kraken', version: '3.0.0'
-    
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+
+    compile group: 'com.xeiam.xchange', name: 'xchange-coinbase', version: '3.1.0'
+    compile group: 'com.xeiam.xchange', name: 'xchange-kraken', version: '3.1.0'
+    compile group: 'com.xeiam.xchange', name: 'xchange-bitstamp', version: '3.1.0'
+    // TBD: other exchanges
+
 //    compile group: 'com.xeiam.xchange', name: 'xchange-mtgox', version: '1.10.0'
-    
-    
+
+
     // Trying out the coinbase sdk vs xchange
     compile group: 'com.coinbase.api', name: 'coinbase-java', version: '1.9.1'
 }

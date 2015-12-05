@@ -16,7 +16,7 @@ import com.zygon.trade.market.data.interpret.TickerMACD;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;
 import com.zygon.trade.market.model.indication.market.MACDZeroCross;
-import com.zygon.trade.market.util.Duration;
+import com.zygon.analysis.util.Duration;
 import com.zygon.trade.market.util.Type;
 import com.zygon.trade.modules.data.DataModule;
 import com.zygon.trade.modules.execution.broker.Broker;

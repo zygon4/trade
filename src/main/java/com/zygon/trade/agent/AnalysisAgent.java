@@ -1,8 +1,8 @@
 
 package com.zygon.trade.agent;
 
-import com.zygon.trade.market.util.Duration;
-import com.zygon.trade.market.util.MovingAverage;
+import com.zygon.analysis.util.Duration;
+import com.zygon.analysis.util.MovingAverage;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.analysis.UnivariateFunction;

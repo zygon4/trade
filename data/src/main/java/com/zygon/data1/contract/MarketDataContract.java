@@ -12,13 +12,14 @@ import java.util.concurrent.TimeUnit;
 public class MarketDataContract extends DataContract {
 
     public static enum MarketDataElement {
-        TICKER
+        TICKER,
+        BOOK
     }
-    
+
     private final MarketDataElement marketDataElement;
     private final CurrencyPair currency;
 
-    public MarketDataContract(String contractName, String dataIdentifier, int cacheTime, TimeUnit cacheTimeUnits, 
+    public MarketDataContract(String contractName, String dataIdentifier, int cacheTime, TimeUnit cacheTimeUnits,
             MarketDataElement contractData, CurrencyPair currency) {
         super(contractName, dataIdentifier, cacheTime, cacheTimeUnits);
         this.marketDataElement = contractData;
@@ -38,12 +39,12 @@ public class MarketDataContract extends DataContract {
     public final String getSymbol() {
         return this.currency.baseSymbol;
     }
-    
+
     public final String getCounterSymbol() {
         return this.currency.counterSymbol;
     }
 
-    public CurrencyPair getCurrency() {
+    public final CurrencyPair getCurrency() {
         return this.currency;
     }
 }

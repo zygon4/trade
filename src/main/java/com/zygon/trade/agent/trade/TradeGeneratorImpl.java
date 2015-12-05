@@ -11,31 +11,29 @@ import java.util.Collection;
  * @author zygon
  */
 public abstract class TradeGeneratorImpl implements TradeGenerator {
-    
+
     private final MarketConditions marketConditions = new MarketConditions("MtGox");
-    
+
     protected final MarketConditions getMarketConditions() {
         return this.marketConditions;
     }
-    
+
     /**
-     * Returns additional indications which will be provided to the market conditions.     
+     * Returns additional indications which will be provided to the market conditions.
      * @param additional
      */
     protected void getAdditionalIndications(Collection<Indication> additional) {
         // do nothing
     }
-    
+
     @Override
-    public void notify(Indication message) {
-        Indication indication = (Indication) message;
-        
+    public void notify(Indication indication) {
         this.marketConditions.putIndication(indication, null);
-        
+
         Collection<Indication> additionalIndications = Lists.newArrayList();
-        
+
         this.getAdditionalIndications(additionalIndications);
-        
+
         if (!additionalIndications.isEmpty()) {
             for (Indication additional : additionalIndications) {
                 this.marketConditions.putIndication(additional, null);

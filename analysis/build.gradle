@@ -1,0 +1,20 @@
+
+apply plugin: 'java'
+// Only an application for testing
+apply plugin:'application'
+
+mainClassName = "com.zygon.analysis.arbitrage.Arbitrage"
+
+repositories {
+    mavenCentral();
+}
+
+
+dependencies {
+    compile project (":data")
+
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.5'
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+}

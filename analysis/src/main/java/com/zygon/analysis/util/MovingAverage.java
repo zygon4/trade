@@ -2,7 +2,7 @@
  * 
  */
 
-package com.zygon.trade.market.util;
+package com.zygon.analysis.util;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

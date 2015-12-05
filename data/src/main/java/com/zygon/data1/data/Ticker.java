@@ -28,15 +28,15 @@ public class Ticker implements Data {
     public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigDecimal last, BigDecimal bid, 
             BigDecimal ask, BigDecimal high, BigDecimal low, BigDecimal volume) {
         // TODO: uncomment this and restrict inputs
-//        if (tradeableIdentifer == null) {
-//            throw new IllegalArgumentException("tradeableIdentifer cannot be null");
-//        }
-//        if (currency == null) {
-//            throw new IllegalArgumentException("currency cannot be null");
-//        }
-//        if (source == null) {
-//            throw new IllegalArgumentException("source cannot be null");
-//        }
+        if (tradeableIdentifer == null) {
+            throw new IllegalArgumentException("tradeableIdentifer cannot be null");
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException("currency cannot be null");
+        }
+        if (source == null) {
+            throw new IllegalArgumentException("source cannot be null");
+        }
         this.tradeableIdentifer = tradeableIdentifer;
         this.timestamp = ts;
         this.source = source;
@@ -54,10 +54,14 @@ public class Ticker implements Data {
         return tickTime != null ? new Date(tickTime.getTime() + (1000 * 60 * 5)) : new Date();
     }
     
-    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick) {
-        this (tick.getCurrencyPair().baseSymbol, getAdjustedDate(tick.getTimestamp()), "", 
+    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String source) {
+        this (tick.getCurrencyPair().baseSymbol, getAdjustedDate(tick.getTimestamp()), source, 
                 tick.getCurrencyPair().counterSymbol, tick.getLast(), tick.getBid(), tick.getAsk(), 
                 tick.getHigh(), tick.getLow(), tick.getVolume());
+    }
+    
+    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick) {
+        this (tick, "");
     }
 
     public BigDecimal getAsk() {
@@ -148,12 +152,12 @@ public class Ticker implements Data {
                 this.getTradableIdentifier(),
                 this.getCurrency(),
                 this.getSource(),
-                this.last.toPlainString(),
-                this.bid.toPlainString(),
-                this.ask.toPlainString(),
-                this.high.toPlainString(),
-                this.low.toPlainString(),
-                this.volume.toPlainString(),
+                this.last != null ? this.last.toPlainString() : null,
+                this.bid != null ? this.bid.toPlainString() : null,
+                this.ask != null ? this.ask.toPlainString() : null,
+                this.high != null ? this.high.toPlainString() : null,
+                this.low != null ? this.low.toPlainString() : null,
+                this.volume != null ? this.volume.toPlainString() : null,
                 this.getTimestamp());
         } catch (Exception e) {
             e.printStackTrace();

@@ -20,14 +20,15 @@ repositories {
 
 dependencies {
     compile project(':data')
-    
+    compile project(':analysis')
+
     compile group: 'commons-daemon', name: 'commons-daemon', version: '1.0.15'
     compile group: 'com.xeiam.xchange', name: 'xchange-mtgox', version: '1.10.0'
-    compile group: 'com.xeiam.xchange', name: 'xchange-kraken', version: '1.10.0'
-    
+    compile group: 'com.xeiam.xchange', name: 'xchange-kraken', version: '3.1.0'
+    compile group: 'com.xeiam.xchange', name: 'xchange-bitstamp', version: '3.1.0'
+
     compile group: 'org.reflections', name: 'reflections', version: '0.9.9'
-    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
-    
+
     compile group: 'org.hectorclient', name: 'hector-core', version: '1.1-4'
     compile group: 'com.googlecode.cliche', name: 'cliche', version: '1.0-SNAPSHOT'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.2.3'
@@ -36,7 +37,7 @@ dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
 
     compile group: 'com.eaio.uuid', name: 'uuid', version: '3.2'
-    
+
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.1.0.M0'
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.1.0.M0'
     compile group: 'org.eclipse.jetty', name: 'jetty-security', version: '9.1.0.M0'
@@ -45,6 +46,13 @@ dependencies {
     runtime group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
     runtime group: 'org.apache.derby', name: 'derby', version: '10.10.1.1'
     runtime group: 'org.apache.derby', name: 'derbytools', version: '10.10.1.1'
+
+
+    // dep for commons-configuration
+    // TODO: get from maven repo
+    compile files('lib/commons-configuration2-2.0-alpha2.jar')
+    runtime group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2'
+    runtime group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
 }
 
 war {

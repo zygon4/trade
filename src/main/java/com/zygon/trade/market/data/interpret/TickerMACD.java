@@ -4,7 +4,7 @@
 
 package com.zygon.trade.market.data.interpret;
 
-import com.zygon.trade.market.util.MovingAverage;
+import com.zygon.analysis.util.MovingAverage;
 import com.zygon.trade.market.util.Aggregation;
 import com.zygon.trade.market.model.indication.market.MACD;
 import com.zygon.trade.market.model.indication.market.MACDSignalCross;

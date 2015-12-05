@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zygon.trade.market.util;
+package com.zygon.analysis.util;
 
 /**
  *

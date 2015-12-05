@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package com.zygon.trade.trade;
@@ -14,9 +14,9 @@ public enum TradeType {
     SHORT (Order.OrderType.ASK, Order.OrderType.BID),
     LONG (Order.OrderType.BID, Order.OrderType.ASK);
 
-    private Order.OrderType orderType;
-    private Order.OrderType counterOrderType;
-    
+    private final Order.OrderType orderType;
+    private final Order.OrderType counterOrderType;
+
     private TradeType(Order.OrderType orderType, Order.OrderType counterOrderType) {
         this.orderType = orderType;
         this.counterOrderType = counterOrderType;

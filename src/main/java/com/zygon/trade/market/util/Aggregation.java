@@ -3,6 +3,7 @@
  */
 package com.zygon.trade.market.util;
 
+import com.zygon.analysis.util.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**

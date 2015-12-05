@@ -9,3 +9,6 @@
 /.gradle/
 /src/main/java/com/zygon/trade/Main.java
 lib/
+/ui/build/
+/data/build/
+/analysis/build/
