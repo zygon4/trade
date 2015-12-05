@@ -1,5 +1,5 @@
 
-package com.zygon.analysis.util;
+package com.zygon.trade.market.util;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -1,0 +1,29 @@
+create column family ticker 
+   with comparator=AsciiType and key_validation_class=LongType 
+     and column_metadata=[
+        {column_name: tradeable_id, validation_class:UTF8Type, index_type: KEYS},
+        {column_name: last_price, validation_class:IntegerType, index_type: KEYS},
+        {column_name: bid, validation_class:IntegerType, index_type: KEYS},
+        {column_name: ask, validation_class:IntegerType, index_type: KEYS},
+        {column_name: high, validation_class:IntegerType, index_type: KEYS},
+        {column_name: low, validation_class:IntegerType, index_type: KEYS},
+        {column_name: volume, validation_class:IntegerType, index_type: KEYS}
+    ];
+
+CREATE KEYSPACE trade WITH strategy_class = 'SimpleStrategy' AND strategy_options:replication_factor=1;
+
+CREATE TABLE tradeableIndex (
+    tradeable_id bigint,
+    ts timestamp
+);
+
+CREATE TABLE ticker (
+    tradeable_id bigint,
+    last_price double,
+    bid double,
+    ask double,
+    high double,
+    low double,
+    volume double,
+    ts timestamp,
+    PRIMARY KEY(tradeable_id, ts));

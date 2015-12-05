@@ -1,8 +1,8 @@
 
 package com.zygon.analysis.correlation;
 
-import com.zygon.analysis.util.Duration;
-import com.zygon.analysis.util.MovingAverage;
+import com.zygon.trade.market.util.Duration;
+import com.zygon.trade.market.util.MovingAverage;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
