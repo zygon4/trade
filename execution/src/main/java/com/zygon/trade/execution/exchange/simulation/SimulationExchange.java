@@ -21,7 +21,7 @@ import com.zygon.trade.execution.OrderProvider;
 import com.zygon.trade.execution.TradeExecutor;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
-import com.zygon.trade.execution.exchange.AccoutWalletUpdate;
+import com.zygon.trade.execution.exchange.AccountWalletUpdate;
 import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
 import com.zygon.trade.execution.exchange.TickerEvent;
@@ -121,7 +121,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             wallet.ammount += ammount.doubleValue();
             wallet.high = Math.max(wallet.getHigh(), wallet.getAmmount());
             
-            this.exchangeEvents.put(new AccoutWalletUpdate(user, wallet.getWallet()));
+            this.exchangeEvents.put(new AccountWalletUpdate(user, wallet.getWallet()));
         }
         
         public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) throws InterruptedException {
@@ -130,7 +130,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             wallet.ammount -= ammount.doubleValue();
             wallet.low = Math.min(wallet.getLow(), wallet.getAmmount());
             
-            this.exchangeEvents.put(new AccoutWalletUpdate(user, wallet.getWallet()));
+            this.exchangeEvents.put(new AccountWalletUpdate(user, wallet.getWallet()));
         }
         
         @Override

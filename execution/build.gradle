@@ -1,0 +1,20 @@
+
+apply plugin: 'java'
+// Only an application for testing
+apply plugin:'application'
+
+mainClassName = "com.zygon.trade.execution.Tester"
+
+repositories {
+    mavenCentral();
+}
+
+
+dependencies {
+    compile project (":data")
+
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+
+    // TODO: drop mtgox
+    compile group: 'com.xeiam.xchange', name: 'xchange-mtgox', version: '1.10.0'
+}
