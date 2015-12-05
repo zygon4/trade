@@ -1,11 +1,12 @@
 /**
- * 
+ *
  */
 
 package com.zygon.trade.execution.exchange.simulation;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.account.AccountInfo;
@@ -24,11 +25,12 @@ import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.execution.exchange.AccountWalletUpdate;
 import com.zygon.trade.execution.exchange.Exchange;
 import com.zygon.trade.execution.exchange.ExchangeEvent;
+import com.zygon.trade.execution.exchange.ExchangeEventProvider;
 import com.zygon.trade.execution.exchange.TickerEvent;
 import com.zygon.trade.execution.exchange.TradeCancelEvent;
 import com.zygon.trade.execution.exchange.TradeFillEvent;
 import com.zygon.trade.market.data.Ticker;
-import com.zygon.trade.market.data.mtgox.MtGoxFeed;
+import com.zygon.trade.market.data.kraken.KrakenFeed;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -43,23 +45,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * TODO: send account update messages to the broker so it can make volume
  * analysis.
  *
  * @author zygon
+ * @param <T>
  */
 public class SimulationExchange<T> extends Exchange implements Handler<T> {
-    
+
     public static SimulationExchange createInstance() {
-        return new SimulationExchange("joe", 
+        return new SimulationExchange("joe",
                 new Wallet[]{
                     new Wallet("USD", BigDecimal.valueOf(1000.0)),
                     new Wallet("BTC", BigDecimal.valueOf(10.0))
-                }, 
-                new MarketConditions("mtgox"));
+                },
+                new MarketConditions("mtgox"),
+                new SimEventProvider(Queues.newArrayBlockingQueue(100))
+        );
     }
-    
+
     private static final double EXCHANGE_FEE = 0.006; // percentage
 
     private static class WalletInfo {
@@ -90,56 +95,56 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
         public double getLow() {
             return low;
         }
-        
+
         private Wallet getWallet() {
             return new Wallet(this.currency, BigDecimal.valueOf(this.ammount));
         }
     }
-    
+
     public static final class SimulationAccountController implements AccountController {
 
         private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
         private Map<CurrencyUnit, WalletInfo> walletsByCurrency = Maps.newHashMap();
         private final String user;
         private double fees = 0.0;
-        
+
         public SimulationAccountController(String user, Wallet ...wallets) {
             this.user = user;
-            
+
             for (Wallet wallet : wallets) {
                 this.walletsByCurrency.put(CurrencyUnit.getInstance(wallet.getCurrency()), new WalletInfo(wallet));
             }
         }
-        
+
         public synchronized void addFee(BigDecimal fee) {
             this.fees += fee.doubleValue();
         }
-        
+
         public synchronized void add(BigDecimal ammount, CurrencyUnit currency) throws InterruptedException {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
-            
+
             wallet.ammount += ammount.doubleValue();
             wallet.high = Math.max(wallet.getHigh(), wallet.getAmmount());
-            
+
             this.exchangeEvents.put(new AccountWalletUpdate(user, wallet.getWallet()));
         }
-        
+
         public synchronized void subtract(BigDecimal ammount, CurrencyUnit currency) throws InterruptedException {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
-            
+
             wallet.ammount -= ammount.doubleValue();
             wallet.low = Math.min(wallet.getLow(), wallet.getAmmount());
-            
+
             this.exchangeEvents.put(new AccountWalletUpdate(user, wallet.getWallet()));
         }
-        
+
         @Override
         public AccountInfo getAccountInfo(String username) {
             List<Wallet> wallets = new ArrayList<>();
             for (WalletInfo info : this.walletsByCurrency.values()) {
                 wallets.add(info.getWallet());
             }
-            
+
             return new AccountInfo(this.user, wallets);
         }
 
@@ -151,7 +156,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
         public Set<CurrencyUnit> getCurrencies() {
             return this.walletsByCurrency.keySet();
         }
-        
+
         public double getFees() {
             return this.fees;
         }
@@ -161,7 +166,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             return wallet.getHigh() - wallet.getLow();
         }
-        
+
         @Override
         public double getHigh(String username, CurrencyUnit currency) {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
@@ -173,16 +178,16 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             WalletInfo wallet = this.walletsByCurrency.get(currency);
             return wallet.getLow();
         }
-        
+
         public void setExchangeEvents(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
             this.exchangeEvents = exchangeEvents;
         }
     }
-    
+
     public static final class SimulationOrderBookProvider implements OrderBookProvider {
 
         private final List<LimitOrder> orders = Lists.newArrayList();
-        
+
         @Override
         public void getOpenOrders(List<LimitOrder> orders) {
             orders.addAll(this.orders);
@@ -190,10 +195,10 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
 
         @Override
         public void getOrderBook(String username, OrderBook orders, String tradeableIdentifer, String currency) {
-            
+
         }
     }
-    
+
     public static final class SimulationOrderProvider implements OrderProvider {
 
         @Override
@@ -208,15 +213,15 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
                     id, new Date());
         }
     }
-    
+
     public static final class SimulationTradeExecutor implements TradeExecutor {
 
         private final Logger log = LoggerFactory.getLogger(SimulationTradeExecutor.class);
-        
+
         private ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
         private SimulationAccountController accntController;
         private BigDecimal price = null;
-        
+
         @Override
         public void cancel(String username, String orderId) {
             this.log.info("Cancelling orderId: {}", orderId);
@@ -230,15 +235,15 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
         @Override
         public String execute(String accountId, Order order) {
             BigDecimal marketPrice = this.price;
-            
+
             this.log.info("Executing order: {} at price {}", order, marketPrice);
-            
+
             // Because this is a market order we're just estimating what the market price might be.
             BigDecimal totalCost = order.getTradableAmount().multiply(marketPrice);
-            
+
             BigDecimal fee = totalCost.multiply(BigDecimal.valueOf(EXCHANGE_FEE));
             this.accntController.addFee(fee);
-            
+
             try {
                 // simulate a buy by adding the tradable and subtracting the transaction currency
                 if (order.getType() == Order.OrderType.BID) {
@@ -254,78 +259,93 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
             } catch (InterruptedException ie) {
 //                ie.printStackTrace();
             }
-            
+
             try {
                 this.exchangeEvents.put(new TradeFillEvent(order.getId(), TradeFillEvent.Fill.FULL, marketPrice.doubleValue(), order.getTradableAmount().doubleValue()));
             } catch (InterruptedException ie) {
 //                ie.printStackTrace();
             }
-            
+
             for (CurrencyUnit unit : this.accntController.getCurrencies()) {
-                this.log.info("Account balance {}, high {}, low {}, max drawdown {}", 
-                        this.accntController.getBalance(unit), 
-                        this.accntController.getHigh(accountId, unit), 
+                this.log.info("Account balance {}, high {}, low {}, max drawdown {}",
+                        this.accntController.getBalance(unit),
+                        this.accntController.getHigh(accountId, unit),
                         this.accntController.getLow(accountId, unit),
                         this.accntController.getMaximumDrawDown(accountId, unit));
             }
             this.log.info("Total fees {}", this.accntController.getFees());
-            
+
             return "orderid:"+order.getId();
         }
 
         public void setExchangeEvents(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
             this.exchangeEvents = exchangeEvents;
         }
-        
+
         public void setAccntController(SimulationAccountController accntController) {
             this.accntController = accntController;
         }
-        
+
         private void setPrice(BigDecimal price) {
             this.price = price;
         }
     }
-    
+
     private final Properties properties = new Properties();
-    
+
     {
         properties.setProperty("class", "com.zygon.trade.market.data.mtgox.MtGoxFeed");
         properties.setProperty("tradeable", "BTC");
         properties.setProperty("currency", "USD");
     }
-    
-    private final MtGoxFeed tickerFeed = new MtGoxFeed(new Context(this.properties));
-    
-    private final ArrayBlockingQueue<ExchangeEvent> exchangeEvents = new ArrayBlockingQueue<ExchangeEvent>(100);
-    
-    public SimulationExchange(String username, Wallet[] wallets, MarketConditions marketConditions) {
+
+    public static class SimEventProvider implements ExchangeEventProvider {
+
+        private final ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
+
+        public SimEventProvider(ArrayBlockingQueue<ExchangeEvent> exchangeEvents) {
+            this.exchangeEvents = exchangeEvents;
+        }
+
+        @Override
+        public ExchangeEvent getEvent() throws ExchangeException {
+            try {
+                return exchangeEvents.take();
+            } catch (InterruptedException ignore) {
+                // ignore
+            }
+            return null;
+        }
+
+        private ArrayBlockingQueue<ExchangeEvent> getExchangeEvents() {
+            return exchangeEvents;
+        }
+    }
+
+    private final KrakenFeed tickerFeed = new KrakenFeed(new Context(this.properties));
+    private final ArrayBlockingQueue<ExchangeEvent> exchangeEvents;
+
+    public SimulationExchange(String username, Wallet[] wallets, MarketConditions marketConditions, SimEventProvider simEventProvider) {
         super(new SimulationAccountController(username, wallets),
               new SimulationOrderBookProvider(),
               new SimulationOrderProvider(),
-              new SimulationTradeExecutor());
-        
-         SimulationTradeExecutor simTradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
-         simTradeExecutor.setAccntController((SimulationAccountController)this.getAccountController());
-         simTradeExecutor.setExchangeEvents(this.exchangeEvents);
-         
-         SimulationAccountController simAccountController = (SimulationAccountController) this.getAccountController();
-         simAccountController.setExchangeEvents(this.exchangeEvents);
+              new SimulationTradeExecutor(),
+              simEventProvider);
+
+        this.exchangeEvents = simEventProvider.getExchangeEvents();
+
+        SimulationTradeExecutor simTradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
+        simTradeExecutor.setAccntController((SimulationAccountController)this.getAccountController());
+        simTradeExecutor.setExchangeEvents(this.exchangeEvents);
+
+        SimulationAccountController simAccountController = (SimulationAccountController) this.getAccountController();
+        simAccountController.setExchangeEvents(this.exchangeEvents);
     }
-    
-    @Override
-    protected ExchangeEvent getEvent() throws ExchangeException {
-        try { 
-            return this.exchangeEvents.take(); 
-        } catch (InterruptedException ignore) {
-            // ignore
-        }
-        return null;
-    }
-    
+
     @Override
     public void handle(T r) {
         SimulationTradeExecutor tradeExecutor = (SimulationTradeExecutor) this.getTradeExecutor();
-        
+
         if (r != null) {
             Ticker data = (Ticker) r;
             tradeExecutor.setPrice(data.getAsk().add(data.getBid()).divide(BigDecimal.valueOf(2), RoundingMode.UP));
@@ -336,7 +356,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
     @Override
     public void start() {
         super.start();
-        
+
         Handler<Ticker> tickerHandler = (Handler<Ticker>) this;
         this.tickerFeed.register(tickerHandler);
     }
@@ -344,7 +364,7 @@ public class SimulationExchange<T> extends Exchange implements Handler<T> {
     @Override
     public void stop() {
         super.stop();
-        
+
         Handler<Ticker> tickerHandler = (Handler<Ticker>) this;
         this.tickerFeed.unregister(tickerHandler);
     }

@@ -2,6 +2,7 @@
 package com.zygon.trade.agent.simulation;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 import com.xeiam.xchange.dto.trade.Wallet;
 import com.zygon.data.Context;
 import com.zygon.data.Handler;
@@ -44,7 +45,7 @@ public class Simulation<T> {
         private Handler<T> extraHandler;
 
         public SimExchange(String username, Wallet[] wallets, MarketConditions marketConditions) {
-            super(username, wallets, marketConditions);
+            super(username, wallets, marketConditions, new SimEventProvider(Queues.newArrayBlockingQueue(100)));
         }
 
         @Override

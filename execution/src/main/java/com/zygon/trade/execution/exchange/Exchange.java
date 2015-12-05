@@ -20,19 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This needs a lot of work.
- * 
- * - This shouldn't have a xeiam streamingExchangeService - rather an EventProvider
- *   which supplies our own (not xeiam's) events.  We could even have an abstract
- *   xeiam/streaming exchange as a middle layer.
- *
  * - This has a single listener/handler for callbacks.. should it have specific
  *   event handlers registered on specific event codes? Probably won't need
  *   that detail for starters..
- *
- * - All of the components such as order book and account manager, etc. should
- *   probably be pushed through the constructor from the lower levels vs 
- *   abstract methods.
  *
  * - Add status for 'connected'/'disconnected'? And/or a connection manager to
  *   keep retrying if connection is lost.
@@ -59,11 +49,11 @@ public abstract class Exchange {
 
             while (this.running) {
                 try {
-                    ExchangeEvent event = Exchange.this.getEvent();
+                    ExchangeEvent event = Exchange.this.exchangeEventProvider.getEvent();
 
                     if (event != null) {
                         log.trace("Received event " + event);
-                        
+
                         switch (event.getEventType()) {
                             case CONNECTED:
                                 if (!Exchange.this.isConnected) {
@@ -77,14 +67,14 @@ public abstract class Exchange {
                                     Exchange.this.isConnected = false;
                                     log.info("Disconnected from exchange");
                                     // TBD: connection task that keeps trying to
-                                    // to reconnect 
+                                    // to reconnect
                                 }
                                 break;
                         }
-                        
+
                         Exchange.this.listener.notify(event);
                     }
-                    
+
                 } catch (ExchangeException ex) {
                     if (this.running) {
                         log.error(null, ex);
@@ -95,7 +85,7 @@ public abstract class Exchange {
             log.debug("ExchangeEventProcessor shutting down");
         }
     }
-    
+
     private ExchangeEventListener listener;
     private ExchangeEventProcessor processor = null;
     private boolean started = false;
@@ -105,25 +95,28 @@ public abstract class Exchange {
     private final OrderBookProvider orderBookProvider;
     private final OrderProvider orderprovider;
     private final TradeExecutor tradeExecutor;
+    private final ExchangeEventProvider exchangeEventProvider;
 
     public Exchange(
-            AccountController accntController, 
-            OrderBookProvider orderBookProvider, 
-            OrderProvider orderprovider, 
-            TradeExecutor tradeExecutor) {
+            AccountController accntController,
+            OrderBookProvider orderBookProvider,
+            OrderProvider orderprovider,
+            TradeExecutor tradeExecutor,
+            ExchangeEventProvider exchangeEventProvider) {
         this.accntController = accntController;
         this.orderBookProvider = orderBookProvider;
         this.orderprovider = orderprovider;
         this.tradeExecutor = tradeExecutor;
+        this.exchangeEventProvider = exchangeEventProvider;
     }
-    
+
     public void cancelOrder(String username, String orderId) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Cancel order request for order id {}", new Date(), orderId);
 
         this.tradeExecutor.cancel(username, orderId);
     }
-    
+
     public final AccountController getAccountController() {
         return this.accntController;
     }
@@ -140,8 +133,6 @@ public abstract class Exchange {
         return this.orderprovider;
     }
 
-    protected abstract ExchangeEvent getEvent() throws ExchangeException;
-    
     public void getOpenOrders(List<LimitOrder> orders) {
         // could trace
         this.orderBookProvider.getOpenOrders(orders);
@@ -195,7 +186,7 @@ public abstract class Exchange {
     public boolean isConnected() {
         return this.isConnected;
     }
-    
+
     public String placeOrder(String accountId, Order order) throws ExchangeException {
         // TODO: log impl with timestamps
         log.info("{} Place order request {}", new Date(), order);

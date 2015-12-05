@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package com.zygon.trade.market.data;
@@ -12,7 +12,7 @@ import java.util.Date;
  * @author zygon
  */
 public class Ticker {
-    
+
     private String tradeableIdentifer;
     private Date timestamp;
     private String source;
@@ -23,8 +23,8 @@ public class Ticker {
     private BigDecimal high;
     private BigDecimal low;
     private BigDecimal volume;
-    
-    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigDecimal last, BigDecimal bid, 
+
+    public Ticker(String tradeableIdentifer, Date ts, String source, String currency, BigDecimal last, BigDecimal bid,
             BigDecimal ask, BigDecimal high, BigDecimal low, BigDecimal volume) {
         // TODO: uncomment this and restrict inputs
 //        if (tradeableIdentifer == null) {
@@ -47,14 +47,14 @@ public class Ticker {
         this.low = low;
         this.volume = volume;
     }
-    
+
     private static Date getAdjustedDate (Date tickTime) {
         return new Date(tickTime.getTime() + (1000 * 60 * 5));
     }
-    
-    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick, String currency) {
-        this (tick.getCurrencyPair().baseSymbol, getAdjustedDate(tick.getTimestamp()), "", currency, tick.getLast(), tick.getBid(), tick.getAsk(), 
-                tick.getHigh(), tick.getLow(), tick.getVolume());
+
+    public Ticker (com.xeiam.xchange.dto.marketdata.Ticker tick) {
+        this (tick.getCurrencyPair().baseSymbol, getAdjustedDate(tick.getTimestamp()), "", tick.getCurrencyPair().counterSymbol,
+                tick.getLast(), tick.getBid(), tick.getAsk(), tick.getHigh(), tick.getLow(), tick.getVolume());
     }
 
     public BigDecimal getAsk() {
@@ -64,7 +64,7 @@ public class Ticker {
     public BigDecimal getBid() {
         return this.bid;
     }
-    
+
     public String getCurrency() {
         return this.currency;
     }
@@ -88,7 +88,7 @@ public class Ticker {
     public String getSource() {
         return this.source;
     }
-    
+
     public BigDecimal getVolume() {
         return this.volume;
     }
@@ -108,11 +108,11 @@ public class Ticker {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
-    
+
     public void setHigh(BigDecimal high) {
         this.high = high;
     }
-    
+
     public void setLast(BigDecimal last) {
         this.last = last;
     }
@@ -141,7 +141,7 @@ public class Ticker {
     public String toString() {
         String toString = null;
         try {
-            toString = String.format("%s/%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s", 
+            toString = String.format("%s/%s/%s: last %s, bid %s, ask %s, high %s, low %s, volume %s %s",
                 this.getTradableIdentifier(),
                 this.getCurrency(),
                 this.getSource(),
@@ -155,7 +155,7 @@ public class Ticker {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return toString;
     }
 }

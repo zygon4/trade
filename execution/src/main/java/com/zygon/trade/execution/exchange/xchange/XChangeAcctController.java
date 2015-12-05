@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 
-package com.zygon.trade.execution.exchange.mtgox;
+package com.zygon.trade.execution.exchange.xchange;
 
 import com.xeiam.xchange.dto.account.AccountInfo;
-import com.xeiam.xchange.mtgox.v2.service.polling.MtGoxPollingAccountService;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
 import com.zygon.trade.execution.AccountController;
 import com.zygon.trade.execution.ExchangeException;
 import java.io.IOException;
@@ -15,14 +15,14 @@ import org.joda.money.CurrencyUnit;
  *
  * @author zygon
  */
-public class MtGoxAcctController implements AccountController {
+public class XChangeAcctController implements AccountController {
 
-    private final MtGoxPollingAccountService accountService;
+    private final PollingAccountService accountService;
 
-    public MtGoxAcctController(MtGoxPollingAccountService accntService) {
+    public XChangeAcctController(PollingAccountService accntService) {
         this.accountService = accntService;
     }
-    
+
     @Override
     public AccountInfo getAccountInfo(String username) throws ExchangeException {
         try {
