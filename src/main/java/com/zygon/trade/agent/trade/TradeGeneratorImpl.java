@@ -28,7 +28,7 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
 
     @Override
     public void notify(Indication indication) {
-        this.marketConditions.putIndication(indication, null);
+        this.marketConditions.putIndication(indication);
 
         Collection<Indication> additionalIndications = Lists.newArrayList();
 
@@ -36,7 +36,7 @@ public abstract class TradeGeneratorImpl implements TradeGenerator {
 
         if (!additionalIndications.isEmpty()) {
             for (Indication additional : additionalIndications) {
-                this.marketConditions.putIndication(additional, null);
+                this.marketConditions.putIndication(additional);
             }
         }
     }

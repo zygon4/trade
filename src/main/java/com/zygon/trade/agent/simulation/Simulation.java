@@ -12,6 +12,7 @@ import com.zygon.trade.agent.trade.RSITrader;
 import com.zygon.trade.execution.MarketConditions;
 import com.zygon.trade.execution.exchange.simulation.SimulationExchange;
 import com.zygon.trade.market.data.Interpreter;
+import com.zygon.trade.market.data.MarketData;
 import com.zygon.trade.market.data.Ticker;
 import com.zygon.trade.market.data.TickerReader;
 import com.zygon.trade.market.data.interpret.RSIInterpreter;
@@ -38,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * @author zygon
  * @param <T>
  */
-public class Simulation<T> {
+public class Simulation<T extends MarketData> {
 
     private class SimExchange<T> extends SimulationExchange<T> {
 

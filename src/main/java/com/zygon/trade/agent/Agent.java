@@ -6,6 +6,7 @@ import com.zygon.data.Handler;
 import com.zygon.data.RawDataWriter;
 import com.zygon.trade.execution.ExchangeException;
 import com.zygon.trade.market.data.Interpreter;
+import com.zygon.trade.market.data.MarketData;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.market.model.indication.Indication;
 import com.zygon.trade.trade.TradePostMortem;
@@ -32,15 +33,16 @@ import org.slf4j.LoggerFactory;
  * processing the signals by translating them into orders.
  *
  * @author zygon
- * 
- * TODO: heterogeneous data 
+ *
+ * TODO: heterogeneous data
+ * @param <T>
  */
-public class Agent<T> implements Handler<T> {
+public class Agent<T extends MarketData> implements Handler<T> {
 
     private final class AgentThread extends Thread {
 
         private volatile boolean running = true;
-        
+
         public AgentThread() {
             super(AgentThread.class.getCanonicalName());
             setDaemon(false);
@@ -56,31 +58,31 @@ public class Agent<T> implements Handler<T> {
             }
         }
     }
-    
+
     private final Logger log;
     private final String name;
     private final Collection<Interpreter<T>> interpreters;
     private final Collection<Identifier> supportedIndicators;
     private final TradeGenerator tradeGenerator;
     private final TradeSummary tradeSummary;
-    
+
     private TradeBroker broker;
     private AgentThread runner = null;
     private boolean started = false;
     // This will be moving soon but it was insane to be here
     private RawDataWriter<T> dataWriter = null;
 
-    public Agent(String name, 
-                 Collection<Interpreter<T>> interpreters, 
-                 Collection<Identifier> supportedIndicators, 
-                 TradeGenerator tradeGenerator, 
+    public Agent(String name,
+                 Collection<Interpreter<T>> interpreters,
+                 Collection<Identifier> supportedIndicators,
+                 TradeGenerator tradeGenerator,
                  TradeBroker broker) {
-        
-        if (name == null || interpreters == null || supportedIndicators == null || 
+
+        if (name == null || interpreters == null || supportedIndicators == null ||
             tradeGenerator == null) {
             throw new IllegalArgumentException("No null arguments permitted");
         }
-        
+
         this.name = name;
         this.log = LoggerFactory.getLogger(this.name);
         this.interpreters = interpreters;
@@ -89,11 +91,11 @@ public class Agent<T> implements Handler<T> {
         this.tradeSummary = new TradeSummary(this.name);
         this.broker = broker;
     }
-    
+
     public TradeSummary getStrategySummary() {
         return this.tradeSummary;
     }
-    
+
     @Override
     public void handle(T date) {
         if (this.started) {
@@ -143,21 +145,21 @@ public class Agent<T> implements Handler<T> {
             }
         }
     }
-    
+
     public void initialize() {
         this.start();
     }
-    
+
     private ExecutorService newFixedThreadPool = null;
     private CompletionService<Indication[]> completionService = null;
-    
+
     private Collection<Indication> interpretData (final T t) throws InterruptedException, ExecutionException {
         Collection<Indication> messages = Lists.newArrayList();
-        
+
         int synchronousActions = 0;
-        
+
         for (final Interpreter<T> trans : this.interpreters) {
-            
+
             completionService.submit(new Callable<Indication[]>() {
 
                 @Override
@@ -165,51 +167,51 @@ public class Agent<T> implements Handler<T> {
                     return trans.interpret(t);
                 }
             });
-            
+
             synchronousActions ++;
         }
-        
+
         for (int i = 0; i < synchronousActions; i++) {
             Indication[] interpretResult = completionService.take().get();
             if (interpretResult != null && interpretResult.length != 0) {
                 messages.addAll(Arrays.asList(interpretResult));
             }
          }
-        
+
         return messages;
     }
-    
+
     private void processInformation(Collection<Indication> messages) throws ExchangeException {
         for (Indication msg : messages) {
-            
+
             if (this.supportedIndicators.contains(msg.getId())) {
-                
+
                 this.tradeGenerator.notify(msg);
-                
+
                 Collection<Trade> trades = this.tradeGenerator.getTrades();
-                
+
                 if (!trades.isEmpty()) {
                     for (Trade trade : trades) {
                         this.broker.activate(trade);
                     }
                 }
-                
+
             } else {
                 this.log.debug(this.name + " agent unable to process indication: " + msg.getId());
             }
         }
     }
-    
+
     private void processPostTrade() {
         Collection<TradePostMortem> tradePostMortems = Lists.newArrayList();
-        
+
         this.broker.getFinishedTrades(tradePostMortems);
-        
+
         for (TradePostMortem tpm : tradePostMortems) {
             this.tradeSummary.add(tpm.getProfit());
         }
     }
-    
+
     public void setBroker(TradeBroker broker) {
         // Normally, I wouldn't mind someone resetting the broker. But, in this
         // case, we extablished a warm, fuzzy bond with it.  We *could* break
@@ -228,7 +230,7 @@ public class Agent<T> implements Handler<T> {
     public void setDataWriter(RawDataWriter<T> dataWriter) {
         this.dataWriter = dataWriter;
     }
-    
+
     private void start() {
         if (!this.started) {
             this.newFixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
@@ -238,16 +240,16 @@ public class Agent<T> implements Handler<T> {
             this.started = true;
         }
     }
-    
+
     private void stop() {
         if (this.started) {
-            
+
             try {
                 this.broker.cancelAll();
             } catch (ExchangeException ee) {
                 this.log.error(null, ee);
             }
-            
+
             this.runner.running = false;
             this.runner.interrupt();
             this.runner = null;
@@ -257,7 +259,7 @@ public class Agent<T> implements Handler<T> {
             this.started = false;
         }
     }
-    
+
     public void uninitialize() {
         this.stop();
     }

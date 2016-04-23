@@ -4,28 +4,31 @@ package com.zygon.trade.agent;
 import com.zygon.data.RawDataWriter;
 import com.zygon.trade.trade.TradeGenerator;
 import com.zygon.trade.market.data.Interpreter;
+import com.zygon.trade.market.data.MarketData;
 import com.zygon.trade.market.model.indication.Identifier;
 import com.zygon.trade.trade.TradeBroker;
+
 import java.util.Collection;
 
 /**
  *
  * @author zygon
+ * @param <T>
  */
-public class AgentBuilder<T> {
+public class AgentBuilder<T extends MarketData> {
 
     // These are Agent specific
     private String name;
     private Collection<Interpreter<T>> interpreters;
     private TradeBroker broker;
     private RawDataWriter<T> dataWriter;
-    
+
     // These are Strategy specific
     private Collection<Identifier> supportedIndicators;
     private TradeGenerator tradeGenerator;
-    
+
     public Agent<T> build() {
-        Agent<T> agent = new Agent<T>(this.name, this.interpreters, this.supportedIndicators, this.tradeGenerator, this.broker);
+        Agent<T> agent = new Agent<>(this.name, this.interpreters, this.supportedIndicators, this.tradeGenerator, this.broker);
         if (this.dataWriter != null) {
             agent.setDataWriter(this.dataWriter);
         }
@@ -35,7 +38,7 @@ public class AgentBuilder<T> {
     public String getName() {
         return this.name;
     }
-    
+
     public void setTradeBroker(TradeBroker broker) {
         this.broker = broker;
     }
